@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BinGo!</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="did_you_forget_your_password">Did you forget your password?</string>
+    <string name="login_with_google">Login with google</string>
+    <string name="welcome">Welcome</string>
+    <string name="are_you_already_registered">Are you already registered?</string>
+    <string name="product_image">Product image</string>
+    <string name="tips">Tips for recycling...</string>
+    <string name="result">Result</string>
+    <string name="barcode">Barcode %1$s</string>
+    <string name="confirm">Confirm</string>
+    <string name="flash_on">Flash on</string>
+    <string name="frame_barcode">Frame the barcode</string>
+    <string name="scan_barcode">Scan the barcode</string>
+    <string name="manual_entry">Manual entry</string>
+    <string name="insert_barcode">Insert the barcode</string>
+    <string name="insert_valid_barcode">Insert a valid barcode</string>
+    <string name="packaging">Packaging</string>
+    <string name="material">Material</string>
+    <string name="result_success">Product and disposal information displayed correctly.</string>
+    <string name="brand">Brand %1$s</string>
+    <string name="parsing_error">Data parsing error</string>
+    <string name="result_failed">Product not found or network error</string>
+    <string name="request_error">Request error</string>
+    <string name="product_name">Product name</string>
+
+    <!-- Materials -->
+    <string name="material_metal">Metal</string>
+    <string name="material_plastic">Plastic</string>
+    <string name="material_glass">Glass</string>
+    <string name="material_paper">Paper</string>
+    <string name="material_cardboard">Cardboard</string>
+
+    <!-- Shapes -->
+    <string name="shape_food_can">Can</string>
+    <string name="shape_bottle">Bottle</string>
+    <string name="shape_tray">Tray</string>
+    <string name="shape_box">Box</string>
+    <string name="shape">Shape</string>
+    <string name="no_packaging_info">No information available on the packaging</string>
+
+</resources>

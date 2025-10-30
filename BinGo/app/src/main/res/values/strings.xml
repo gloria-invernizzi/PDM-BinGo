@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">BinGo!</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Accedi</string>
+    <string name="did_you_forget_your_password">Hai dimenticato la password?</string>
+    <string name="login_with_google">Accedi con google</string>
+    <string name="welcome">Benvenuto</string>
+    <string name="are_you_already_registered">Sei già registrato?</string>
+    <string name="product_image">Immagine del prodotto</string>
+    <string name="tips">Suggerimenti per lo smaltimento…</string>
+    <string name="result">Risultato</string>
+    <string name="barcode">Codice a barre %1$s</string>
+    <string name="confirm">Conferma</string>
+    <string name="flash_on">Attiva torcia</string>
+    <string name="frame_barcode">Inquadra il codice a barre</string>
+    <string name="scan_barcode">Scansiona codice a barre</string>
+    <string name="manual_entry">Inserisci manualmente</string>
+    <string name="insert_barcode">Inserisci il codice a barre</string>
+    <string name="insert_valid_barcode">Inserisci un codice a barre valido</string>
+    <string name="packaging">Imballaggio</string>
+    <string name="material">Materiale</string>
+    <string name="result_success">Informazioni sul prodotto e smaltimento visualizzate correttamente</string>
+    <string name="brand">Marca %1$s</string>
+    <string name="parsing_error">Errore nel parsing dei dati</string>
+    <string name="result_failed">Prodotto non trovato o errore di rete</string>
+    <string name="request_error">Errore nella richiesta</string>
+    <string name="product_name">Nome prodotto</string>
+
+    <!-- Materiali -->
+    <string name="material_metal">Metallo</string>
+    <string name="material_plastic">Plastica</string>
+    <string name="material_glass">Vetro</string>
+    <string name="material_paper">Carta</string>
+    <string name="material_cardboard">Cartone</string>
+
+    <!-- Forme -->
+    <string name="shape_food_can">Lattina</string>
+    <string name="shape_bottle">Bottiglia</string>
+    <string name="shape_tray">Vassoio</string>
+    <string name="shape_box">Scatola</string>
+    <string name="shape">Forma</string>
+    <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
+
+</resources>
