@@ -1,6 +1,7 @@
 package com.application.bingo;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,24 +30,15 @@ public class ResultActivity extends AppCompatActivity {
     String translateMaterial(String raw) {
         switch (raw) {
             case "metal": return getString(R.string.material_metal);
-            case "plastic": return getString(R.string.material_plastic);
+            case "plastic":
+            case "o-7-other-plastics":
+                return getString(R.string.material_plastic);
             case "glass": return getString(R.string.material_glass);
             case "paper": return getString(R.string.material_paper);
             case "cardboard": return getString(R.string.material_cardboard);
             default: return raw;
         }
     }
-
-    String translateShape(String raw) {
-        switch (raw) {
-            case "food-can": return getString(R.string.shape_food_can);
-            case "bottle": return getString(R.string.shape_bottle);
-            case "tray": return getString(R.string.shape_tray);
-            case "box": return getString(R.string.shape_box);
-            default: return raw;
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,31 +76,20 @@ public class ResultActivity extends AppCompatActivity {
                         String category = product.optString("categories", "Categoria non disponibile");
 
                         // Packaging info
-                        String packagingText = product.optString("packaging_text", "");
-                        JSONArray packagingTags = product.optJSONArray("packaging_tags");
-                        JSONArray recyclingTags = product.optJSONArray("packaging_recycling");
-
                         StringBuilder packagingInfo = new StringBuilder();
-                        JSONObject packaging = product.optJSONObject("packaging");
-                        JSONArray packagingItems = packaging != null ? packaging.optJSONArray("packagings") : null;
+                        packagingInfo.append(getString(R.string.material)).append("\n");
+                        JSONObject ecoscoreData = product.getJSONObject("ecoscore_data");
+                        JSONObject adjustments = ecoscoreData.getJSONObject("adjustments");
+                        JSONObject packaging = adjustments.getJSONObject("packaging");
+                        JSONArray packagings = packaging.getJSONArray("packagings");
 
-                        if (packagingItems != null && packagingItems.length() > 0) {
-                            packagingInfo.append(R.string.tips);
-
-                            for (int i = 0; i < packagingItems.length(); i++) {
-                                JSONObject item = packagingItems.getJSONObject(i);
-
-                                String rawMaterial = item.optString("material", "").replace("en:", "");
-                                String rawShape = item.optString("shape", "").replace("en:", "");
-
-                                String material = translateMaterial(rawMaterial);
-                                String shape = translateShape(rawShape);
-                                packagingInfo.append(getString(R.string.material)).append(material).append("\n");
-                                if (!shape.isEmpty()) {
-                                    packagingInfo.append(getString(R.string.shape)).append(shape).append("\n");
-                                }
-                            }
-                        } else {
+                        for (int i = 0; i < packagings.length(); i++) {
+                            JSONObject item = packagings.getJSONObject(i);
+                            String rawMaterial = item.optString("material", "").replace("en:", "");
+                            String material = translateMaterial(rawMaterial);
+                            packagingInfo.append(material).append("\n");
+                        }
+                        if (packagingInfo.toString().isEmpty()){
                             packagingInfo.append(getString(R.string.no_packaging_info));
                         }
 
