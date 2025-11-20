@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="24dp"
     android:gravity="center"
-    android:background="@color/white">
+    android:background="@color/md_theme_surface">
 
     <TextView
         android:id="@+id/manual_entry_title"

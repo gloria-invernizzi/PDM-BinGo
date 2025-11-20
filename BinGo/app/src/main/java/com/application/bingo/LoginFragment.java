@@ -2,6 +2,7 @@ package com.application.bingo;
 
 import android.os.Bundle;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,13 +16,14 @@ import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
 
 
     public LoginFragment() {
+
         // Required empty public constructor
     }
 

@@ -18,7 +18,7 @@
         android:label="BinGo!"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BinGo">
+        android:theme="@style/ThemeBinGo">
         <activity
             android:name=".LoginActivity"
             android:exported="true">
