@@ -1,0 +1,23 @@
+package com.application.bingo;
+
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+
+//Queries for retrieving and inserting User data in the database
+@Dao
+public interface UserDao {
+    @Insert
+    long insert(User user);
+
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    User findByEmail(String email);
+
+    /* LIMIT 1: ensures that only one record is returned, even if multiple records match the criteria
+        --> we expect email-password combination to be unique*/
+    @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
+    User findByEmailAndPassword(String email, String password);
+
+    @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
+    User getById(long id);
+}

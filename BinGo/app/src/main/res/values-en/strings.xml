@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BinGo!</string>
+    <string name="name">Nome</string>
+    <string name="surname">Cognome</string>
+    <string name="address">Indirizzo</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Conferma password</string>
     <string name="email">Email</string>
     <string name="login">Login</string>
+    <string name="register">Registrati</string>
+    <string name="remember_me">Ricordami</string>
+    <string name="edit_profile">Modifica profilo</string>
+    <string name="edit_address">Modifica indirizzo</string>
+    <string name="notify_settings">Impostazioni notifiche</string>
+    <string name="change_password">Cambia password</string>
     <string name="did_you_forget_your_password">Did you forget your password?</string>
     <string name="login_with_google">Login with google</string>
     <string name="welcome">Welcome</string>

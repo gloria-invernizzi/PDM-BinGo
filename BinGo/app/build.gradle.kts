@@ -37,6 +37,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.navigation:navigation-runtime:2.9.6")
+    implementation("androidx.room:room-common-jvm:2.8.4")
+    implementation("androidx.room:room-runtime-jvm:2.8.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -38,7 +38,7 @@
         app:startIconDrawable="@drawable/outline_alternate_email_24"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputEmail"
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00000000"/>
@@ -55,20 +55,20 @@
         app:startIconDrawable="@drawable/outline_password_24"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInputPassword"
+            android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00000000"/>
     </com.google.android.material.textfield.TextInputLayout>
-    <Button
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="match_parent"
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/chkRemember"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:gravity="center|start"
-        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-        android:text="@string/did_you_forget_your_password"
-        />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/remember_me" />
+
     <Button
         android:id="@+id/login_button"
         style="@style/Widget.Material3.Button.ElevatedButton"
@@ -122,5 +122,14 @@
         app:icon="@drawable/icon_google"
         app:iconGravity="textStart"
         app:iconTint="@null"
+        />
+    <Button
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:gravity="center|start"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:text="@string/did_you_forget_your_password"
         />
 </LinearLayout>
