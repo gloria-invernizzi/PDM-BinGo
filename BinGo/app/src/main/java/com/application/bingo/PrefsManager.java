@@ -54,5 +54,6 @@ public class PrefsManager {
         return prefs.getString(KEY_EMAIL, "");
     }
 
+
     //SALVARE I LOGIN??
 }

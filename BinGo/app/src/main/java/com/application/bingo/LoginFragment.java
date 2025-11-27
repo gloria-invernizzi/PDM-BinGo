@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -30,6 +31,7 @@ import java.util.concurrent.Executors;
 public class LoginFragment extends Fragment {
     private TextInputEditText etEmail, etPassword;
     private Button btnlogin;
+    private CheckBox cbRemember;
     private PrefsManager prefs; // manage shared preferences
     private final ExecutorService bg = Executors.newSingleThreadExecutor();
 
@@ -51,6 +53,7 @@ public class LoginFragment extends Fragment {
         etEmail = view.findViewById(R.id.textInputEmail);
         etPassword = view.findViewById(R.id.textInputPassword);
         btnlogin = view.findViewById(R.id.login_button);
+        cbRemember = view.findViewById(R.id.cbRemember);
 
         // Se ci sono credenziali salvate, verifica in DB e autocompila
         final String savedEmail = prefs.getSavedEmail();
@@ -65,10 +68,12 @@ public class LoginFragment extends Fragment {
                         // credenziali salvate valide: autocompilazione campi
                         etEmail.setText(savedEmail);
                         etPassword.setText(savedPass);
+                        cbRemember.setChecked(true);
                     });
                 } else {
                     // credenziali salvate non valide: pulizia --> opzionale!
                     prefs.clearSavedUser();
+                    // Corretto?
                 }
             });
         }
@@ -92,11 +97,18 @@ public class LoginFragment extends Fragment {
                 if (user == null) {
                     Toast.makeText(requireContext(), "Credenziali non valide", Toast.LENGTH_SHORT).show();
                 } else {
-                    // salva nome/email per sessione (non sovrascrive la password a meno che non si voglia)
+                    // salva nome/email per sessione (sovrascrive la password?)
                     prefs.saveUser(user.getName(), user.getEmail());
+                    if (cbRemember != null && cbRemember.isChecked()) {
+                        prefs.saveUser(user.getName(), user.getEmail(), user.getAddress(), user.getPassword());
+                    } else {
+                        prefs.clearSavedUser();
+                    }
+
                     Toast.makeText(requireContext(), "Login effettuato con successo", Toast.LENGTH_SHORT).show();
-                    Navigation.findNavController(requireView())
-//                            .navigate(R.id.action_loginFragment_to_homeFragment);
+
+                    //Navigation Controller per spostarsi al Fragment Home
+                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_homeFragment);
                 }
             });
         });

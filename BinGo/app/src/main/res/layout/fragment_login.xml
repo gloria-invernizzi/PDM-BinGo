@@ -74,13 +74,16 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <Button
-        style="@style/Widget.Material3.Button.TextButton"
+    <CheckBox
+        android:id="@+id/cbRemember"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-        android:text="@string/did_you_forget_your_password" />
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/remember_me"
+        app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
         android:id="@+id/login_button"
@@ -90,7 +93,7 @@
         android:text="@string/login"
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="50dp"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:layout_gravity="center" />
 
@@ -135,5 +138,13 @@
         app:icon="@drawable/icon_google"
         app:iconGravity="textStart"
         app:iconTint="@null" />
+
+    <Button
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:text="@string/did_you_forget_your_password" />
 
 </LinearLayout>
