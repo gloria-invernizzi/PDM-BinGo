@@ -2,12 +2,14 @@ package com.application.bingo;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 //Queries for retrieving and inserting User data in the database
 @Dao
 public interface UserDao {
-    @Insert
+    //onConflictStrategy.ABORT: e.g. duplicate email
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     long insert(User user);
 
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")

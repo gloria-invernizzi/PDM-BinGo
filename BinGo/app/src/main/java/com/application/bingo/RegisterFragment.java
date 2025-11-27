@@ -5,6 +5,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,10 @@ import java.util.concurrent.Executors;
 
 public class RegisterFragment extends Fragment {
     private TextInputEditText etName, etAddress, etEmail, etPassword, etConfirm;
-    private MaterialButton btnRegister;
+
+    //campo da convertire in variabile locale?
+    private MaterialButton btnRegister; //potrei fare una cosa analoga per una materialCardView
+    private CheckBox cbRemember;
     private PrefsManager prefs; // manage shared preferences
     private final Executor bg = Executors.newSingleThreadExecutor(); // manage background tasks
 
@@ -44,16 +48,22 @@ public class RegisterFragment extends Fragment {
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
         etConfirm = view.findViewById(R.id.etConfirm);
+        cbRemember = view.findViewById(R.id.cbRemember);
         btnRegister = view.findViewById(R.id.btnRegister);
 
-        btnRegister.setOnClickListener(v -> attemptRegister());
+        //view binding for the register button, where view is the clicked button
+        btnRegister.setOnClickListener((View v) -> {
+            attemptRegister();
+        });
     }
 
     private void attemptRegister() {
+        //dichiaro le variabili finali per i campi di input in modo che non possano essere modificate
         final String name = getText(etName);
         final String email = getText(etEmail);
         final String pass = getText(etPassword);
         final String confirm = getText(etConfirm);
+        final boolean remember = cbRemember!=null && cbRemember.isChecked();
 
         if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
             Toast.makeText(requireContext(), "Campi mancanti", Toast.LENGTH_SHORT).show();
@@ -72,10 +82,10 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        registerWithRoom(name, email, pass);
+        registerWithRoom(name, email, pass, remember);
     }
 
-    private void registerWithRoom(final String name, final String email, final String pass) {
+    private void registerWithRoom(final String name, final String email, final String pass, final boolean remember) {
         bg.execute(() -> {
             AppDatabase db = AppDatabase.getInstance(requireContext());
             // check if the email is already registered
@@ -91,9 +101,11 @@ public class RegisterFragment extends Fragment {
             long id = db.userDao().insert(user);
 
             if (id > 0) {
-                // save user in shared preferences
                 // Error? onBackPressed non funziona più dopo la registrazione??
-                prefs.saveUser(name, "", email, pass);
+                if (remember) {
+                    // save user credentials in shared preferences only if requested
+                    prefs.saveUser(name, "", email, pass);
+                }
                 requireActivity().runOnUiThread(() -> {
                     Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
                     requireActivity().onBackPressed();

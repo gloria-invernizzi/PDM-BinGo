@@ -2,8 +2,9 @@ package com.application.bingo;
 
 import androidx.room.Entity; // Define the class as a Room entity
 import androidx.room.PrimaryKey; // Specify the primary key for each entity
+import androidx.room.Index; // Create indices for faster queries
 
-@Entity(tableName = "users")
+@Entity(tableName = "users", indices = {@Index(value = {"email"}, unique = true)})
 public class User {
     //The primary key field 'id' is auto-generated??
     @PrimaryKey(autoGenerate = true)

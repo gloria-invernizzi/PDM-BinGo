@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 public class LoginFragment extends Fragment {
     private TextInputEditText etEmail, etPassword;
     private Button btnlogin;
-    private PrefsManager prefs; //manage shared preferences
+    private PrefsManager prefs; // manage shared preferences
     private final ExecutorService bg = Executors.newSingleThreadExecutor();
 
     public LoginFragment() {
@@ -38,15 +38,8 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    //@Nullable
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -54,46 +47,62 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button button = view.findViewById(R.id.login_button);
+        prefs = new PrefsManager(requireContext());
+        etEmail = view.findViewById(R.id.textInputEmail);
+        etPassword = view.findViewById(R.id.textInputPassword);
+        btnlogin = view.findViewById(R.id.login_button);
 
+        // Se ci sono credenziali salvate, verifica in DB e autocompila
+        final String savedEmail = prefs.getSavedEmail();
+        final String savedPass = prefs.getSavedPassword();
+        if (!savedEmail.isEmpty() && !savedPass.isEmpty()) {
+            bg.execute(() -> {
+                User u = AppDatabase.getInstance(requireContext())
+                        .userDao()
+                        .findByEmailAndPassword(savedEmail, savedPass);
+                if (u != null) {
+                    requireActivity().runOnUiThread(() -> {
+                        // credenziali salvate valide: autocompilazione campi
+                        etEmail.setText(savedEmail);
+                        etPassword.setText(savedPass);
+                    });
+                } else {
+                    // credenziali salvate non valide: pulizia --> opzionale!
+                    prefs.clearSavedUser();
+                }
+            });
+        }
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick( View v){
-                Log.w("loginFragment", "cliccato");
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_loginFragment_to_homeFragment);
-            }
-
-        });
+        // credeziali salvate non valide o assenti: normale procedura di login
+        btnlogin.setOnClickListener(v -> attemptLogin());
     }
 
     private void attemptLogin() {
         final String email = getText(etEmail);
         final String pass = getText(etPassword);
 
-        if(email.isEmpty() || pass.isEmpty()){
+        if (email.isEmpty() || pass.isEmpty()) {
             Toast.makeText(requireContext(), "Campi mancanti", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //funzione lambda: eseguire il codice in un thread di background separato??
         bg.execute(() -> {
             User user = AppDatabase.getInstance(requireContext()).userDao().findByEmailAndPassword(email, pass);
             requireActivity().runOnUiThread(() -> {
                 if (user == null) {
                     Toast.makeText(requireContext(), "Credenziali non valide", Toast.LENGTH_SHORT).show();
                 } else {
+                    // salva nome/email per sessione (non sovrascrive la password a meno che non si voglia)
                     prefs.saveUser(user.getName(), user.getEmail());
                     Toast.makeText(requireContext(), "Login effettuato con successo", Toast.LENGTH_SHORT).show();
                     Navigation.findNavController(requireView())
-                            .navigate(R.id.action_loginFragment_to_homeFragment);
+//                            .navigate(R.id.action_loginFragment_to_homeFragment);
                 }
             });
         });
     }
 
     private String getText(TextInputEditText et){
-        return et.getText() != null ? et.getText().toString().trim() : "";
+        return et == null || et.getText() == null ? "" : et.getText().toString().trim();
     }
 }

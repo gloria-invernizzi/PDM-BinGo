@@ -6,12 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@drawable/login_background3"
     tools:context=".RegisterFragment">
 
     <TextView
         android:id="@+id/tvRegisterTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="36dp"
+        android:textSize="34sp"
         android:text="@string/register"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textStyle="bold"

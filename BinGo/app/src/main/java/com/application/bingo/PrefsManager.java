@@ -8,11 +8,14 @@ public class PrefsManager {
     private static final String PREFS_NAME = "bingo_prefs";
     private static final String KEY_NAME = "user_name";
     private static final String KEY_EMAIL = "user_email";
-    private static final String KEY_LOGGED = "is_logged";
+    private static final String KEY_ADDRESS = "user_address";
+    private static final String KEY_PASS = "user_pass";
+    private static final String KEY_REMEMBER = "remember";
 
     private final SharedPreferences prefs;
 
     // Constructor to initialize SharedPreferences
+    // SharedPreferences works in a background thread
     public PrefsManager(Context ctx) {
         prefs = ctx.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
@@ -22,32 +25,33 @@ public class PrefsManager {
         prefs.edit()
                 .putString(KEY_NAME, name)
                 .putString(KEY_EMAIL, email)
-                .putBoolean(KEY_LOGGED, true)
+                .putBoolean(KEY_REMEMBER, true)
                 .apply();
     }
-
-    public void clear() {
-        prefs.edit().clear().apply();
-    }
-
-    public boolean isLogged() {
-        return prefs.getBoolean(KEY_LOGGED, false);
-    }
-
-    public String getUserName() {
-        return prefs.getString(KEY_NAME, "");
-    }
-
-    public String getUserEmail() {
-        return prefs.getString(KEY_EMAIL, "");
-    }
-
-    public void saveUser(String name, String s, String email, String pass) {
+    public void saveUser(String name, String address, String email, String pass) {
         prefs.edit()
                 .putString(KEY_NAME, name)
                 .putString(KEY_EMAIL, email)
-                .putBoolean(KEY_LOGGED, true)
+                .putBoolean(KEY_REMEMBER, true)
                 .apply();
+    }
+    public void clearSavedUser() {
+        prefs.edit().clear().apply();
+    }
+
+    public String getSavedName() {
+        return prefs.getString(KEY_NAME, "");
+    }
+
+    public String getUserAddress() {
+        return prefs.getString(KEY_ADDRESS, "");
+    }
+
+    public String getSavedPassword() {
+        return prefs.getString(KEY_PASS, "");
+    }
+    public String getSavedEmail() {
+        return prefs.getString(KEY_EMAIL, "");
     }
 
     //SALVARE I LOGIN??

@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {User.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "app-db";
 
@@ -22,7 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
             //using synchronized block to ensure only one thread can access this block at a time
             synchronized (AppDatabase.class) {
                 if (instance == null) {
-                    instance = androidx.room.Room.databaseBuilder(
+                    instance = Room.databaseBuilder(
                                     ctx.getApplicationContext(),
                                     AppDatabase.class,
                                     DB_NAME)
