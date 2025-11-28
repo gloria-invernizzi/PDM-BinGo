@@ -27,6 +27,19 @@
     <string name="result_failed">Product not found or network error</string>
     <string name="request_error">Request error</string>
     <string name="product_name">Product name</string>
+    <string name="profile_picture">Foto profilo</string>
+    <string name="edit_photo">Modifica foto</string>
+
+    <string name="hint_name">Nome e Cognome</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_address">Residenza</string>
+
+    <string name="edit_profile">Modifica profilo</string>
+    <string name="save_changes">Salva modifiche</string>
+
+    <string name="notification_preferences">Preferenze notifiche</string>
+    <string name="settings">Impostazioni</string>
+    <string name="logout">Logout</string>
 
     <!-- Materials -->
     <string name="material_metal">Metal</string>
