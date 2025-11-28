@@ -50,6 +50,7 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         prefs = new PrefsManager(requireContext());
+        // Lo inserisco qui perchè al di fuori della create view il view non esiste--> darebbe errore!
         etEmail = view.findViewById(R.id.textInputEmail);
         etPassword = view.findViewById(R.id.textInputPassword);
         btnlogin = view.findViewById(R.id.login_button);
