@@ -1,4 +1,4 @@
-package com.application.bingo;
+package com.application.bingo.ui.home.scan;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.application.bingo.R;
 
 public class ManualEntryActivity extends AppCompatActivity {
 

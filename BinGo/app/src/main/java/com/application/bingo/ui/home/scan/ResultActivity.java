@@ -1,4 +1,4 @@
-package com.application.bingo;
+package com.application.bingo.ui.home.scan;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.application.bingo.R;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -68,6 +69,14 @@ public class ResultActivity extends AppCompatActivity {
                 null,
                 response -> {
                     try {
+//                        String jsonString = response.toString();
+//                        Gson gson = new GsonBuilder()
+//                                .registerTypeAdapter(ProductApiResponse.class, new ProductDeserializer())
+//                                .create();
+//
+//                        ProductApiResponse product = gson.fromJson(jsonString, ProductApiResponse.class);
+
+
                         JSONObject product = response.getJSONObject("product");
 
                         String name = product.optString("product_name", "Nome non disponibile");
@@ -106,6 +115,7 @@ public class ResultActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         textResult.setText(R.string.parsing_error);
                         loadingSpinner.setVisibility(View.GONE);
+                        Log.e("ResultActivity",e.getMessage()+" ");
                     }
                 },
                 error -> {

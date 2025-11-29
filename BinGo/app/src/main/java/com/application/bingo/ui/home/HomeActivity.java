@@ -1,14 +1,14 @@
-package com.application.bingo;
+package com.application.bingo.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import com.application.bingo.R;
+import com.application.bingo.ui.home.scan.ManualEntryActivity;
+import com.application.bingo.ui.home.scan.ScanActivity;
 
 
 public class HomeActivity extends AppCompatActivity {
