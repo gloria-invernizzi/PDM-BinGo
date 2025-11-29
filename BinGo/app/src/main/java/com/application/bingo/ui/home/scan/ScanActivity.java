@@ -1,15 +1,12 @@
 package com.application.bingo.ui.home.scan;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.OptIn;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
@@ -18,16 +15,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.application.bingo.R;
-import com.google.mlkit.vision.barcode.BarcodeScanning;
-import com.google.mlkit.vision.barcode.common.Barcode;
-import com.google.mlkit.vision.common.InputImage;
+import com.application.bingo.util.scanner.CustomImageAnalyzer;
+import com.application.bingo.util.scanner.AppCustomScanActivity;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.ExecutionException;
 
-public class ScanActivity extends AppCompatActivity {
+public class ScanActivity extends AppCustomScanActivity {
 
     private PreviewView previewView;
+    private String lastBarcodeScanned;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,9 +55,11 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     private void startCamera() {
+        // Camera preview asynchronous computation result
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(this);
 
+        // Listener that execute once the camera is initialized
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
@@ -68,40 +67,41 @@ public class ScanActivity extends AppCompatActivity {
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                ImageAnalysis analysis = new ImageAnalysis.Builder()
+                ImageAnalysis imageAnalysis =
+                        new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build();
+                        .build()
+                ;
 
-                analysis.setAnalyzer(ContextCompat.getMainExecutor(this), image -> {
-                    if (image.getImage() != null) {
-                        InputImage inputImage = InputImage.fromMediaImage(
-                                image.getImage(), image.getImageInfo().getRotationDegrees());
-
-                        BarcodeScanning.getClient().process(inputImage)
-                                .addOnSuccessListener(barcodes -> {
-                                    for (Barcode barcode : barcodes) {
-                                        String value = barcode.getRawValue();
-                                        if (value != null) {
-                                            startActivity(new Intent(this, ResultActivity.class)
-                                                    .putExtra("barcode", value));
-                                            finish();
-                                            break;
-                                        }
-                                    }
-                                })
-                                .addOnCompleteListener(task -> image.close());
-                    } else {
-                        image.close();
-                    }
-                });
+                imageAnalysis.setAnalyzer(
+                        ContextCompat.getMainExecutor(this),
+                        new CustomImageAnalyzer(this)
+                );
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(this,
-                        CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis);
+
+                // Initialize camera and define lifecycle
+                // https://developer.android.com/media/camera/camerax/architecture?hl=it#java
+                cameraProvider.bindToLifecycle(
+                        this,
+                        CameraSelector.DEFAULT_BACK_CAMERA,
+                        preview,
+                        imageAnalysis
+                );
 
             } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+                Log.e("ScanActivity", e.getMessage() + " ");
             }
         }, ContextCompat.getMainExecutor(this));
+    }
+
+    public String getLastScanned() {
+        return this.lastBarcodeScanned;
+    }
+
+    public ScanActivity setLastScanned(String lastScanned) {
+        this.lastBarcodeScanned = lastScanned;
+
+        return this;
     }
 }
