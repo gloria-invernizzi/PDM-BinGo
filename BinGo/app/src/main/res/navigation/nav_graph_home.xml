@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <!-- Home Fragment -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.application.bingo.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_scanFragment"
+            app:destination="@id/scanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_manualEntryFragment"
+            app:destination="@id/manualEntryFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+    </fragment>
+
+    <!-- Scan Fragment -->
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.application.bingo.ui.home.scan.ScanFragment"
+        android:label="Scan" >
+        <action
+            android:id="@+id/action_scanFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+
+    <!-- Manual Entry Fragment -->
+    <fragment
+        android:id="@+id/manualEntryFragment"
+        android:name="com.application.bingo.ui.home.scan.ManualEntryFragment"
+        android:label="Manual Entry" >
+        <action
+            android:id="@+id/action_manualEntryFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+
+    <!-- Calendar Fragment -->
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.application.bingo.ui.home.calendar.CalendarFragment"
+        android:label="Calendar" />
+
+    <!-- Result Fragment -->
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.application.bingo.ui.home.scan.ResultFragment"
+        android:label="Result" />
+
+</navigation>

@@ -1,4 +1,4 @@
-package com.application.bingo;
+package com.application.bingo.ui;
 
 import android.os.Bundle;
 import android.util.Patterns;
@@ -12,6 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.application.bingo.AppDatabase;
+import com.application.bingo.PrefsManager;
+import com.application.bingo.R;
+import com.application.bingo.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 

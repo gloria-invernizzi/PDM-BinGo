@@ -1,10 +1,16 @@
-package com.application.bingo;
+package com.application.bingo.ui;
+
 
 import android.os.Bundle;
 
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -15,6 +21,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
+
+import com.application.bingo.AppDatabase;
+import com.application.bingo.PrefsManager;
+import com.application.bingo.R;
+import com.application.bingo.User;
 import com.google.android.material.textfield.TextInputEditText;
 
 // This import statement is for managing background tasks using Executor framework
@@ -23,21 +34,15 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the  factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment {
+
     private TextInputEditText etEmail, etPassword;
     private Button btnlogin;
+    private Button btnRegister;
     private CheckBox cbRemember;
     private PrefsManager prefs; // manage shared preferences
     private final ExecutorService bg = Executors.newSingleThreadExecutor();
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +59,7 @@ public class LoginFragment extends Fragment {
         etEmail = view.findViewById(R.id.textInputEmail);
         etPassword = view.findViewById(R.id.textInputPassword);
         btnlogin = view.findViewById(R.id.login_button);
+        btnRegister = view.findViewById(R.id.register_button);
         cbRemember = view.findViewById(R.id.cbRemember);
 
         // Se ci sono credenziali salvate, verifica in DB e autocompila
@@ -81,6 +87,7 @@ public class LoginFragment extends Fragment {
 
         // credeziali salvate non valide o assenti: normale procedura di login
         btnlogin.setOnClickListener(v -> attemptLogin());
+        btnRegister.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_registerFragment));
     }
 
     private void attemptLogin() {
@@ -92,7 +99,7 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        bg.execute(() -> {
+       bg.execute(() -> {
             User user = AppDatabase.getInstance(requireContext()).userDao().findByEmailAndPassword(email, pass);
             requireActivity().runOnUiThread(() -> {
                 if (user == null) {
@@ -109,7 +116,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(requireContext(), "Login effettuato con successo", Toast.LENGTH_SHORT).show();
 
                     //Navigation Controller per spostarsi al Fragment Home
-                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_homeFragment);
+                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
                 }
             });
         });
@@ -118,4 +125,7 @@ public class LoginFragment extends Fragment {
     private String getText(TextInputEditText et){
         return et == null || et.getText() == null ? "" : et.getText().toString().trim();
     }
+
+
+
 }

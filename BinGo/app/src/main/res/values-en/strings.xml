@@ -27,6 +27,7 @@
     <string name="frame_barcode">Frame the barcode</string>
     <string name="scan_barcode">Scan the barcode</string>
     <string name="manual_entry">Manual entry</string>
+    <string name="open_calendar">Open calendar</string>
     <string name="insert_barcode">Insert the barcode</string>
     <string name="insert_valid_barcode">Insert a valid barcode</string>
     <string name="packaging">Packaging</string>

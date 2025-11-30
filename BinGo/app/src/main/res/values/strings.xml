@@ -26,6 +26,7 @@
     <string name="frame_barcode">Inquadra il codice a barre</string>
     <string name="scan_barcode">Scansiona codice a barre</string>
     <string name="manual_entry">Inserisci manualmente</string>
+    <string name="open_calendar">Apri il calendario</string>
     <string name="insert_barcode">Inserisci il codice a barre</string>
     <string name="insert_valid_barcode">Inserisci un codice a barre valido</string>
     <string name="packaging">Imballaggio</string>
@@ -51,7 +52,5 @@
     <string name="shape_box">Scatola</string>
     <string name="shape">Forma</string>
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

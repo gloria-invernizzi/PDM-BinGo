@@ -1,25 +1,31 @@
-package com.application.bingo;
+package com.application.bingo.ui.home.scan;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.application.bingo.R;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultFragment extends Fragment {
 
     TextView productName, productBrand, productBarcode, recyclingInfo, textResult;
     ImageView productImage;
@@ -41,26 +47,32 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_result, container, false);
+    }
 
-        productName = findViewById(R.id.product_name);
-        productBrand = findViewById(R.id.product_brand);
-        productBarcode = findViewById(R.id.product_barcode);
-        recyclingInfo = findViewById(R.id.recycling_info);
-        textResult = findViewById(R.id.text_result);
-        productImage = findViewById(R.id.product_image);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        barcode = getIntent().getStringExtra("barcode");
+        productName = view.findViewById(R.id.product_name);
+        productBrand = view.findViewById(R.id.product_brand);
+        productBarcode = view.findViewById(R.id.product_barcode);
+        recyclingInfo = view.findViewById(R.id.recycling_info);
+        textResult = view.findViewById(R.id.text_result);
+        productImage = view.findViewById(R.id.product_image);
+
+        barcode = getArguments().getString("barcode");
         productBarcode.setText(getString(R.string.barcode,barcode));
 
-        loadingSpinner = findViewById(R.id.loading_spinner);
+        loadingSpinner = view.findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
         String apiUrl = "https://world.openfoodfacts.org/api/v2/product/" + barcode + ".json";
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -68,6 +80,14 @@ public class ResultActivity extends AppCompatActivity {
                 null,
                 response -> {
                     try {
+//                        String jsonString = response.toString();
+//                        Gson gson = new GsonBuilder()
+//                                .registerTypeAdapter(ProductApiResponse.class, new ProductDeserializer())
+//                                .create();
+//
+//                        ProductApiResponse product = gson.fromJson(jsonString, ProductApiResponse.class);
+
+
                         JSONObject product = response.getJSONObject("product");
 
                         String name = product.optString("product_name", "Nome non disponibile");
@@ -106,10 +126,11 @@ public class ResultActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         textResult.setText(R.string.parsing_error);
                         loadingSpinner.setVisibility(View.GONE);
+                        Log.e("ResultActivity",e.getMessage()+" ");
                     }
                 },
                 error -> {
-                    Toast.makeText(this, R.string.request_error + error.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), R.string.request_error + error.getMessage(), Toast.LENGTH_LONG).show();
                     textResult.setText(R.string.result_failed);
                     loadingSpinner.setVisibility(View.GONE);
                 }
@@ -117,4 +138,5 @@ public class ResultActivity extends AppCompatActivity {
 
         queue.add(request);
     }
+
 }

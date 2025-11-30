@@ -43,6 +43,7 @@
         android:id="@+id/card_manual"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:elevation="4dp">
         <LinearLayout
             android:padding="16dp"
@@ -55,6 +56,30 @@
                 android:layout_height="48dp"/>
             <TextView
                 android:text="@string/manual_entry"
+                android:textSize="18sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:elevation="4dp">
+        <LinearLayout
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:src="@drawable/ic_calendar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+            <TextView
+                android:text="@string/open_calendar"
                 android:textSize="18sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
