@@ -1,9 +1,13 @@
-package com.application.bingo.ui.home.calendar;
+package com.application.bingo.util.calendar;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresPermission;
 
 import java.util.Calendar;
 
@@ -15,18 +19,17 @@ public class WasteManager {
         this.context = ctx;
     }
 
-    public void saveWasteForDay(long dateMillis, String wasteType) {
+    public void saveWasteForDay(long dateMillis, String wasteType, TextView infoText) {
         // Qui puoi salvare in Room
         // AppDatabase db = AppDatabase.getInstance(context);
         // db.userDao().saveWaste(...);
 
-        // Per ora stampa
-        System.out.println("Salvato: " + wasteType + " in data " + dateMillis);
+        String message = "Salvato: " + wasteType + " in data " + dateMillis;
+        infoText.append("\n" + message);
     }
 
     public void scheduleNotification(long dateMillis, int hour, int minute, String wasteType) {
-
-        long notificationTime = computePreviousDayNotification(dateMillis, hour, minute);
+        long notificationTime = computeNotificationTime(dateMillis, hour, minute);
 
         Intent intent = new Intent(context, WasteNotificationReceiver.class);
         intent.putExtra("wasteType", wasteType);
@@ -39,18 +42,17 @@ public class WasteManager {
         );
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
+        try {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
+        } catch (SecurityException e) {
+            System.out.println("Errore: permesso SCHEDULE_EXACT_ALARM mancante");
+        }
     }
-
-    private long computePreviousDayNotification(long dateMillis, int hour, int minute) {
-
+    private long computeNotificationTime(long dateMillis, int hour, int minute) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(dateMillis);
 
-        // Vai al giorno prima
-        cal.add(Calendar.DAY_OF_MONTH, -1);
-
-        // Imposta orario per la notifica
+        // Imposta l’orario scelto
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, 0);

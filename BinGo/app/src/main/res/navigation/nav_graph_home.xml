@@ -26,7 +26,8 @@
     <fragment
         android:id="@+id/scanFragment"
         android:name="com.application.bingo.ui.home.scan.ScanFragment"
-        android:label="Scan" >
+        android:label="Scan"
+        tools:layout="@layout/fragment_scan">
         <action
             android:id="@+id/action_scanFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
@@ -36,7 +37,8 @@
     <fragment
         android:id="@+id/manualEntryFragment"
         android:name="com.application.bingo.ui.home.scan.ManualEntryFragment"
-        android:label="Manual Entry" >
+        android:label="Manual Entry"
+        tools:layout="@layout/fragment_manual_entry">
         <action
             android:id="@+id/action_manualEntryFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
@@ -46,12 +48,22 @@
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.application.bingo.ui.home.calendar.CalendarFragment"
-        android:label="Calendar" />
+        android:label="Calendar"
+        tools:layout="@layout/fragment_calendar"/>
 
     <!-- Result Fragment -->
     <fragment
         android:id="@+id/resultFragment"
         android:name="com.application.bingo.ui.home.scan.ResultFragment"
-        android:label="Result" />
+        android:label="Result"
+        tools:layout="@layout/fragment_result"/>
+
+    <!-- Profile Fragment -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.application.bingo.ui.home.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile"/>
+
 
 </navigation>

@@ -1,5 +1,6 @@
 package com.application.bingo.ui.home.calendar;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
@@ -17,10 +18,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.application.bingo.R;
+import com.application.bingo.util.calendar.WasteManager;
 
 public class CalendarFragment extends Fragment {
     private CalendarView calendarView;
     private TextView txtSelectedDayInfo;
+    private TextView infoText;
     private long selectedDateMillis = 0;
 
     private WasteManager wasteManager;
@@ -39,6 +42,8 @@ public class CalendarFragment extends Fragment {
 
         calendarView = view.findViewById(R.id.calendarView);
         txtSelectedDayInfo = view.findViewById(R.id.txtSelectedDayInfo);
+        infoText = view.findViewById(R.id.infoText);
+
 
         calendarView.setOnDateChangeListener((calendarView, year, month, dayOfMonth) -> {
             selectedDateMillis = WasteManager.convertToMillis(year, month, dayOfMonth);
@@ -48,12 +53,14 @@ public class CalendarFragment extends Fragment {
         });
 
     }
+    @SuppressLint("ScheduleExactAlarm")
     private void openBinSelectionDialog(long dateMillis) {
 
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_choose_bin, null);
 
         RadioGroup group = dialogView.findViewById(R.id.groupBins);
         TimePicker timePicker = dialogView.findViewById(R.id.timePicker);
+
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Scegli il rifiuto")
@@ -69,7 +76,7 @@ public class CalendarFragment extends Fragment {
                     int hour = timePicker.getHour();
                     int minute = timePicker.getMinute();
 
-                    wasteManager.saveWasteForDay(dateMillis, wasteType);
+                    wasteManager.saveWasteForDay(dateMillis, wasteType, infoText);
                     wasteManager.scheduleNotification(dateMillis, hour, minute, wasteType);
 
                 })

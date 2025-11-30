@@ -1,4 +1,4 @@
-package com.application.bingo.ui.home.calendar;
+package com.application.bingo.util.calendar;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

@@ -99,7 +99,13 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-       bg.execute(() -> {
+        // prova navigazione
+
+        Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
+
+        //
+
+        /*bg.execute(() -> {
             User user = AppDatabase.getInstance(requireContext()).userDao().findByEmailAndPassword(email, pass);
             requireActivity().runOnUiThread(() -> {
                 if (user == null) {
@@ -119,7 +125,7 @@ public class LoginFragment extends Fragment {
                     Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
                 }
             });
-        });
+        });*/
     }
 
     private String getText(TextInputEditText et){

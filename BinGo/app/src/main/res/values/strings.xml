@@ -1,14 +1,12 @@
 <resources>
     <string name="app_name">BinGo!</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Conferma password</string>
+    <string name="login">Accedi</string>
+    <string name="register">Registrati</string>
     <string name="name">Nome</string>
     <string name="surname">Cognome</string>
     <string name="address">Indirizzo</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Conferma password</string>
-    <string name="email">Email</string>
-    <string name="login">Accedi</string>
-    <string name="register">Registrati</string>
-    <string name="edit_profile">Modifica profilo</string>
     <string name="edit_address">Modifica indirizzo</string>
     <string name="notify_settings">Impostazioni notifiche</string>
     <string name="change_password">Cambia password</string>
@@ -37,6 +35,21 @@
     <string name="result_failed">Prodotto non trovato o errore di rete</string>
     <string name="request_error">Errore nella richiesta</string>
     <string name="product_name">Nome prodotto</string>
+    <string name="notifications">Notifiche</string>
+    <string name="profile_title">Profilo</string>
+    <string name="profile_picture">Foto profilo</string>
+    <string name="edit_photo">Modifica foto</string>
+
+    <string name="hint_name">Nome e Cognome</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_address">Residenza</string>
+
+    <string name="edit_profile">Modifica profilo</string>
+    <string name="save_changes">Salva modifiche</string>
+
+    <string name="notification_preferences">Preferenze notifiche</string>
+    <string name="settings">Impostazioni</string>
+    <string name="logout">Logout</string>
 
     <!-- Materiali -->
     <string name="material_metal">Metallo</string>
@@ -52,5 +65,6 @@
     <string name="shape_box">Scatola</string>
     <string name="shape">Forma</string>
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
+    <string name="home">Home</string>
 
 </resources>
