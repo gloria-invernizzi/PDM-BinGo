@@ -1,3 +1,4 @@
+// file: app/src/main/java/com/application/bingo/ui/RegisterFragment.java
 package com.application.bingo.ui;
 
 import android.os.Bundle;
@@ -18,34 +19,35 @@ import com.application.bingo.R;
 import com.application.bingo.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.AuthResult;
+//per gestire task asincroni??
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class RegisterFragment extends Fragment {
     private TextInputEditText etName, etAddress, etEmail, etPassword, etConfirm;
-
-    //campo da convertire in variabile locale?
-    private MaterialButton btnRegister; //potrei fare una cosa analoga per una materialCardView
+    private MaterialButton btnRegister;
     private CheckBox cbRemember;
-    private PrefsManager prefs; // manage shared preferences
-    private final Executor bg = Executors.newSingleThreadExecutor(); // manage background tasks
+    private PrefsManager prefs;
+    private final Executor bg = Executors.newSingleThreadExecutor();
+    private FirebaseAuth mAuth;
 
-    public RegisterFragment() {
-        // Required empty public constructor
-    }
+    public RegisterFragment() {}
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment: create the view hierarchy from the XML layout
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mAuth = FirebaseAuth.getInstance();
         prefs = new PrefsManager(requireContext());
         etName = view.findViewById(R.id.etName);
         etAddress = view.findViewById(R.id.etAddress);
@@ -55,14 +57,10 @@ public class RegisterFragment extends Fragment {
         cbRemember = view.findViewById(R.id.cbRemember);
         btnRegister = view.findViewById(R.id.btnRegister);
 
-        //view binding for the register button, where view is the clicked button
-        btnRegister.setOnClickListener((View v) -> {
-            attemptRegister();
-        });
+        btnRegister.setOnClickListener((View v) -> attemptRegister());
     }
 
     private void attemptRegister() {
-        //dichiaro le variabili finali per i campi di input in modo che non possano essere modificate
         final String name = getText(etName);
         final String email = getText(etEmail);
         final String pass = getText(etPassword);
@@ -86,43 +84,39 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        registerWithRoom(name, email, pass, remember);
-    }
-
-    private void registerWithRoom(final String name, final String email, final String pass, final boolean remember) {
-        bg.execute(() -> {
-            AppDatabase db = AppDatabase.getInstance(requireContext());
-            // check if the email is already registered
-            User existing = db.userDao().findByEmail(email);
-            if (existing != null) {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), "Account già registrato con questa email", Toast.LENGTH_SHORT).show());
-                return;
-            }
-
-            // address initially empty
-            User user = new User(name, "", email, pass);
-            long id = db.userDao().insert(user);
-
-            if (id > 0) {
-                // Error? onBackPressed non funziona più dopo la registrazione??
-                if (remember) {
-                    // save user credentials in shared preferences only if requested
-                    prefs.saveUser(name, "", email, pass);
-                }
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
-                    requireActivity().onBackPressed();
+        // Registrazione su Firebase e su Room per garantire persistenza
+        mAuth.createUserWithEmailAndPassword(email, pass)
+                /* Gestione esito task registrazione Firebase in modo asincrono con listener k per
+                * evitare blocchi dell'interfaccia utente
+                */
+                .addOnCompleteListener(requireActivity(), (Task<AuthResult> task) -> {
+                    if (task.isSuccessful()) {
+                        // Firebase user created -> salva anche in Room
+                        bg.execute(() -> {
+                            User user = new User(name, "", email, pass);
+                            long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
+                            if (id > 0) {
+                                if (remember) {
+                                    prefs.saveUser(name, "", email, pass);
+                                }
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
+                                    requireActivity().onBackPressed();
+                                });
+                            } else {
+                                requireActivity().runOnUiThread(() ->
+                                        Toast.makeText(requireContext(), "Errore durante la registrazione locale", Toast.LENGTH_SHORT).show());
+                            }
+                        });
+                    } else {
+                        // Firebase failed
+                        String msg = task.getException() != null ? task.getException().getMessage() : "Errore Firebase";
+                        Toast.makeText(requireContext(), "Registrazione fallita: " + msg, Toast.LENGTH_SHORT).show();
+                    }
                 });
-            } else {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), "Errore durante la registrazione", Toast.LENGTH_SHORT).show());
-            }
-        });
     }
 
     private String getText(TextInputEditText et) {
-        // retrieve and trim text from TextInputEditText
         return et == null || et.getText() == null ? "" : et.getText().toString().trim();
     }
 }

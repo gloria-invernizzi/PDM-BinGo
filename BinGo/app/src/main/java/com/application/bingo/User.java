@@ -1,3 +1,4 @@
+// file: app/src/main/java/com/application/bingo/User.java
 package com.application.bingo;
 
 import androidx.room.Entity; // Define the class as a Room entity

@@ -1,16 +1,10 @@
+// file: app/src/main/java/com/application/bingo/ui/LoginFragment.java
 package com.application.bingo.ui;
-
 
 import android.os.Bundle;
 
-
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -27,10 +21,9 @@ import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
 import com.application.bingo.User;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-// This import statement is for managing background tasks using Executor framework
-// Is allowed to run tasks asynchronously without blocking the main UI thread???
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,9 +33,11 @@ public class LoginFragment extends Fragment {
     private Button btnlogin;
     private Button btnRegister;
     private CheckBox cbRemember;
-    private PrefsManager prefs; // manage shared preferences
+    private PrefsManager prefs;
     private final ExecutorService bg = Executors.newSingleThreadExecutor();
+    private FirebaseAuth mAuth;
 
+    private static final String TAG = LoginFragment.class.getSimpleName();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,15 +49,20 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
         prefs = new PrefsManager(requireContext());
-        // Lo inserisco qui perchè al di fuori della create view il view non esiste--> darebbe errore!
         etEmail = view.findViewById(R.id.textInputEmail);
         etPassword = view.findViewById(R.id.textInputPassword);
         btnlogin = view.findViewById(R.id.login_button);
         btnRegister = view.findViewById(R.id.register_button);
         cbRemember = view.findViewById(R.id.cbRemember);
 
-        // Se ci sono credenziali salvate, verifica in DB e autocompila
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Log.i(TAG, "Firebase user: " + user.getEmail());
+            // Naviga direttamente se vuoi
+        }
+
         final String savedEmail = prefs.getSavedEmail();
         final String savedPass = prefs.getSavedPassword();
         if (!savedEmail.isEmpty() && !savedPass.isEmpty()) {
@@ -72,20 +72,16 @@ public class LoginFragment extends Fragment {
                         .findByEmailAndPassword(savedEmail, savedPass);
                 if (u != null) {
                     requireActivity().runOnUiThread(() -> {
-                        // credenziali salvate valide: autocompilazione campi
                         etEmail.setText(savedEmail);
                         etPassword.setText(savedPass);
                         cbRemember.setChecked(true);
                     });
                 } else {
-                    // credenziali salvate non valide: pulizia --> opzionale!
                     prefs.clearSavedUser();
-                    // Corretto?
                 }
             });
         }
 
-        // credeziali salvate non valide o assenti: normale procedura di login
         btnlogin.setOnClickListener(v -> attemptLogin());
         btnRegister.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_registerFragment));
     }
@@ -99,39 +95,39 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        // prova navigazione
-
-        Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
-
-        //
-
-        /*bg.execute(() -> {
-            User user = AppDatabase.getInstance(requireContext()).userDao().findByEmailAndPassword(email, pass);
-            requireActivity().runOnUiThread(() -> {
-                if (user == null) {
-                    Toast.makeText(requireContext(), "Credenziali non valide", Toast.LENGTH_SHORT).show();
-                } else {
-                    // salva nome/email per sessione (sovrascrive la password?)
-                    prefs.saveUser(user.getName(), user.getEmail());
-                    if (cbRemember != null && cbRemember.isChecked()) {
-                        prefs.saveUser(user.getName(), user.getEmail(), user.getAddress(), user.getPassword());
-                    } else {
-                        prefs.clearSavedUser();
+        //CONTROLLARE PRIMA SE ESISTE IN ROOM (CACHE LOCALE) PER EVITARE CHIAMATE FIREBASE INUTILI??
+        // Effettua Firebase sign in
+        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(requireActivity(), task -> {
+            if (task.isSuccessful()) {
+                // Signed in
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                String name = firebaseUser != null && firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "";
+                bg.execute(() -> {
+                    User local = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
+                    if (local == null) {
+                        // Controlla se l'utente esiste in Room, altrimenti crealo (sincronizzazione dei due database per garantire persistenza offline)
+                        // crea record locale con campi minimi
+                        User newUser = new User(firebaseUser != null ? firebaseUser.getDisplayName() : "", "", email, pass);
+                        AppDatabase.getInstance(requireContext()).userDao().insert(newUser);
                     }
-
-                    Toast.makeText(requireContext(), "Login effettuato con successo", Toast.LENGTH_SHORT).show();
-
-                    //Navigation Controller per spostarsi al Fragment Home
-                    Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
-                }
-            });
-        });*/
+                    requireActivity().runOnUiThread(() -> {
+                        // salva preferenze di sessione
+                        prefs.saveUser(name,email); // adatta a tua implementazione PrefsManager
+                        if (cbRemember != null && cbRemember.isChecked()) {
+                            prefs.saveUser(email, pass); // o metodo corretto per salvare la password
+                        }
+                        Toast.makeText(requireContext(), "Login effettuato", Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
+                    });
+                });
+            } else {
+                String msg = task.getException() != null ? task.getException().getMessage() : "Credenziali non valide";
+                Toast.makeText(requireContext(), "Login fallito: " + msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String getText(TextInputEditText et){
         return et == null || et.getText() == null ? "" : et.getText().toString().trim();
     }
-
-
-
 }
