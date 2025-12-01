@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/calendarFragment"
-        android:title="@string/open_calendar"
+        android:title="@string/calendar"
         android:icon="@drawable/ic_calendar" />
 
     <item

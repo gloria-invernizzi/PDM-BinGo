@@ -16,22 +16,23 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.application.bingo.R;
 import com.application.bingo.util.calendar.WasteManager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 public class CalendarFragment extends Fragment {
     private CalendarView calendarView;
-    private TextView txtSelectedDayInfo;
-    private TextView infoText;
     private long selectedDateMillis = 0;
-
+    private TextView infoText;
     private WasteManager wasteManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
@@ -41,32 +42,48 @@ public class CalendarFragment extends Fragment {
         wasteManager = new WasteManager(getContext());
 
         calendarView = view.findViewById(R.id.calendarView);
-        txtSelectedDayInfo = view.findViewById(R.id.txtSelectedDayInfo);
-        infoText = view.findViewById(R.id.infoText);
-
+        infoText = view.findViewById(R.id.info);
+        FloatingActionButton fabAdd = view.findViewById(R.id.fabAdd);
 
         calendarView.setOnDateChangeListener((calendarView, year, month, dayOfMonth) -> {
             selectedDateMillis = WasteManager.convertToMillis(year, month, dayOfMonth);
-            txtSelectedDayInfo.setText("Giorno selezionato: " + dayOfMonth + "/" + (month + 1));
-
-            openBinSelectionDialog(selectedDateMillis);
+            showWasteSummary(selectedDateMillis);
         });
 
+        fabAdd.setOnClickListener(v -> {
+            if (selectedDateMillis != 0) {
+                openBinSelectionDialog(selectedDateMillis);
+            } else {
+                Toast.makeText(getContext(), "Seleziona prima un giorno", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    private void showWasteSummary(long dateMillis) {
+        String key = wasteManager.getDayKey(dateMillis);
+        List<String> wastes = wasteManager.getWaste(key);
+        if (wastes.isEmpty()) {
+            infoText.setText("Nessuna notifica impostata");
+        } else {
+            StringBuilder sb = new StringBuilder("Notifiche impostate:\n");
+            for (String w : wastes) {
+                sb.append("• ").append(w).append("\n");
+            }
+            infoText.setText(sb.toString());
+        }
+    }
+
     @SuppressLint("ScheduleExactAlarm")
     private void openBinSelectionDialog(long dateMillis) {
-
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_choose_bin, null);
 
         RadioGroup group = dialogView.findViewById(R.id.groupBins);
         TimePicker timePicker = dialogView.findViewById(R.id.timePicker);
 
-
         new AlertDialog.Builder(getContext())
                 .setTitle("Scegli il rifiuto")
                 .setView(dialogView)
                 .setPositiveButton("Salva", (dialog, which) -> {
-
                     int selectedId = group.getCheckedRadioButtonId();
                     if (selectedId == -1) return;
 
@@ -76,12 +93,12 @@ public class CalendarFragment extends Fragment {
                     int hour = timePicker.getHour();
                     int minute = timePicker.getMinute();
 
-                    wasteManager.saveWasteForDay(dateMillis, wasteType, infoText);
+                    wasteManager.saveWaste(dateMillis, hour, minute, wasteType);
                     wasteManager.scheduleNotification(dateMillis, hour, minute, wasteType);
 
+                    showWasteSummary(dateMillis);
                 })
                 .setNegativeButton("Annulla", null)
                 .show();
     }
-
 }

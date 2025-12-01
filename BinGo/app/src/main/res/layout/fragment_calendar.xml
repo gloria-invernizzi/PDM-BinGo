@@ -15,30 +15,20 @@
         android:background="@android:color/white"/>
 
     <TextView
-        android:id="@+id/txtSelectedDayInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seleziona un giorno"
-        android:paddingTop="12dp"
-        android:textSize="16sp"/>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/infoCard"
+        android:id="@+id/info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="?attr/colorSurface">
+        android:padding="16dp"
+        android:text="Nessuna notifica impostata"
+        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+        android:textColor="?attr/colorOnSurface"/>
 
-        <TextView
-            android:id="@+id/infoText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Nessun rifiuto salvato"
-            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            android:textColor="?attr/colorOnSurface"/>
-    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_add"
+        android:contentDescription="Aggiungi notifica"/>
 
 </LinearLayout>

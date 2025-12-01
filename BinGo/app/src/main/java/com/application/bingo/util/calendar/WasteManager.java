@@ -1,31 +1,35 @@
 package com.application.bingo.util.calendar;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.TextView;
 
-import androidx.annotation.RequiresPermission;
-
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WasteManager {
 
     private final Context context;
-
+    private final Map<String, List<String>> wasteMap = new HashMap<>();
     public WasteManager(Context ctx) {
         this.context = ctx;
     }
 
-    public void saveWasteForDay(long dateMillis, String wasteType, TextView infoText) {
-        // Qui puoi salvare in Room
-        // AppDatabase db = AppDatabase.getInstance(context);
-        // db.userDao().saveWaste(...);
+    public void saveWaste(long dateMillis, int hour, int minute, String wasteType) {
+        String key = getDayKey(dateMillis);
+        wasteMap.putIfAbsent(key, new ArrayList<>());
 
-        String message = "Salvato: " + wasteType + " in data " + dateMillis;
-        infoText.append("\n" + message);
+        String entry = String.format("%02d:%02d - %s", hour, minute, wasteType);
+        wasteMap.get(key).add(entry);
+        System.out.println(wasteMap.toString());
+    }
+
+    public List<String> getWaste(String day) {
+        return wasteMap.getOrDefault(day, new ArrayList<>());
     }
 
     public void scheduleNotification(long dateMillis, int hour, int minute, String wasteType) {
@@ -33,10 +37,11 @@ public class WasteManager {
 
         Intent intent = new Intent(context, WasteNotificationReceiver.class);
         intent.putExtra("wasteType", wasteType);
+        int requestCode = (int) (System.currentTimeMillis() & 0xfffffff);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
-                (int) dateMillis,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
@@ -48,14 +53,29 @@ public class WasteManager {
             System.out.println("Errore: permesso SCHEDULE_EXACT_ALARM mancante");
         }
     }
+    public String getDayKey(long dateMillis) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(dateMillis);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        return String.format("%04d-%02d-%02d", year, month, day);
+    }
+
     private long computeNotificationTime(long dateMillis, int hour, int minute) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(dateMillis);
 
-        // Imposta l’orario scelto
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
     }
@@ -65,4 +85,5 @@ public class WasteManager {
         cal.set(year, month, day, 0, 0, 0);
         return cal.getTimeInMillis();
     }
+
 }

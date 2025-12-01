@@ -39,10 +39,6 @@ public class HomeFragment extends Fragment {
         scanCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_scanFragment));
         CardView manualCard = view.findViewById(R.id.card_manual);
         manualCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_manualEntryFragment));
-        CardView calendarCard = view.findViewById(R.id.card_calendar);
-        calendarCard.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_calendarFragment)
-        );
 
     }
 }

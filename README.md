@@ -1,14 +1,13 @@
 # Progetto di Programmazione per Dispositivi Mobili, Università di Milano, Bicocca
-Gloria Invernizzi - Matricola: 9...
+Gloria Invernizzi - Matricola: 910243
 Elisabetta Locatelli - Matricola: 914621
-Sara Maggioni - Matricola: 9...
-Beatrice Pomi - Matricola: 9...  
+Sara Maggioni - Matricola: 909535
+Beatrice Pomi - Matricola: 914386  
 
 ## BinGo, il tuo gesto verde in un click!
 Applicazione Android progettata come supporto al corretto smaltimento dei rifiuti. 
 L'app fornisce informazioni dettagliate su come differenziare i rifiuti e offre funzionalità 
-interattive per rendere il processo di smaltimento 
-più divertente e coinvolgente.    
+interattive per rendere il processo di smaltimento più divertente e coinvolgente.    
 
 ## Caratteristiche principali
 - **Guida alla differenziazione dei rifiuti**: Fornisce informazioni dettagliate su come 
@@ -88,8 +87,3 @@ Le principali componenti dell'architettura sono:
 - **Build e Distribuzione**: Configurazione di Gradle per la compilazione e la distribuzione 
   dell'applicazione.
 - **Documentazione**: Documentazione del codice e delle funzionalità dell'applicazione.
-
-
-
-
-

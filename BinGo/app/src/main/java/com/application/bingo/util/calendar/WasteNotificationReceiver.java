@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
+import com.application.bingo.R;
 
 public class WasteNotificationReceiver extends BroadcastReceiver {
 
@@ -28,8 +29,8 @@ public class WasteNotificationReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setContentTitle("Preparare il bidone")
-                .setContentText("Domani devi mettere fuori: " + waste)
-                .setSmallIcon(android.R.drawable.ic_dialog_info);
+                .setContentText("Domani ritirano " + waste)
+                .setSmallIcon(R.drawable.ic_launcher_foreground);
 
         manager.notify((int) System.currentTimeMillis(), builder.build());
     }
