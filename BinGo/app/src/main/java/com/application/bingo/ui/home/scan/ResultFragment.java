@@ -84,7 +84,7 @@ public class ResultFragment extends Fragment {
                         productName.setText(product.getName());
                         productBrand.setText(product.getBrand());
 
-                        recyclingInfo.setText(product.getPackagings().stream().map(packaging -> materialTranslator.translateMaterial(requireContext(), packaging.getMaterial())).collect(Collectors.joining(", "));
+                        recyclingInfo.setText(product.getPackagings().stream().map(packaging -> materialTranslator.translateMaterial(requireContext(), packaging.getMaterial())).collect(Collectors.joining(", ")));
                         textResult.setText(R.string.result_success);
 
                         loadingSpinner.setVisibility(View.GONE);
