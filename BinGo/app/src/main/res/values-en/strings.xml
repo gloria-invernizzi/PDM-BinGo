@@ -2,22 +2,22 @@
 <resources>
     <string name="app_name">BinGo!</string>
     <string name="name">Name</string>
-    <string name="surname">Cognome</string>
-    <string name="address">Indirizzo</string>
+    <string name="surname">Surname</string>
+    <string name="address">Address</string>
     <string name="password">Password</string>
-    <string name="confirm_password">Conferma password</string>
+    <string name="confirm_password">Confirm password</string>
     <string name="login">Login</string>
-    <string name="register">Registrati</string>
-    <string name="remember_me">Ricordami</string>
+    <string name="register">Register</string>
+    <string name="remember_me">Remember me</string>
     <string name="hint_address">Address</string>
     <string name="edit_profile">Edit profile</string>
-    <string name="edit_address">Modifica indirizzo</string>
-    <string name="notify_settings">Impostazioni notifiche</string>
-    <string name="change_password">Cambia password</string>
+    <string name="edit_address">Edit address</string>
+    <string name="notify_settings">Notify settings</string>
+    <string name="change_password">Change password</string>
     <string name="did_you_forget_your_password">Did you forget your password?</string>
     <string name="login_with_google">Login with google</string>
     <string name="welcome">Welcome</string>
-    <string name="are_you_already_registered">Are you already registered?</string>
+    <string name="create_account">Create account</string>
     <string name="product_image">Product image</string>
     <string name="tips">Tips for recycling...</string>
     <string name="result">Result</string>
@@ -64,5 +64,16 @@
     <string name="notification_preferences">Notifications preferences</string>
     <string name="settings">Settings</string>
     <string name="home">Home</string>
+
+    !-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
+    <string name="default_web_client_id" translatable="false">549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com</string>
+
+    <!-- Valori generati da Firebase/Google e usati internamente. -->
+    <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
+    <string name="google_api_key" translatable="false">AIzaSyD...</string>
+    <string name="google_app_id" translatable="false">1:549574946118:android:5ab38ee7b4dd06f140c947</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD...</string>
+    <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
+    <string name="project_id" translatable="false">pdm-bingo</string>
 
 </resources>

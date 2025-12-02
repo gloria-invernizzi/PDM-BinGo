@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_recoverPasswordFragment"
+            app:destination="@id/recoverPasswordFragment"/>
     </fragment>
 
     <activity
@@ -30,4 +33,11 @@
         android:name="com.application.bingo.ui.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" />
+
+    <fragment
+        android:id="@+id/recoverPasswordFragment"
+        android:name="com.application.bingo.ui.RecoverPasswordFragment"
+        android:label="Recupera Password"
+        tools:layout="@layout/fragment_recover_password" />
+
 </navigation>

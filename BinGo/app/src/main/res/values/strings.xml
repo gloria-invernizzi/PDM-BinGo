@@ -14,7 +14,7 @@
     <string name="remember_me">Ricordami</string>
     <string name="login_with_google">Accedi con google</string>
     <string name="welcome">Benvenuto</string>
-    <string name="are_you_already_registered">Sei già registrato?</string>
+    <string name="create_account">Crea account</string>
     <string name="product_image">Immagine del prodotto</string>
     <string name="tips">Suggerimenti per lo smaltimento…</string>
     <string name="result">Risultato</string>
@@ -66,5 +66,16 @@
     <string name="shape">Forma</string>
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
     <string name="home">Home</string>
+
+        <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
+        <string name="default_web_client_id" translatable="false">549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com</string>
+
+        <!-- Valori generati da Firebase/Google e usati internamente. -->
+        <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
+        <string name="google_api_key" translatable="false">AIzaSyD...</string>
+        <string name="google_app_id" translatable="false">1:549574946118:android:5ab38ee7b4dd06f140c947</string>
+        <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD...</string>
+        <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
+        <string name="project_id" translatable="false">pdm-bingo</string>
 
 </resources>

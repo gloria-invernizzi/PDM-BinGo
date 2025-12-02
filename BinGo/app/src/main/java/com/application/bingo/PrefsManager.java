@@ -21,10 +21,10 @@ public class PrefsManager {
     }
 
     // Save user information and login status
-    public void saveUser(String name, String email) {
+    public void saveUser(String pass, String email) {
         prefs.edit()
-                .putString(KEY_NAME, name)
                 .putString(KEY_EMAIL, email)
+                .putString(KEY_PASS, pass)
                 .putBoolean(KEY_REMEMBER, true)
                 .apply();
     }

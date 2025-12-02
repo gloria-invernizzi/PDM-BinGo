@@ -73,6 +73,19 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/forgot_password_button"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:text="@string/did_you_forget_your_password"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textInputPassword"
+        app:layout_constraintEnd_toEndOf="@+id/textInputPassword" />
+
     <CheckBox
         android:id="@+id/cbRemember"
         android:layout_width="match_parent"
@@ -119,10 +132,13 @@
         <View
             android:layout_width="100dp"
             android:layout_height="1dp"
+            android:layout_toEndOf="@id/text_or"
+            android:layout_centerInParent="true"
             android:background="#555" />
     </RelativeLayout>
 
     <Button
+        android:id="@+id/google_sign_in_button"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -137,21 +153,13 @@
         app:iconTint="@null" />
 
     <Button
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-        android:text="@string/did_you_forget_your_password" />
-
-    <Button
         android:id="@+id/register_button"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-        android:text="@string/are_you_already_registered" />
+        android:text="@string/create_account" />
 
 
 </LinearLayout>
