@@ -68,7 +68,7 @@
     <string name="home">Home</string>
 
         <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
-        <string name="default_web_client_id" translatable="false">549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com</string>
+        <string name="default_web_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>
 
         <!-- Valori generati da Firebase/Google e usati internamente. -->
         <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
