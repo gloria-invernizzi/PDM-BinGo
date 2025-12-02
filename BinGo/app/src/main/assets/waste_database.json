@@ -1,0 +1,591 @@
+{
+  "Secchiello umido": {
+    "descrizione": "Rifiuti organici e biodegradabili",
+    "cosa_mettere": [
+      "Scarti alimentari",
+      "Avanzi di cibo",
+      "Frutta e verdura",
+      "Fondi di caffè",
+      "Bustine di tè e tisane",
+      "Gusci d’uovo",
+      "Ossi e lische",
+      "Fiori recisi",
+      "Erba e piccole potature",
+      "Cibo avariato (senza imballo)",
+      "Pane vecchio",
+      "Pasta e riso",
+      "Cereali",
+      "Legumi cotti",
+      "Bucce di frutta",
+      "Bucce di patate",
+      "Bucce di cipolla",
+      "Scarti carne",
+      "Scarti pesce",
+      "Croste di formaggio",
+      "Scarti latticini",
+      "Tovaglioli di carta sporchi di cibo",
+      "Carta forno compostabile",
+      "Piatti compostabili",
+      "Bicchieri compostabili",
+      "Posate compostabili",
+      "Carta assorbente biodegradabile",
+      "Residui piante",
+      "Scarti domestici organici",
+      "Sacchetti compostabili UNI EN 13432",
+      "Scarti di agrumi",
+      "Gusci arachidi",
+      "Gusci pistacchi",
+      "Gusci noci (piccole quantità)",
+      "Residui di piante aromatiche",
+      "Erbe aromatiche secche",
+      "Impasti crudi",
+      "Alimenti scaduti senza confezione",
+      "Bucce banana",
+      "Bucce arancia",
+      "Scarti pomodoro",
+      "Scarti melanzane",
+      "Scarti zucchine",
+      "Foglie verdure",
+      "Croste pizza",
+      "Scorze agrumi",
+      "Patatine ammorbidite",
+      "Aglio e cipolla",
+      "Semi frutta",
+      "Torsoli mele",
+      "Scarti frutta secca",
+      "Bucce kiwi",
+      "Bucce mango",
+      "Bucce ananas (a pezzi)",
+      "Semi zucca",
+      "Residui tisane",
+      "Fette limone usato",
+      "Zucchero sfuso",
+      "Ortaggi avariati",
+      "Farine scadute",
+      "Lievito",
+      "Residui miele",
+      "Residui burro",
+      "Erbe infestanti",
+      "Coriandoli di carta compostabile"
+    ],
+    "cosa_non_mettere": [
+      "Lettiere animali",
+      "Escrementi animali",
+      "Pannolini compostabili",
+      "Tovaglioli non compostabili",
+      "Carta lucida",
+      "Cenere",
+      "Olio esausto",
+      "Mozziconi sigaretta",
+      "Gusci cozze",
+      "Gusci vongole",
+      "Carta alluminio",
+      "Plastica",
+      "Imballaggi",
+      "Posate in plastica",
+      "Bicchieri in plastica",
+      "Sabbia per animali",
+      "Peli animali"
+    ],
+    "rifiuti": {
+      "avanzi": ["cibo avanzato", "resti pasto", "rimasugli"],
+      "frutta": ["mele", "banane", "arance", "avocado"],
+      "verdura": ["carote", "zucchine", "insalata", "patate"],
+      "pesce": ["lische", "teste pesce"],
+      "carne": ["scarti pollo", "scarti manzo"],
+      "pane vecchio": ["pane duro"],
+      "crostini": ["pane secco"],
+      "fiori recisi": ["rose", "girasoli"],
+      "piante domestiche": ["foglie cadute"],
+      "pastasciutta": ["pasta cotta"],
+      "riso": ["risotto avanzato"],
+      "caffè": ["fondi moka"],
+      "gusci uova": ["uova rotte"],
+      "bucce patate": ["patate crude"],
+      "bucce banana": ["banane marce"],
+      "scarti formaggio": ["croste formaggio"],
+      "yogurt scaduto": ["yogurt vecchio"],
+      "tovaglioli sporchi": ["tovaglioli cibo"],
+      "carta forno compostabile": ["forno carta eco"]
+    }
+  },
+
+  "Sacco indifferenziato": {
+    "descrizione": "Rifiuti non riciclabili e non pericolosi",
+    "cosa_mettere": [
+      "Posate in plastica",
+      "Piatti plastica non compostabili",
+      "Bicchieri di plastica rigida",
+      "Giocattoli rotti",
+      "Spazzolini da denti",
+      "Pennarelli",
+      "Penne esaurite",
+      "Rasoi usa e getta",
+      "Cosmetici",
+      "Make-up",
+      "Dischetti struccanti",
+      "Cotton fioc non compostabili",
+      "Pannolini",
+      "Assorbenti",
+      "Traverse per animali",
+      "Lettiere animali",
+      "Pelli animali",
+      "Cerotti",
+      "Garze sporche",
+      "Mascherine",
+      "CD",
+      "DVD",
+      "Blu-ray",
+      "Custodie CD/DVD",
+      "Imbottiture sintetiche",
+      "Orologi economici",
+      "Candele",
+      "Lumini",
+      "Cera",
+      "Salviette umidificate",
+      "Scontrini carta termica",
+      "Carta carbone",
+      "Carta plastificata",
+      "Carta oleata",
+      "Carta forno NON compostabile",
+      "Guanti in lattice",
+      "Guanti in nitrile",
+      "Cialde caffè NON compostabili",
+      "Gomma",
+      "Gommapiuma",
+      "Palloncini",
+      "Occhiali",
+      "Custodie occhiali",
+      "Pettini",
+      "Spazzole",
+      "Tappi plastica dura",
+      "Tappetini bagno vecchi",
+      "Tende plastificate",
+      "Zerbini",
+      "Sacchetti plastica sporchi",
+      "Imballaggi sporchi",
+      "Coperte sintetiche",
+      "Paralumi",
+      "Penna usb rotta",
+      "Tappi silicone",
+      "Tubi gomma",
+      "Giochi plastica rotti",
+      "Canne pesca rotte",
+      "Pellicole varie non riciclabili",
+      "Vaschette polistirolo sporche",
+      "Polistirolo NON imballaggio",
+      "Scarti gomma",
+      "Spugne",
+      "Spugnette piatti usate",
+      "Spugne corpo",
+      "Filtri aria",
+      "Filtri aspirapolvere",
+      "Filtri cappe cucina",
+      "Lame rasoi usa e getta",
+      "Siringhe con cappuccio",
+      "Barattoli cosmetici sporchi",
+      "Prodotti beauty",
+      "Smacchiatori in polvere"
+    ],
+    "cosa_non_mettere": [
+      "Pile",
+      "Batterie",
+      "Medicinali",
+      "RAEE",
+      "Neon",
+      "Vetro",
+      "Metalli puliti",
+      "Carta",
+      "Plastica riciclabile",
+      "Tetrapak"
+    ],
+    "rifiuti": {
+      "posate plastica": [
+        "forchetta plastica",
+        "cucchiaio plastica"
+      ],
+      "giocattoli rotti": [
+        "gioco rotto",
+        "action figure"
+      ],
+      "spazzolini": [
+        "spazzolino vecchio",
+        "testine elettriche"
+      ],
+      "pannolini": [
+        "pannolino",
+        "pannolini sporchi"
+      ],
+      "assorbenti": [
+        "assorbente",
+        "igiene femminile"
+      ],
+      "traverse animali": [
+        "lettiere sintetiche"
+      ],
+      "lettiere animali": [
+        "sabbia gatti"
+      ],
+      "cd": [
+        "dischi musicali"
+      ],
+      "dvd": [
+        "film"
+      ],
+      "gommapiuma": [
+        "imbottitura"
+      ],
+      "polistirolo": [
+        "polistirolo sporco"
+      ],
+      "penne": [
+        "pennarelli"
+      ],
+      "cosmetici": [
+        "creme",
+        "rossetti"
+      ],
+      "mascherine": [
+        "mascherina chirurgica",
+        "ffp2"
+      ],
+      "spugne": [
+        "spugnetta"
+      ],
+      "tappetini": [
+        "zerbino"
+      ],
+      "occhiali": [
+        "occhiali plastica"
+      ],
+      "rasoi usa e getta": [
+        "rasoio monouso"
+      ],
+      "salviette": [
+        "salviette umidificate"
+      ],
+      "carta oleata": [
+        "carta forno normale"
+      ],
+      "scontrini": [
+        "ricevute termiche"
+      ],
+      "filtri aria": [
+        "filtro cucina"
+      ]
+    }
+  },
+
+  "Vetro": {
+    "descrizione": "Solo vetro pulito: bottiglie e vasetti senza tappi o coperchi",
+    "cosa_mettere": [
+      "Bottiglie in vetro",
+      "Vasetti in vetro",
+      "Contenitori vetro per alimenti",
+      "Bottiglie vino",
+      "Bottiglie birra",
+      "Barattoli vetro per conserve",
+      "Vasetti miele",
+      "Vasetti marmellata",
+      "Flaconi cosmetici in vetro (puliti)",
+      "Contenitori medicine in vetro (puliti)"
+    ],
+    "cosa_non_mettere": [
+      "Specchi",
+      "Ceramiche",
+      "Porcellane",
+      "Cristalli",
+      "Bicchieri",
+      "Pirex",
+      "Vetroceramica",
+      "Lampadine",
+      "Neon",
+      "Schermi TV",
+      "Schermi monitor",
+      "Tappi metallici",
+      "Tappi plastica",
+      "Vetro sporco"
+    ],
+    "rifiuti": {
+      "bottiglia": ["bottiglia vetro", "bottiglia vino", "bottiglia olio"],
+      "vasetto": ["vasetto vetro", "barattolo vetro"],
+      "barattolo conserva": ["barattolo passata"],
+      "contenitore vetro cosmetici": ["flacone vetro crema"]
+    }
+  },
+
+  "Contenitore carta": {
+    "descrizione": "Carta e cartone puliti nel bidone giallo rigido",
+    "cosa_mettere": [
+      "Giornali",
+      "Riviste",
+      "Quotidiani",
+      "Libri",
+      "Quaderni",
+      "Fogli carta",
+      "Cartoncino",
+      "Scatole cartone",
+      "Imballaggi cartone",
+      "Cartoni pizza NON unti",
+      "Tubetti carta",
+      "Carta da pacchi",
+      "Sacchetti carta",
+      "Cartoni uova",
+      "Cartelletta in cartoncino",
+      "Documenti",
+      "Fotocopie",
+      "Moduli vari",
+      "Carta da ufficio"
+    ],
+    "cosa_non_mettere": [
+      "Carta termica (scontrini)",
+      "Carta oleata",
+      "Carta forno NON compostabile",
+      "Carta plastificata",
+      "Carta metallizzata",
+      "Carta sporca di cibo",
+      "Imballaggi TetraPak",
+      "Cartoni pizza unti",
+      "Carta vetrata"
+    ],
+    "rifiuti": {
+      "giornali": ["quotidiano", "rivista"],
+      "scatola cartone": ["box cartone", "imballo amazon"],
+      "cartone pizza": ["pizza box"],
+      "sacchetto carta": ["shopper carta"],
+      "libri": ["tomo", "manuale scolastico"],
+      "quaderni": ["notes"],
+      "cartoni uova": ["porta uova"],
+      "foglio carta": ["fogli A4", "carta stampante"]
+    }
+  },
+
+  "Sacco viola (multimateriale)": {
+    "descrizione": "Plastica, alluminio, metalli e Tetrapak nel sacco viola",
+    "cosa_mettere": [
+      "Bottiglie plastica",
+      "Flaconi detergenti",
+      "Flaconi shampoo",
+      "Flaconi sapone",
+      "Bottiglie acqua",
+      "Pellicola plastica",
+      "Cellophane",
+      "Buste e sacchetti",
+      "Vaschette plastica",
+      "Contenitori yogurt (vuoti)",
+      "Reti frutta",
+      "Barattoli plastica",
+      "Imballaggi plastica",
+      "Contenitori detersivi",
+      "Bottiglie spremute",
+      "Cassette plastica",
+      "Vasetti polistirolo",
+      "Imballaggi polistirolo",
+      "Piatti plastica",
+      "Bicchieri plastica",
+      "Appendini plastica",
+      "Tubi dentifricio",
+      "Lattine",
+      "Barattoli latta",
+      "Scatolette tonno",
+      "Vaschette alluminio",
+      "Fogli alluminio",
+      "Tappi corona",
+      "Capsule caffè alluminio",
+      "TetraPak latte",
+      "TetraPak succhi",
+      "Imballaggi poliaccoppiati"
+    ],
+    "cosa_non_mettere": [
+      "Plastica dura (giocattoli)",
+      "Gomma",
+      "Caucciù",
+      "CD e DVD",
+      "Piatti compostabili",
+      "Sacchetti compostabili",
+      "Prodotti in bioplastica compostabile",
+      "Vaschette molto sporche",
+      "Bicchieri sporchi di residui",
+      "Imballaggi con residui liquidi",
+      "Posate biodegradabili"
+    ],
+    "rifiuti": {
+      "bottiglie plastica": ["bottiglia PET"],
+      "flacone detergente": ["flacone detersivo bucato"],
+      "vaschetta plastica": ["vaschetta carne", "vaschetta frutta"],
+      "polistirolo": ["imballo polistirolo"],
+      "lattina": ["lattina bibita", "lattina birra"],
+      "scatoletta tonno": ["scatoletta cibo"],
+      "tetrapak": ["contenitore latte"],
+      "appendino plastica": ["gruccia plastica"],
+      "pellicola": ["film plastico"],
+      "capsule caffe alluminio": ["capsule nespresso compatibili"]
+    }
+  },
+
+  "Ecostazione mobile": {
+    "descrizione": "Rifiuti elettrici ed elettronici: si conferiscono presso il centro di raccolta o tramite ritiro su chiamata.",
+    "cosa_mettere": [
+      "Televisori",
+      "Monitor",
+      "Computer",
+      "Stampanti",
+      "Telefoni",
+      "Smartphone",
+      "Tablet",
+      "Notebook",
+      "Lavatrici",
+      "Lavastoviglie",
+      "Frigoriferi",
+      "Congelatori",
+      "Forni elettrici",
+      "Forni microonde",
+      "Aspirapolvere",
+      "Robot cucina",
+      "Asciugacapelli",
+      "Rasoi elettrici",
+      "Ventilatori",
+      "Climatizzatori",
+      "Router",
+      "Modem",
+      "Telecomandi"
+    ],
+    "cosa_non_mettere": [
+      "Lampadine",
+      "Neon",
+      "Batterie",
+      "Pile",
+      "Toner",
+      "Cartucce stampante",
+      "Bombolette spray",
+      "Qualsiasi rifiuto elettrico non svuotato da liquidi"
+    ],
+    "rifiuti": {
+      "tv": ["televisore", "smart tv"],
+      "pc": ["computer", "desktop"],
+      "notebook": ["laptop", "portatile"],
+      "cellulare": ["smartphone", "telefono"],
+      "lavatrice": ["elettrodomestico grande"],
+      "frigo": ["frigorifero", "refrigeratore"],
+      "microonde": ["forno microonde"],
+      "stampante": ["inkjet", "laser"],
+      "router": ["modem", "access point"],
+      "aspirapolvere": ["scopa elettrica"]
+    }
+  },
+
+  "Centro di raccolta": {
+    "descrizione": "Rifiuti voluminosi conferibili presso il centro di raccolta o tramite ritiro a domicilio. Include anche rifiuti speciali come oli esausti, lampadine, farmaci scaduti, pile, inerti e rifiuti pericolosi.",
+    "cosa_mettere": [
+      "Mobili",
+      "Armadi",
+      "Cassettiere",
+      "Divani",
+      "Poltrone",
+      "Sedie",
+      "Materassi",
+      "Reti da letto",
+      "Tavoli",
+      "Mobili giardino",
+      "Oggetti grandi in plastica dura",
+      "Tappeti",
+      "Valigie",
+      "Passeggini",
+      "Scaffalature",
+      "Materassi per animali",
+      "Zaini voluminosi",
+      "Oggetti ingombranti vari",
+
+      "Olio da frittura",
+      "Olio di conservazione cibi (tonno, carciofini...)",
+      "Olio esausto di cucina",
+      "Olio motore (solo presso contenitori dedicati)",
+      "Lubrificanti esausti (solo presso contenitori dedicati)",
+
+      "Lampadine tradizionali",
+      "Lampadine LED",
+      "Lampadine alogene",
+      "Tubi neon",
+      "Lampade a risparmio energetico",
+      "Pannelli luminosi LED",
+
+      "Medicinali scaduti",
+      "Compresse",
+      "Sciroppi (chiusi)",
+      "Pomate",
+      "Gocce",
+      "Flaconi medicinali",
+
+      "Pile stilo AA",
+      "Pile AAA",
+      "Pile bottone",
+      "Pile ricaricabili",
+      "Batterie al litio",
+      "Batterie smartphone",
+      "Batterie notebook",
+      "Powerbank",
+      "Batterie auto",
+
+      "Ceramiche",
+      "Piastrelle",
+      "Sanitari rotti",
+      "Mattoni",
+      "Piccoli calcinacci",
+      "Inerti edili",
+      "Vasellame ceramica",
+
+      "Vernici",
+      "Solventi",
+      "Diluente",
+      "Acidi",
+      "Spray infiammabili",
+      "Insetticidi",
+      "Erbicidi",
+      "Toner",
+      "Cartucce stampante",
+      "Collanti",
+      "Siliconi",
+      "Detergenti concentrati"
+    ],
+    "cosa_non_mettere": [
+      "Rifiuti elettrici RAEE",
+      "Materiali pericolosi",
+      "Bombole gas",
+      "Sferti di costruzione",
+      "Pneumatici"
+    ],
+    "rifiuti": {
+      "divano": ["sofà", "divanetto"],
+      "materasso": ["materasso matrimoniale", "materasso singolo"],
+      "mobile": ["armadio", "cassettiera"],
+      "tavolo": ["tavolino"],
+      "sedia": ["poltroncina"],
+      "valigia": ["trolley"],
+      "tappeto": ["zerbino grande"],
+      "passeggino": ["carrozzina"],
+
+      "olio cucina": ["olio frittura", "olio frittto", "olio esausto"],
+      "olio motore": ["lubrificante", "olio auto"],
+
+      "lampadina": ["lampadina rotta", "lampadina led"],
+      "neon": ["tubo neon"],
+      "lampada basso consumo": ["lampada fluorescente"],
+
+      "medicina scaduta": ["farmaco scaduto"],
+      "sciroppo": ["medicinale liquido"],
+      "pomata": ["crema medicata"],
+
+      "pila": ["pila scarica", "pila aa", "pila aaa"],
+      "batteria": ["batteria litio", "batteria telefono"],
+
+      "piastrella": ["piastrella rotta"],
+      "sanitario": ["wc rotto", "lavandino rotto"],
+      "ceramica": ["tazza ceramica", "piatto ceramica"],
+
+      "vernice": ["barattolo vernice"],
+      "solvente": ["diluente"],
+      "toner": ["cartuccia stampante"],
+      "spray": ["bombolette"]
+    }
+  }
+}

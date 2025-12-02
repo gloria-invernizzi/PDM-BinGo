@@ -19,12 +19,32 @@ public class WasteManager {
         this.context = ctx;
     }
 
-    public void saveWaste(long dateMillis, int hour, int minute, String wasteType) {
-        String key = getDayKey(dateMillis);
-        wasteMap.putIfAbsent(key, new ArrayList<>());
+    public void saveNotification(long dateMillis, int hour, int minute, String wasteType, int repeatWeeks) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(dateMillis);
 
-        String entry = String.format("%02d:%02d - %s", hour, minute, wasteType);
-        wasteMap.get(key).add(entry);
+        Calendar endOfYear = Calendar.getInstance();
+        endOfYear.set(Calendar.MONTH, Calendar.DECEMBER);
+        endOfYear.set(Calendar.DAY_OF_MONTH, 31);
+        endOfYear.set(Calendar.HOUR_OF_DAY, 23);
+        endOfYear.set(Calendar.MINUTE, 59);
+        endOfYear.set(Calendar.SECOND, 59);
+        endOfYear.set(Calendar.MILLISECOND, 999);
+
+        while (cal.getTimeInMillis() <= endOfYear.getTimeInMillis()) {
+            long currentDayMillis = cal.getTimeInMillis();
+            String key = getDayKey(currentDayMillis);
+
+            wasteMap.putIfAbsent(key, new ArrayList<>());
+
+            String entry = String.format("%02d:%02d - %s", hour, minute, wasteType);
+            wasteMap.get(key).add(entry);
+
+            scheduleNotification(currentDayMillis, hour, minute, wasteType);
+
+            cal.add(Calendar.DAY_OF_YEAR, 7 * repeatWeeks);
+        }
+
         System.out.println(wasteMap.toString());
     }
 
@@ -32,7 +52,7 @@ public class WasteManager {
         return wasteMap.getOrDefault(day, new ArrayList<>());
     }
 
-    public void scheduleNotification(long dateMillis, int hour, int minute, String wasteType) {
+    private void scheduleNotification(long dateMillis, int hour, int minute, String wasteType) {
         long notificationTime = computeNotificationTime(dateMillis, hour, minute);
 
         Intent intent = new Intent(context, WasteNotificationReceiver.class);

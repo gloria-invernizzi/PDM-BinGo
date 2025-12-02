@@ -15,7 +15,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_recycle_symbol"
+            android:src="@drawable/ic_recycling"
             android:contentDescription="@string/product_image" />
 
         <ProgressBar

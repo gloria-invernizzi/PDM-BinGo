@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_homeFragment_to_calendarFragment"
             app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_whereToThrowFragment"
+            app:destination="@id/whereToThrowFragment" />
     </fragment>
 
     <!-- Scan Fragment -->
@@ -64,6 +67,13 @@
         android:name="com.application.bingo.ui.home.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile"/>
+
+    <!-- WhereToThrow Fragment -->
+    <fragment
+        android:id="@+id/whereToThrowFragment"
+        android:name="com.application.bingo.ui.home.WhereToThrowFragment"
+        android:label="Dove lo butto?"
+        tools:layout="@layout/fragment_where_to_throw"/>
 
 
 </navigation>

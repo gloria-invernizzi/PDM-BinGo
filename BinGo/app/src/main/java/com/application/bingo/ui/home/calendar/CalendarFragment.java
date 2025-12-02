@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -40,6 +42,7 @@ public class CalendarFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         wasteManager = new WasteManager(getContext());
+        selectedDateMillis = System.currentTimeMillis();
 
         calendarView = view.findViewById(R.id.calendarView);
         infoText = view.findViewById(R.id.info);
@@ -78,7 +81,21 @@ public class CalendarFragment extends Fragment {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_choose_bin, null);
 
         RadioGroup group = dialogView.findViewById(R.id.groupBins);
+        // Seleziona il primo RadioButton di default
+        if (group.getChildCount() > 0) {
+            ((RadioButton) group.getChildAt(0)).setChecked(true);
+        }
+
         TimePicker timePicker = dialogView.findViewById(R.id.timePicker);
+
+        Spinner spinnerRepeat = dialogView.findViewById(R.id.spinnerRepeat);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getContext(),
+                android.R.layout.simple_spinner_item,
+                new String[]{"1 settimana", "2 settimane", "3 settimane", "4 settimane"}
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRepeat.setAdapter(adapter);
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Scegli il rifiuto")
@@ -92,10 +109,12 @@ public class CalendarFragment extends Fragment {
 
                     int hour = timePicker.getHour();
                     int minute = timePicker.getMinute();
+                    int repeatWeeks = spinnerRepeat.getSelectedItemPosition() + 1;
 
-                    wasteManager.saveWaste(dateMillis, hour, minute, wasteType);
-                    wasteManager.scheduleNotification(dateMillis, hour, minute, wasteType);
+                    // Salva e pianifica la notifica
+                    wasteManager.saveNotification(dateMillis, hour, minute, wasteType, repeatWeeks);
 
+                    showWasteSummary(dateMillis);
                     showWasteSummary(dateMillis);
                 })
                 .setNegativeButton("Annulla", null)
