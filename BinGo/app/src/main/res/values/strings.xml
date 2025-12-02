@@ -57,6 +57,7 @@
     <string name="material_glass">Vetro</string>
     <string name="material_paper">Carta</string>
     <string name="material_cardboard">Cartone</string>
+    <string name="material_paper_aluminium">Plastica e lattine</string>
 
     <!-- Forme -->
     <string name="shape_food_can">Lattina</string>

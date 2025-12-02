@@ -37,6 +37,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
 
@@ -46,8 +50,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.4.0")
-
-    testImplementation(libs.junit)
+    implementation("androidx.navigation:navigation-runtime:2.9.6")
     implementation("com.google.code.gson:gson:2.13.2")
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
