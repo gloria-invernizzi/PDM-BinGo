@@ -36,8 +36,11 @@ public class ProductDeserializer implements JsonDeserializer<ProductApiResponse>
         List<Packaging> packagingList = context.deserialize(jsonPackagings, listType);
 
         product.setBarcode(obj.get("code").getAsString());
+
         product.setName(jsonProduct.get("product_name_it").getAsString());
         product.setImageUrl(jsonProduct.get("image_front_url").getAsString());
+        product.setBrand(jsonProduct.get("brands").getAsString());
+
         product.setPackagings(packagingList);
 
         return product;

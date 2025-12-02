@@ -15,10 +15,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.bingo.R;
+import com.application.bingo.model.ProductApiResponse;
+import com.application.bingo.util.MaterialTranslator;
+import com.application.bingo.util.normalizer.ProductDeserializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.stream.Collectors;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -27,19 +34,6 @@ public class ResultActivity extends AppCompatActivity {
     String barcode;
 
     ProgressBar loadingSpinner;
-
-    String translateMaterial(String raw) {
-        switch (raw) {
-            case "metal": return getString(R.string.material_metal);
-            case "plastic":
-            case "o-7-other-plastics":
-                return getString(R.string.material_plastic);
-            case "glass": return getString(R.string.material_glass);
-            case "paper": return getString(R.string.material_paper);
-            case "cardboard": return getString(R.string.material_cardboard);
-            default: return raw;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,52 +63,28 @@ public class ResultActivity extends AppCompatActivity {
                 null,
                 response -> {
                     try {
-//                        String jsonString = response.toString();
-//                        Gson gson = new GsonBuilder()
-//                                .registerTypeAdapter(ProductApiResponse.class, new ProductDeserializer())
-//                                .create();
-//
-//                        ProductApiResponse product = gson.fromJson(jsonString, ProductApiResponse.class);
+                       String jsonString = response.toString();
+                       Gson gson = new GsonBuilder()
+                               .registerTypeAdapter(ProductApiResponse.class, new ProductDeserializer())
+                               .create();
 
+                        ProductApiResponse product = gson.fromJson(jsonString, ProductApiResponse.class);
 
-                        JSONObject product = response.getJSONObject("product");
+                        MaterialTranslator materialTranslator = new MaterialTranslator();
 
-                        String name = product.optString("product_name", "Nome non disponibile");
-                        String brand = product.optString("brands", "Marca non disponibile");
-                        String imageUrl = product.optString("image_front_url", "");
-                        String category = product.optString("categories", "Categoria non disponibile");
-
-                        // Packaging info
-                        StringBuilder packagingInfo = new StringBuilder();
-                        packagingInfo.append(getString(R.string.material)).append("\n");
-                        JSONObject ecoscoreData = product.getJSONObject("ecoscore_data");
-                        JSONObject adjustments = ecoscoreData.getJSONObject("adjustments");
-                        JSONObject packaging = adjustments.getJSONObject("packaging");
-                        JSONArray packagings = packaging.getJSONArray("packagings");
-
-                        for (int i = 0; i < packagings.length(); i++) {
-                            JSONObject item = packagings.getJSONObject(i);
-                            String rawMaterial = item.optString("material", "").replace("en:", "");
-                            String material = translateMaterial(rawMaterial);
-                            packagingInfo.append(material).append("\n");
-                        }
-                        if (packagingInfo.toString().isEmpty()){
-                            packagingInfo.append(getString(R.string.no_packaging_info));
-                        }
-
-                        productName.setText(name);
-                        productBrand.setText(getString(R.string.brand, brand));
-                        recyclingInfo.setText(packagingInfo.toString());
+                        productName.setText(product.getName());
+                        productBrand.setText(product.getBrand());
+                        recyclingInfo.setText(product.getPackagings().stream().map(packaging -> materialTranslator.translateMaterial(this, packaging.getMaterial())).collect(Collectors.joining(", ")));
                         textResult.setText(R.string.result_success);
                         loadingSpinner.setVisibility(View.GONE);
 
-                        if (!imageUrl.isEmpty()) {
-                            Picasso.get().load(imageUrl).into(productImage);
+                        if (!product.getImageUrl().isEmpty()) {
+                            Picasso.get().load(product.getImageUrl()).into(productImage);
                         }
-
                     } catch (Exception e) {
                         textResult.setText(R.string.parsing_error);
                         loadingSpinner.setVisibility(View.GONE);
+
                         Log.e("ResultActivity",e.getMessage()+" ");
                     }
                 },

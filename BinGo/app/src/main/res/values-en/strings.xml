@@ -34,6 +34,7 @@
     <string name="material_glass">Glass</string>
     <string name="material_paper">Paper</string>
     <string name="material_cardboard">Cardboard</string>
+    <string name="material_paper_aluminium">Plastic and aluminium</string>
 
     <!-- Shapes -->
     <string name="shape_food_can">Can</string>
