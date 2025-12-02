@@ -6,6 +6,7 @@ public class ProductApiResponse {
     private String barcode;
     private String imageUrl;
     private String name;
+    private String brand;
     private List<Packaging> packagings;
 
     public String getImageUrl() {
@@ -44,6 +45,16 @@ public class ProductApiResponse {
 
     public ProductApiResponse setPackagings(List<Packaging> packagings) {
         this.packagings = packagings;
+
+        return this;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public ProductApiResponse setBrand(String brand) {
+        this.brand = brand;
 
         return this;
     }
