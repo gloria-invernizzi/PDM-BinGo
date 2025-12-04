@@ -66,7 +66,22 @@
         android:id="@+id/profileFragment"
         android:name="com.application.bingo.ui.home.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+
+        <!-- Azione verso SettingsFragment -->
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+
+    <!-- Settings Fragment -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.application.bingo.ui.home.SettingsFragment"
+        android:label="Impostazioni"
+        tools:layout="@layout/fragment_settings" />
+
+
 
     <!-- WhereToThrow Fragment -->
     <fragment

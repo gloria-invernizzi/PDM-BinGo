@@ -7,6 +7,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Database(entities = {User.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "app-db";
@@ -16,6 +19,11 @@ public abstract class AppDatabase extends RoomDatabase {
 
     // Abstract method to get UserDao: a data access object (DAO) for User entity
     public abstract UserDao userDao();
+
+    // Thread pool per operazioni di scrittura in background
+    // Executor serve solo per scrittura (insert, update, delete)
+    public static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(4);
 
     //Context is variable that provides access to application-specific resources and classes
     public static AppDatabase getInstance(Context ctx) {

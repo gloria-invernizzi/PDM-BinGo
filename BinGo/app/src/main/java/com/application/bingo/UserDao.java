@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 //Queries for retrieving and inserting User data in the database
 @Dao
@@ -23,4 +24,9 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
     User getById(long id);
+
+    @Update
+    void update(User user);
+
 }
+

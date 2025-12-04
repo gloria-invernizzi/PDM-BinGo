@@ -1,9 +1,11 @@
 package com.application.bingo.ui.home;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,9 +15,15 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -25,13 +33,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.application.bingo.AppDatabase;
+import com.application.bingo.PrefsManager;
+import com.application.bingo.repository.SettingsRepository;
 import com.application.bingo.R;
+import com.application.bingo.User;
+
+import com.application.bingo.repository.UserRepository;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.concurrent.Executors;
 
 public class ProfileFragment extends Fragment {
 
@@ -47,17 +64,19 @@ public class ProfileFragment extends Fragment {
     // LAUNCHER PER GALLERIA E FOTOCAMERA
     private ActivityResultLauncher<Intent> galleryLauncher;   // <-- Launcher per aprire la galleria
     private ActivityResultLauncher<Intent> cameraLauncher;    // <-- Launcher per aprire la fotocamera
-    private Uri cameraImageUri;                               // <-- Dove verrà salvata la foto scattata
+    private Uri cameraImageUri;
+    private static final int CAMERA_PERMISSION_REQUEST = 200;
+
+// <-- Dove verrà salvata la foto scattata
 
     // STATO MODIFICA/ SALVA
     private boolean isEditing = false;
 
+    //VIEWMODEL
+    private ProfileViewModel vm;
+
     public ProfileFragment() {
         // Required empty public constructor
-    }
-
-    public static ProfileFragment newInstance(String param1, String param2) {
-        return new ProfileFragment();
     }
 
     @Override
@@ -139,6 +158,45 @@ public class ProfileFragment extends Fragment {
         btnEditSave = view.findViewById(R.id.btn_edit_save);
         btnLogout = view.findViewById(R.id.btn_logout);
 
+        //Collego il ViewModel
+
+        // 1. Creo il ViewModel associato al Fragment
+        vm = new ViewModelProvider(
+                this,
+                new ViewModelProvider.Factory() { //il secondo parametro è la Factory che serve perchè ProfileViewModel ha un costruttore con parametri
+                    @NonNull
+                    @Override
+                    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                        // Creo i repository necessari
+                        UserRepository userRepo = new UserRepository(requireContext());
+                        SettingsRepository settingsRepo = new SettingsRepository(requireContext());
+
+                        // Creo e ritorno il ViewModel
+                        return (T) new ProfileViewModel(userRepo, settingsRepo); //cat a T perchè lavora con tipi generici
+                    }
+                }
+        ).get(ProfileViewModel.class);//voglio un viewmodel del tipo ProfileViewModel associato a questo Fragment
+
+// 2. Osservo i dati dell'utente: quando cambiano, aggiorno la UI
+        vm.getUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user != null) {
+                    inputName.setText(user.getName());
+                    inputEmail.setText(user.getEmail());
+                    inputAddress.setText(user.getAddress());
+                }
+            }
+        });
+
+// 3. Carico i dati dell'utente salvato nelle preferenze
+        String savedEmail = new PrefsManager(getContext()).getSavedEmail();
+        if (!savedEmail.isEmpty()) {
+            vm.loadUser(savedEmail); // chiedo al ViewModel di recuperare i dati dal repository
+        }
+
+
+
 
         // CLICK LISTENER PER CAMBIARE FOTO → apre un menu con 2 scelte
 
@@ -168,40 +226,24 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        loadProfileData();
+
 
         // NAVIGAZIONE TOP APP BAR
 
-        topAppBar.setNavigationOnClickListener(v -> {
-            if (getActivity() != null) {
-                getActivity().onBackPressed();
+        // NAVIGAZIONE TOP APP BAR
+        topAppBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_settings) {
+                NavController navController = NavHostFragment.findNavController(ProfileFragment.this);
+                navController.navigate(R.id.action_profileFragment_to_settingsFragment);
+                return true;
             }
+            return false;
         });
 
-        // GESTIONE MENU TOP APP BAR
 
-        if (getActivity() != null) {
-            getActivity().addMenuProvider(new MenuProvider() {
-                @Override
-                public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                    topAppBar.getMenu().clear(); // rimuove eventuali altri menu
-                    topAppBar.inflateMenu(R.menu.profile_top_menu);
-                }
 
-                @Override
-                public boolean onMenuItemSelected(@NonNull MenuItem item) {
-                    int id = item.getItemId(); // id item selezionato
 
-                    if (id == R.id.action_notifications) {
-                        Toast.makeText(getContext(), "Apri notifiche", Toast.LENGTH_SHORT).show();
-                        return true;
-                    } else if (id == R.id.action_settings) {
-                        Toast.makeText(getContext(), "Apri impostazioni", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                    return false;
-                }
-            }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
-        }
 
 
         // BOTTONE LOGOUT
@@ -212,6 +254,23 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish(); // chiude l'Activity contenente il Fragment
             }
         });
+    }
+    //Metodo per caricare l'utente dal database
+
+    private void loadProfileData(){
+        //usa l'email nelle preferenze come chiave
+        //chi conosce l'email di chi si è loggato in questo momento?
+        //il fragment legge l'email dalle SharedPreferences gestite da PrefManager
+        PrefsManager prefs = new PrefsManager(getContext());
+        String savedEmail = prefs.getSavedEmail();
+    //poi passa l'email al viewmodel solo quando deve caricare l'utente
+        if (!savedEmail.isEmpty()) {
+            Executors.newSingleThreadExecutor().execute(() ->{
+            vm.loadUser(savedEmail);
+        });}
+
+
+
     }
 
     // METODO PER MOSTRARE IL DIALOG PER CAMBIARE FOTO
@@ -263,8 +322,17 @@ public class ProfileFragment extends Fragment {
 
     private void takePhoto() {
 
+        // 1. Controllo permesso CAMERA (aggiunta)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST);
+            return; // mi fermo qui finché l'utente non accetta
+        }
+
+
         // CREAZIONE METADATI DELLA FOTO (titolo, descrizione)
-        ContentValues values = new ContentValues();              // <-- Crea contenitore parametri foto
+        ContentValues values = new ContentValues(); // <-- Crea contenitore parametri foto
         values.put(MediaStore.Images.Media.TITLE, "ProfilePhoto");
         values.put(MediaStore.Images.Media.DESCRIPTION, "Foto profilo");
 
@@ -279,5 +347,28 @@ public class ProfileFragment extends Fragment {
         // AVVIA LA FOTOCAMERA
         cameraLauncher.launch(intent);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CAMERA_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto(); // ora che il permesso è stato dato, ri-eseguo takePhoto()
+            } else {
+                Toast.makeText(getContext(), "Permesso fotocamera negato", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+
+//non tiene la foto profilo quando chiudo l'app...
+
+
+
+
+
+
 
 }
