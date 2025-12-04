@@ -24,6 +24,7 @@ import com.google.firebase.auth.AuthResult;
 //per gestire task asincroni??
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -92,26 +93,37 @@ public class RegisterFragment extends Fragment {
                 .addOnCompleteListener(requireActivity(), (Task<AuthResult> task) -> {
                     if (task.isSuccessful()) {
                         // Firebase user created -> salva anche in Room
+                        // 1. SUCCESSO: L'email non esisteva. Procediamo a salvare in Room.
                         bg.execute(() -> {
-                            User user = new User(name, "", email, pass);
-                            long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
-                            if (id > 0) {
-                                if (remember) {
-                                    prefs.saveUser(name, "", email, pass);
+                            // Doppio controllo di sicurezza per Room
+                            User existing = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
+                            if (existing == null) {
+                                User user = new User(name, "", email, pass);
+                                long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
+
+                                if (id > 0) {
+                                    if (remember) {
+                                        prefs.saveUser(name, "", email, pass); // Aggiornato per salvare anche email/pass
+                                    }
+                                    requireActivity().runOnUiThread(() -> {
+                                        Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
+                                        requireActivity().onBackPressed();
+                                    });
                                 }
-                                requireActivity().runOnUiThread(() -> {
-                                    Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
-                                    requireActivity().onBackPressed();
-                                });
-                            } else {
-                                requireActivity().runOnUiThread(() ->
-                                        Toast.makeText(requireContext(), "Errore durante la registrazione locale", Toast.LENGTH_SHORT).show());
                             }
                         });
                     } else {
-                        // Firebase failed
-                        String msg = task.getException() != null ? task.getException().getMessage() : "Errore Firebase";
-                        Toast.makeText(requireContext(), "Registrazione fallita: " + msg, Toast.LENGTH_SHORT).show();
+                        // 2. FALLIMENTO: l'email esiste già
+                        Exception exception = task.getException();
+                        if (exception instanceof FirebaseAuthUserCollisionException) {
+                            // L'utente esiste già con questa email!
+                            Toast.makeText(requireContext(), "Email già registrata! Effettua il login.", Toast.LENGTH_LONG).show();
+                            // Rimanda automaticamente al fragment di login
+                            requireActivity().onBackPressed();
+                        } else {
+                            String msg = exception != null ? exception.getMessage() : "Errore Firebase";
+                            Toast.makeText(requireContext(), "Registrazione fallita: " + msg, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }

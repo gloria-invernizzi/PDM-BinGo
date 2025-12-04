@@ -1,266 +1,1 @@
-// file: app/src/main/java/com/application/bingo/ui/LoginFragment.java
-package com.application.bingo.ui;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Toast;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
-import com.application.bingo.AppDatabase;
-import com.application.bingo.PrefsManager;
-import com.application.bingo.R;
-import com.application.bingo.User;
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.Identity;
-import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class LoginFragment extends Fragment {
-
-    private TextInputEditText etEmail, etPassword;
-    private Button btnlogin, btnRegister, btnForgotPassword, btnGoogleSignIn;
-    private CheckBox cbRemember;
-    private PrefsManager prefs;
-    private final ExecutorService bg = Executors.newSingleThreadExecutor();
-    private FirebaseAuth mAuth;
-
-    // Variabili per Google Sign-In
-    private SignInClient oneTapClient;
-    private BeginSignInRequest signInRequest;
-    private ActivityResultLauncher<IntentSenderRequest> oneTapLauncher;
-
-    private static final String TAG = LoginFragment.class.getSimpleName();
-
-    // --- CORREZIONE: SPOSTA LA LOGICA DI INIZIALIZZAZIONE QUI ---
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mAuth = FirebaseAuth.getInstance();
-
-        // 1. Inizializza il client di Google. È sicuro farlo qui.
-        oneTapClient = Identity.getSignInClient(requireActivity());
-
-        // 2. Prepara il launcher per ricevere il risultato da Google.
-        // DEVE essere inizializzato qui, prima di onViewCreated.
-        oneTapLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartIntentSenderForResult(),
-                result -> {
-                    try {
-                        SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());
-                        String idToken = credential.getGoogleIdToken();
-                        if (idToken != null) {
-                            Log.d(TAG, "Ottenuto Google ID Token, avvio autenticazione con Firebase...");
-                            firebaseAuthWithGoogle(idToken);
-                        }
-                    } catch (ApiException e) {
-                        Log.e(TAG, "Accesso Google fallito dopo la selezione dell'account", e);
-                        Toast.makeText(requireContext(), "Accesso con Google fallito.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Inizializza le viste e le preferenze qui
-        prefs = new PrefsManager(requireContext());
-        etEmail = view.findViewById(R.id.textInputEmail);
-        etPassword = view.findViewById(R.id.textInputPassword);
-        btnlogin = view.findViewById(R.id.login_button);
-        btnRegister = view.findViewById(R.id.register_button);
-        cbRemember = view.findViewById(R.id.cbRemember);
-        btnForgotPassword = view.findViewById(R.id.forgot_password_button);
-        btnGoogleSignIn = view.findViewById(R.id.google_sign_in_button);
-
-        // --- CORREZIONE: INIZIALIZZA LA RICHIESTA DI LOGIN QUI ---
-        // La creazione della richiesta (`signInRequest`) usa `getString`, che è più sicuro
-        // chiamare quando la vista è stata creata.
-        signInRequest = BeginSignInRequest.builder()
-                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                        .setSupported(true)
-                        .setServerClientId(getString(R.string.default_web_client_id))
-                        .setFilterByAuthorizedAccounts(false)
-                        .build())
-                .build();
-
-        // Imposta i listener
-        setupClickListeners();
-
-        // Controlla se l'utente è già loggato o se ha credenziali salvate
-        checkRememberedUser();
-    }
-
-    private void setupClickListeners() {
-        btnGoogleSignIn.setOnClickListener(v -> {
-            Log.d(TAG, "Pulsante Google Sign-In cliccato. Avvio beginSignIn...");
-            oneTapClient.beginSignIn(signInRequest)
-                    .addOnSuccessListener(requireActivity(), result -> {
-                        Log.d(TAG, "beginSignIn ha avuto successo. Avvio il launcher di Google.");
-                        IntentSenderRequest intentSenderRequest =
-                                new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();
-                        oneTapLauncher.launch(intentSenderRequest);
-                    })
-                    .addOnFailureListener(requireActivity(), e -> {
-                        Log.e(TAG, "beginSignIn fallito!", e);
-                        Toast.makeText(getContext(), "Impossibile avviare l'accesso con Google.", Toast.LENGTH_LONG).show();
-                    });
-        });
-
-        btnForgotPassword.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_recoverPasswordFragment));
-
-        btnlogin.setOnClickListener(v -> attemptLogin());
-        btnRegister.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_registerFragment));
-    }
-
-    private void checkRememberedUser() {
-        if (mAuth.getCurrentUser() != null) {
-            Log.i(TAG, "Utente Firebase già loggato: " + mAuth.getCurrentUser().getEmail());
-        }
-
-        final String savedEmail = prefs.getSavedEmail();
-        final String savedPass = prefs.getSavedPassword();
-        if (!savedEmail.isEmpty() && !savedPass.isEmpty()) {
-            bg.execute(() -> {
-                User u = AppDatabase.getInstance(requireContext())
-                        .userDao()
-                        .findByEmailAndPassword(savedEmail, savedPass);
-                if (u != null) {
-                    requireActivity().runOnUiThread(() -> {
-                        etEmail.setText(savedEmail);
-                        etPassword.setText(savedPass);
-                        cbRemember.setChecked(true);
-                    });
-                } else {
-                    prefs.clearSavedUser();
-                }
-            });
-        }
-    }
-
-    // ... il resto dei metodi (attemptLogin, firebaseAuthWithGoogle, etc.) rimane invariato ...
-    // [Assicurati che il resto del tuo codice da attemptLogin in poi sia presente qui]
-    private void attemptLogin() {
-        final String email = getText(etEmail);
-        final String pass = getText(etPassword);
-
-        if (email.isEmpty() || pass.isEmpty()) {
-            Toast.makeText(requireContext(), "Campi mancanti", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        bg.execute(() -> {
-            User localUser = AppDatabase.getInstance(requireContext()).userDao().findByEmailAndPassword(email, pass);
-
-            if (localUser != null) {
-                requireActivity().runOnUiThread(() -> {
-                    Log.d(TAG, "Login effettuato tramite cache locale (Room).");
-                    loginSuccess(localUser.getName(), email, pass);
-                });
-            } else {
-                requireActivity().runOnUiThread(() -> {
-                    Log.d(TAG, "Utente non trovato in locale. Tento il login con Firebase.");
-                    firebaseSignIn(email, pass);
-                });
-            }
-        });
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(requireActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Firebase Sign-In with Google successful.");
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        String name = firebaseUser.getDisplayName();
-                        String email = firebaseUser.getEmail();
-
-                        bg.execute(() -> {
-                            User local = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
-                            if (local == null) {
-                                User newUser = new User(name, "", email, "");
-                                AppDatabase.getInstance(requireContext()).userDao().insert(newUser);
-                                Log.d(TAG, "New Google user synced to Room DB.");
-                            }
-                        });
-
-                        loginSuccess(name, email, "");
-
-                    } else {
-                        Log.w(TAG, "Firebase Sign-In with Google failed", task.getException());
-                        Toast.makeText(requireContext(), "Autenticazione con Firebase fallita.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void firebaseSignIn(final String email, final String pass) {
-        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(requireActivity(), task -> {
-            if (task.isSuccessful()) {
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                String name = (firebaseUser != null && firebaseUser.getDisplayName() != null) ? firebaseUser.getDisplayName() : "";
-
-                bg.execute(() -> {
-                    User local = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
-                    if (local == null) {
-                        User newUser = new User(name, "", email, pass);
-                        AppDatabase.getInstance(requireContext()).userDao().insert(newUser);
-                        Log.d(TAG, "Nuovo utente sincronizzato in Room DB.");
-                    }
-                });
-                loginSuccess(name, email, pass);
-
-            } else {
-                String msg = task.getException() != null ? task.getException().getMessage() : "Credenziali non valide";
-                Toast.makeText(requireContext(), "Login fallito: " + msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void loginSuccess(String name, String email, String password) {
-        if (cbRemember != null && cbRemember.isChecked() && !password.isEmpty()) {
-            prefs.saveUser(email, password);
-        } else {
-            prefs.clearSavedUser();
-        }
-
-        Toast.makeText(requireContext(), "Login effettuato", Toast.LENGTH_SHORT).show();
-        if (getView() != null) {
-            Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);
-        }
-    }
-
-    private String getText(TextInputEditText et){
-        return et == null || et.getText() == null ? "" : et.getText().toString().trim();
-    }
-}
+// file: app/src/main/java/com/application/bingo/ui/LoginFragment.java//DA CONTROLLARE: L'AUTO-FILL IN DOVREBBE FUNZIONARE SE L'UTENTE E' PRESENTE ANCHE IN ROOMpackage com.application.bingo.ui;import android.os.Bundle;import android.util.Log;import android.view.LayoutInflater;import android.view.View;import android.view.ViewGroup;import android.widget.Button;import android.widget.CheckBox;import android.widget.Toast;import androidx.activity.result.ActivityResultLauncher;import androidx.activity.result.IntentSenderRequest;import androidx.activity.result.contract.ActivityResultContracts;import androidx.annotation.NonNull;import androidx.annotation.Nullable;import androidx.fragment.app.Fragment;import androidx.navigation.Navigation;import com.application.bingo.AppDatabase;import com.application.bingo.PrefsManager;import com.application.bingo.R;import com.application.bingo.User;import com.google.android.gms.auth.api.identity.BeginSignInRequest;import com.google.android.gms.auth.api.identity.Identity;import com.google.android.gms.auth.api.identity.SignInClient;import com.google.android.gms.auth.api.identity.SignInCredential;import com.google.android.gms.common.api.ApiException;import com.google.android.material.textfield.TextInputEditText;import com.google.firebase.auth.AuthCredential;import com.google.firebase.auth.FirebaseAuth;import com.google.firebase.auth.FirebaseUser;import com.google.firebase.auth.GoogleAuthProvider;import java.util.concurrent.ExecutorService;import java.util.concurrent.Executors;public class LoginFragment extends Fragment {    private TextInputEditText etEmail, etPassword;    private Button btnlogin, btnRegister, btnForgotPassword, btnGoogleSignIn;    private CheckBox cbRemember;    private PrefsManager prefs;    private final ExecutorService bg = Executors.newSingleThreadExecutor();    private FirebaseAuth mAuth;    // Variabili per Google Sign-In    private SignInClient oneTapClient;    private BeginSignInRequest signInRequest;    private ActivityResultLauncher<IntentSenderRequest> oneTapLauncher;    private static final String TAG = LoginFragment.class.getSimpleName();    @Override    public void onCreate(@Nullable Bundle savedInstanceState) {        super.onCreate(savedInstanceState);        mAuth = FirebaseAuth.getInstance();        // 1. Inizializza il client di Google.        oneTapClient = Identity.getSignInClient(requireActivity());        // 2. Prepara il launcher per ricevere il risultato da Google.        oneTapLauncher = registerForActivityResult(                new ActivityResultContracts.StartIntentSenderForResult(),                result -> {                    try {                        SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());                        String idToken = credential.getGoogleIdToken();                        if (idToken != null) {                            Log.d(TAG, "Ottenuto Google ID Token, avvio autenticazione con Firebase...");                            firebaseAuthWithGoogle(idToken);                        }                    } catch (ApiException e) {                        Log.e(TAG, "Accesso Google fallito dopo la selezione dell'account", e);                        Toast.makeText(requireContext(), "Accesso con Google fallito.", Toast.LENGTH_SHORT).show();                    }                });    }    @Override    public View onCreateView(LayoutInflater inflater, ViewGroup container,                             Bundle savedInstanceState) {        return inflater.inflate(R.layout.fragment_login, container, false);    }    @Override    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {        super.onViewCreated(view, savedInstanceState);        // Inizializza le viste e le preferenze        prefs = new PrefsManager(requireContext());        etEmail = view.findViewById(R.id.textInputEmail);        etPassword = view.findViewById(R.id.textInputPassword);        btnlogin = view.findViewById(R.id.login_button);        btnRegister = view.findViewById(R.id.register_button);        cbRemember = view.findViewById(R.id.cbRemember);        btnForgotPassword = view.findViewById(R.id.forgot_password_button);        btnGoogleSignIn = view.findViewById(R.id.google_sign_in_button);        // Inizializzazione richiesta di accesso Google        signInRequest = BeginSignInRequest.builder()                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()                        .setSupported(true)                        .setServerClientId(getString(R.string.default_web_client_id))                        .setFilterByAuthorizedAccounts(false)                        .build())                .build();        // Imposta i listener        setupClickListeners();        // Controlla se l'utente è già loggato o se ha credenziali salvate        checkRememberedUser();    }    private void setupClickListeners() {        btnGoogleSignIn.setOnClickListener(v -> {            Log.d(TAG, "Pulsante Google Sign-In cliccato. Avvio beginSignIn...");            oneTapClient.beginSignIn(signInRequest)                    .addOnSuccessListener(requireActivity(), result -> {                        Log.d(TAG, "beginSignIn ha avuto successo. Avvio il launcher di Google.");                        IntentSenderRequest intentSenderRequest =                                new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();                        oneTapLauncher.launch(intentSenderRequest);                    })                    .addOnFailureListener(requireActivity(), e -> {                        Log.e(TAG, "beginSignIn fallito!", e);                        Toast.makeText(getContext(), "Impossibile avviare l'accesso con Google.", Toast.LENGTH_LONG).show();                    });        });        btnForgotPassword.setOnClickListener(v ->                Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_recoverPasswordFragment));        btnlogin.setOnClickListener(v -> attemptLogin());        btnRegister.setOnClickListener(v ->                Navigation.findNavController(v).navigate(R.id.action_loginFragment_to_registerFragment));    }    private void checkRememberedUser() {        if (mAuth.getCurrentUser() != null) {            Log.i(TAG, "Utente Firebase già loggato: " + mAuth.getCurrentUser().getEmail());        }        final String savedEmail = prefs.getSavedEmail();        final String savedPass = prefs.getSavedPassword();        if (!savedEmail.isEmpty() && !savedPass.isEmpty()) {            bg.execute(() -> {                User u = AppDatabase.getInstance(requireContext())                        .userDao()                        .findByEmailAndPassword(savedEmail, savedPass);                if (u != null) {                    requireActivity().runOnUiThread(() -> {                        etEmail.setText(savedEmail);                        etPassword.setText(savedPass);                        cbRemember.setChecked(true);                    });                } else {                    prefs.clearSavedUser();                }            });        }    }    private void attemptLogin() {        final String email = getText(etEmail);        final String pass = getText(etPassword);        if (email.isEmpty() || pass.isEmpty()) {            Toast.makeText(requireContext(), "Campi mancanti", Toast.LENGTH_SHORT).show();            return;        }        bg.execute(() -> {            User localUser = AppDatabase.getInstance(requireContext()).userDao().findByEmailAndPassword(email, pass);            if (localUser != null) {                requireActivity().runOnUiThread(() -> {                    Log.d(TAG, "Login effettuato tramite cache locale (Room).");                    loginSuccess(localUser.getName(), email, pass);                });            } else {                requireActivity().runOnUiThread(() -> {                    Log.d(TAG, "Utente non trovato in locale. Tento il login con Firebase.");                    firebaseSignIn(email, pass);                });            }        });    }    private void firebaseAuthWithGoogle(String idToken) {        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);        mAuth.signInWithCredential(credential)                .addOnCompleteListener(requireActivity(), task -> {                    if (task.isSuccessful()) {                        Log.d(TAG, "Firebase Sign-In with Google successful.");                        FirebaseUser firebaseUser = mAuth.getCurrentUser();                        String name = firebaseUser.getDisplayName();                        String email = firebaseUser.getEmail();                        // Google non restituisce la password, usiamo una stringa vuota o un token                        String password = "";                        bg.execute(() -> {                            // 1. CONTROLLO LOCALE: L'utente esiste già?                            User local = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);                            if (local == null) {                                // 2. Se NON esiste, lo creo (Nuovo ID locale generato da Room)                                User newUser = new User(name, "", email, password);                                AppDatabase.getInstance(requireContext()).userDao().insert(newUser);                                Log.d(TAG, "Nuovo utente Google salvato in Room DB.");                            } else {                                // 3. Se ESISTE, non creo duplicati. L'ID rimane quello vecchio.                                // aggiorna nome o altri dati se necessario?                                Log.d(TAG, "Utente Google già presente in Room DB. Login con ID esistente.");                            }                        });                        loginSuccess(name, email, password);                    } else {                        Log.w(TAG, "Firebase Sign-In with Google failed", task.getException());                        Toast.makeText(requireContext(), "Autenticazione con Firebase fallita.", Toast.LENGTH_SHORT).show();                    }                });    }    private void firebaseSignIn(final String email, final String pass) {        // Firebase controlla automaticamente se email e password coincidono        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(requireActivity(), task -> {            if (task.isSuccessful()) {                FirebaseUser firebaseUser = mAuth.getCurrentUser();                String name = (firebaseUser != null && firebaseUser.getDisplayName() != null) ? firebaseUser.getDisplayName() : "";                bg.execute(() -> {                    // CONTROLLO ANTI-DUPLICATO                    User local = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);                    if (local == null) {                        // Solo se non esiste localmente lo inserisco                        User newUser = new User(name, "", email, pass);                        AppDatabase.getInstance(requireContext()).userDao().insert(newUser);                        Log.d(TAG, "Nuovo utente sincronizzato in Room DB.");                    } else {                        Log.d(TAG, "Utente già presente in locale. Salto inserimento.");                    }                });                loginSuccess(name, email, pass);            } else {                String msg = task.getException() != null ? task.getException().getMessage() : "Credenziali non valide";                Toast.makeText(requireContext(), "Login fallito: " + msg, Toast.LENGTH_SHORT).show();            }        });    }    private void loginSuccess(String name, String email, String password) {        if (cbRemember != null && cbRemember.isChecked() && !password.isEmpty()) {            prefs.saveUser(email, password);        } else {            prefs.clearSavedUser();        }        Toast.makeText(requireContext(), "Login effettuato", Toast.LENGTH_SHORT).show();        if (getView() != null) {            Navigation.findNavController(requireView()).navigate(R.id.action_loginFragment_to_mainActivity2);        }    }    private String getText(TextInputEditText et){        return et == null || et.getText() == null ? "" : et.getText().toString().trim();    }}
