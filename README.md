@@ -87,3 +87,13 @@ Le principali componenti dell'architettura sono:
 - **Build e Distribuzione**: Configurazione di Gradle per la compilazione e la distribuzione 
   dell'applicazione.
 - **Documentazione**: Documentazione del codice e delle funzionalità dell'applicazione.
+
+
+## Crediti Open Food Facts
+
+Questa applicazione utilizza parte dei dati provenienti da Open Food Facts.
+
+© Open Food Facts — Dati disponibili sotto licenza Open Database License (ODbL) 1.0  
+https://openfoodfacts.org
+
+Questa applicazione è un progetto indipendente realizzato utilizzando dati di Open Food Facts.
