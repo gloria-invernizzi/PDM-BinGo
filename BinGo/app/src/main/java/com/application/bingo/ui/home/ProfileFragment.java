@@ -161,6 +161,7 @@ public class ProfileFragment extends Fragment {
         //Collego il ViewModel
 
         // 1. Creo il ViewModel associato al Fragment
+
         vm = new ViewModelProvider(
                 this,
                 new ViewModelProvider.Factory() { //il secondo parametro è la Factory che serve perchè ProfileViewModel ha un costruttore con parametri
@@ -169,10 +170,9 @@ public class ProfileFragment extends Fragment {
                     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                         // Creo i repository necessari
                         UserRepository userRepo = new UserRepository(requireContext());
-                        SettingsRepository settingsRepo = new SettingsRepository(requireContext());
 
                         // Creo e ritorno il ViewModel
-                        return (T) new ProfileViewModel(userRepo, settingsRepo); //cat a T perchè lavora con tipi generici
+                        return (T) new ProfileViewModel(userRepo ); //cat a T perchè lavora con tipi generici
                     }
                 }
         ).get(ProfileViewModel.class);//voglio un viewmodel del tipo ProfileViewModel associato a questo Fragment

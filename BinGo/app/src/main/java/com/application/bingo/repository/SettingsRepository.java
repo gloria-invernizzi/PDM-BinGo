@@ -20,15 +20,21 @@ public class SettingsRepository {
 
 
     // Tema Chiaro / Scuro
+    public String getTheme() {
+        return prefs.getString(KEY_DARK_THEME, "light"); // default: chiaro
+    }
 
     public boolean isDarkTheme() {
-        return prefs.getBoolean(KEY_DARK_THEME, false); // default: chiaro
+        return getTheme().equals("dark");
+    }
+    public void setTheme(String theme) {
+
+        // theme deve essere "light" o "dark"
+        prefs.edit()
+                .putString(KEY_DARK_THEME, theme)
+                .apply();
     }
 
-    public void setDarkTheme(boolean dark) {
-        if (dark)
-            prefs.edit().putString(KEY_DARK_THEME, KEY_DARK_THEME).apply();
-    }
 
 
     // Notifiche
@@ -65,11 +71,13 @@ public class SettingsRepository {
 
     // Lingua
     public String getLanguage() {
+
         return prefs.getString(KEY_LANGUAGE, KEY_LANGUAGE);
     }
-    public String setLanguage(String language) {
-        return prefs.edit().putString(KEY_LANGUAGE, language).toString();
+    public void setLanguage(String language) {
+        prefs.edit().putString(KEY_LANGUAGE, language).apply();
     }
+
 
 
 }
