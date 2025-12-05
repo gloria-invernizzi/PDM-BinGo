@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -38,6 +37,8 @@ public class WhereToThrowFragment extends Fragment {
     private List<String> categoriesList;
 
     private ListView listResults;
+    private Map<String, Integer> iconMap;
+    private Map<String, Integer> colorMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,10 +54,10 @@ public class WhereToThrowFragment extends Fragment {
         spinnerContainers = view.findViewById(R.id.spinnerContainers);
         listResults = view.findViewById(R.id.listResults);
 
+        setupAppearanceMaps();
         loadWasteData();
         setupSpinner();
         setupSearch();
-
     }
 
     private void loadWasteData() {
@@ -124,6 +125,23 @@ public class WhereToThrowFragment extends Fragment {
         spinnerContainers.setAdapter(adapter);
     }
 
+    private void setupAppearanceMaps() {
+        iconMap = new HashMap<>();
+        colorMap = new HashMap<>();
+
+        iconMap.put("Secchiello umido", R.drawable.ic_organic);
+        iconMap.put("Sacco viola (multimateriale)", R.drawable.ic_plastic);
+        iconMap.put("Vetro", R.drawable.ic_glass);
+        iconMap.put("Sacco indifferenziato", R.drawable.ic_residual);
+        iconMap.put("Contenitore carta", R.drawable.ic_paper);
+
+        // Colori (ARGB)
+        colorMap.put("Secchiello umido", 0xFFFFCC80);   // Marrone
+        colorMap.put("Contenitore carta", 0xFFFFF176);   // Giallo
+        colorMap.put("Sacco indifferenziato",  0xFFE57373);   // Rosso
+        colorMap.put("Sacco viola (multimateriale)", 0xFFCE93D8);   // Viola
+        colorMap.put("Vetro", 0xFF64B5F6);   // Blu
+    }
     private void setupSearch() {
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -159,8 +177,8 @@ public class WhereToThrowFragment extends Fragment {
             }
         }
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, results);
+        WasteAdapter adapter =
+                new WasteAdapter(getContext(), results, iconMap, colorMap);
 
         listResults.setAdapter(adapter);
     }

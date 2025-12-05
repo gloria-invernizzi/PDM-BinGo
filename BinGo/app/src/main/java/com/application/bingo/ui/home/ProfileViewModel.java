@@ -50,14 +50,10 @@ public class ProfileViewModel extends ViewModel {
 
     //restituisce il tema salvato
 
-    public String getTheme(){
-        return settingsRepo.getTheme();
-    }
-
     //Salva il tema selezionato
 
-    public void setTheme(String t){
-         settingsRepo.setTheme(t);
+    public void setDarkTheme(){
+         settingsRepo.setDarkTheme(true);
     }
 
     // Ritorna la lingua selezionata ("it", "en", "de", ecc.)
@@ -72,7 +68,7 @@ public class ProfileViewModel extends ViewModel {
 
     // Restituisce se le notifiche sono abilitate
     public boolean getNotificationsEnabled() {
-        return settingsRepo.getNotificationsEnabled();
+        return settingsRepo.isNotificationsEnabled();
     }
 
     // Abilita o disabilita le notifiche

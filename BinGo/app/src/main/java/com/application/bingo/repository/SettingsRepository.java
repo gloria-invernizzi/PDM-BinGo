@@ -10,8 +10,9 @@ public class SettingsRepository {
     private static final String KEY_NOTIFICATIONS = "notifications";
     private static final String KEY_SOUND = "sound";
     private static final String KEY_VIBRATION = "vibration";
-
+    private static final String KEY_LANGUAGE = "italian";
     private final SharedPreferences prefs;
+
 
     public SettingsRepository(Context context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -25,7 +26,8 @@ public class SettingsRepository {
     }
 
     public void setDarkTheme(boolean dark) {
-        prefs.edit().putBoolean(KEY_DARK_THEME, dark).apply();
+        if (dark)
+            prefs.edit().putString(KEY_DARK_THEME, KEY_DARK_THEME).apply();
     }
 
 
@@ -60,6 +62,16 @@ public class SettingsRepository {
     public void setVibrationEnabled(boolean enabled) {
         prefs.edit().putBoolean(KEY_VIBRATION, enabled).apply();
     }
+
+    // Lingua
+    public String getLanguage() {
+        return prefs.getString(KEY_LANGUAGE, KEY_LANGUAGE);
+    }
+    public String setLanguage(String language) {
+        return prefs.edit().putString(KEY_LANGUAGE, language).toString();
+    }
+
+
 }
 /*apply()  salva i dati in background, asincrono, senza bloccare il thread principale
 non torna nulla, void
