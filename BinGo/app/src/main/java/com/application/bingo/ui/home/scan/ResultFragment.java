@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,21 +22,20 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.bingo.R;
+import com.application.bingo.adapter.PackagingRecyclerAdapter;
 import com.application.bingo.model.ProductApiResponse;
-import com.application.bingo.util.MaterialTranslator;
+import com.application.bingo.util.MaterialParserUtils;
 import com.application.bingo.util.normalizer.ProductDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
-import java.util.stream.Collectors;
-
 public class ResultFragment extends Fragment {
 
-    TextView productName, productBrand, productBarcode, recyclingInfo, textResult;
+    TextView productName, productBrand, productBarcode, textResult, recyclingTitle;
     ImageView productImage;
     String barcode;
-
+    RecyclerView packagingRecyclerView;
     ProgressBar loadingSpinner;
 
     @Override
@@ -51,9 +52,12 @@ public class ResultFragment extends Fragment {
         productName = view.findViewById(R.id.product_name);
         productBrand = view.findViewById(R.id.product_brand);
         productBarcode = view.findViewById(R.id.product_barcode);
-        recyclingInfo = view.findViewById(R.id.recycling_info);
         textResult = view.findViewById(R.id.text_result);
         productImage = view.findViewById(R.id.product_image);
+        recyclingTitle = view.findViewById(R.id.recycling_title);
+
+        packagingRecyclerView = view.findViewById(R.id.packaging_material_container);
+        packagingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         barcode = getArguments().getString("barcode");
         productBarcode.setText(getString(R.string.barcode,barcode));
@@ -79,29 +83,43 @@ public class ResultFragment extends Fragment {
 
                         ProductApiResponse product = gson.fromJson(jsonString, ProductApiResponse.class);
 
-                        MaterialTranslator materialTranslator = new MaterialTranslator();
+                        MaterialParserUtils materialParser = new MaterialParserUtils(getContext(), product);
+                        materialParser.hydratePackagings();
 
                         productName.setText(product.getName());
-                        productBrand.setText(product.getBrand());
-
-                        recyclingInfo.setText(product.getPackagings().stream().map(packaging -> materialTranslator.translateMaterial(requireContext(), packaging.getMaterial())).collect(Collectors.joining(", ")));
-                        textResult.setText(R.string.result_success);
+                        productBrand.setText(getString(R.string.brand,product.getBrand()));
 
                         loadingSpinner.setVisibility(View.GONE);
+
+                        packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(product.getPackagings()));
 
                         if (!product.getImageUrl().isEmpty()) {
                             Picasso.get().load(product.getImageUrl()).into(productImage);
                         }
+
+                        Toast.makeText(requireContext(), R.string.result_success, Toast.LENGTH_LONG).show();
+
                     } catch (Exception e) {
+                        Toast.makeText(requireContext(), R.string.request_error + e.getMessage(), Toast.LENGTH_LONG).show();
+
                         textResult.setText(R.string.parsing_error);
+                        recyclingTitle.setText(" ");
+
                         loadingSpinner.setVisibility(View.GONE);
+                        Picasso.get().load(R.drawable.product_not_found).into(productImage);
+
                         Log.e("ResultActivity",e.getMessage()+" ");
                     }
                 },
                 error -> {
                     Toast.makeText(requireContext(), R.string.request_error + error.getMessage(), Toast.LENGTH_LONG).show();
+
                     textResult.setText(R.string.result_failed);
+                    recyclingTitle.setText(" ");
+
                     loadingSpinner.setVisibility(View.GONE);
+
+                    Picasso.get().load(R.drawable.product_not_found).into(productImage);
                 }
         );
 

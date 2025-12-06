@@ -67,6 +67,8 @@
     <string name="shape">Forma</string>
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
     <string name="home">Home</string>
+    <string name="packagings_title">Dove lo butto?</string>
+    <string name="no_packaging_details">Non sono presenti informazioni sull\'imballaggio del prodotto</string>
 
         <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
         <string name="default_web_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>

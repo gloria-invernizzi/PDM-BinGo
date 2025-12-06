@@ -65,6 +65,9 @@
     <string name="notification_preferences">Notifications preferences</string>
     <string name="settings">Settings</string>
     <string name="home">Home</string>
+    <string name="packagings_title">where do I throw it?</string>
+    <string name="no_packaging_details">No information provided regarding product packaging</string>
+
 
     !-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
     <string name="default_web_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>

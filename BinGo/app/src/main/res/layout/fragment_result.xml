@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -10,64 +11,84 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <ImageView
-            android:id="@+id/product_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_recycle_symbol"
-            android:contentDescription="@string/product_image" />
-
-        <ProgressBar
-            android:id="@+id/loading_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="visible"
-            android:indeterminate="true" />
-
-        <TextView
-            android:id="@+id/product_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_name"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:id="@+id/product_brand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/brand"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:id="@+id/product_barcode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/barcode"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:id="@+id/recycling_info"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tips"
-            android:textSize="16sp"
-            android:layout_marginTop="24dp"
-            android:padding="12dp"
-            android:background="#E0F2F1"
-            android:textColor="#004D40" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginVertical="12dp"
+                    android:textColor="?attr/colorPrimary"
+                    />
+
+                <ImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:contentDescription="@string/product_image"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_recycle_symbol" />
+
+                <ProgressBar
+                    android:id="@+id/loading_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:id="@+id/product_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginTop="5dp" />
+
+                <TextView
+                    android:id="@+id/product_barcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#666"
+                    android:layout_marginTop="5dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/recycling_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/packagings_title"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/packaging_material_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/text_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/result" />
-
-
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
     </LinearLayout>
 </ScrollView>

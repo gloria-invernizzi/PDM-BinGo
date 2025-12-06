@@ -1,14 +1,19 @@
 package com.application.bingo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductApiResponse {
     private String barcode;
-    private String imageUrl;
-    private String name;
-    private String brand;
-    private List<Packaging> packagings;
+    private String imageUrl = "";
+    private String name = "";
+    private String brand = "";
+    private List<PackagingDto> packagings;
+    private Boolean nonRecyclableAndNonBiodegradable;
 
+    public ProductApiResponse() {
+        this.packagings = new ArrayList<>();
+    }
     public String getImageUrl() {
         return imageUrl;
     }
@@ -39,11 +44,11 @@ public class ProductApiResponse {
         return this;
     }
 
-    public List<Packaging> getPackagings() {
+    public List<PackagingDto> getPackagings() {
         return packagings;
     }
 
-    public ProductApiResponse setPackagings(List<Packaging> packagings) {
+    public ProductApiResponse setPackagings(List<PackagingDto> packagings) {
         this.packagings = packagings;
 
         return this;
@@ -55,6 +60,17 @@ public class ProductApiResponse {
 
     public ProductApiResponse setBrand(String brand) {
         this.brand = brand;
+
+        return this;
+    }
+
+    public Boolean getNonRecyclableAndNonBiodegradable() {
+        return nonRecyclableAndNonBiodegradable;
+    }
+
+    public ProductApiResponse setNonRecyclableAndNonBiodegradable(Boolean nonRecyclableAndNonBiodegradable)
+    {
+        this.nonRecyclableAndNonBiodegradable = nonRecyclableAndNonBiodegradable;
 
         return this;
     }
