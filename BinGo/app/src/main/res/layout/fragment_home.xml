@@ -71,7 +71,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"/>
             <TextView
-                android:text="Dove lo butto?"
+                android:text="@string/where_to_throw"
                 android:textSize="18sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

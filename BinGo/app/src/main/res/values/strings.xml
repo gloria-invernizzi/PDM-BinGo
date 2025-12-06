@@ -79,4 +79,15 @@
         <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
         <string name="project_id" translatable="false">pdm-bingo</string>
 
+    <!-- Categorie -->
+    <string name="organic">Organico</string>
+    <string name="plastic">Plastica e metalli</string>
+    <string name="paper">Carta e cartone</string>
+    <string name="residual">Indifferenziato</string>
+    <string name="glass">Vetro</string>
+    <string name="ecomobile">Ecostazione mobile</string>
+    <string name="center">Centro di raccolta</string>
+    <string name="all">Tutti</string>
+    <string name="where_to_throw">Dove lo butto?</string>
+
 </resources>
