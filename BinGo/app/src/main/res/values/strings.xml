@@ -51,6 +51,12 @@
     <string name="settings">Impostazioni</string>
     <string name="logout">Logout</string>
 
+    <string name="change_password_title">Cambia Password</string>
+    <string name="old_password_hint">Vecchia Password</string>
+    <string name="new_password_hint">Nuova Password</string>
+    <string name="confirm_password_hint">Conferma Password</string>
+    <string name="update_password_button">Aggiorna Password</string>
+
     <!-- Materiali -->
     <string name="material_metal">Metallo</string>
     <string name="material_plastic">Plastica</string>

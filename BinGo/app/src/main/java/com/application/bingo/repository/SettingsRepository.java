@@ -30,7 +30,7 @@ public class SettingsRepository {
 
         // if null -> nessun tema scelto -> uso tema del sistema
         if (saved == null) {
-            int nightModeFlags = Resources.getSystem().getConfiguration().uiMode
+            int nightModeFlags = context.getResources().getConfiguration().uiMode
                     & Configuration.UI_MODE_NIGHT_MASK;
 
             if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
@@ -39,6 +39,7 @@ public class SettingsRepository {
                 return "light";
             }
         }
+
 
         return saved;
     }

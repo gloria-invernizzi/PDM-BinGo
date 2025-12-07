@@ -78,12 +78,12 @@ public class SettingsFragment extends Fragment {
         switchSuono = view.findViewById(R.id.switch_suono);
         switchVibrazione = view.findViewById(R.id.switch_vibrazione);
         layoutCambiaPassword = view.findViewById(R.id.layout_cambia_password);
-//cambio password
+
+        // cambio password
         layoutCambiaPassword.setOnClickListener(v -> {
             NavHostFragment.findNavController(this)
                     .navigate(R.id.changePasswordFragment);
         });
-
 
         // -----------------------------
         // NOTIFICHE: carico stato e osservo cambiamenti
@@ -137,6 +137,9 @@ public class SettingsFragment extends Fragment {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // applica tema scuro
                     }
                     dialog.dismiss();
+
+                    // ⚡ ricrea l'activity per applicare subito il tema
+                    requireActivity().recreate();
                 })
                 .show();
     }
@@ -206,13 +209,4 @@ public class SettingsFragment extends Fragment {
         // ricrea l'activity per applicare subito i nuovi testi
         requireActivity().recreate();
     }
-
-
-
-
-
-
-
-
-
 }

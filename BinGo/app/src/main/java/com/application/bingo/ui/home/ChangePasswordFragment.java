@@ -50,8 +50,7 @@ public class ChangePasswordFragment extends Fragment {
         // Recupera l'email dell'utente loggato da SharedPreferences
         SharedPreferences prefs = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
         userEmail = prefs.getString("user_email", null);
-
-        Log.d("ChangePasswordFragment", "Email utente: " + userEmail);
+        Log.d("ChangePasswordFragment", "Email letta da SharedPreferences: " + userEmail);
 
         if (userEmail == null) {
             Toast.makeText(requireContext(), "Utente non loggato", Toast.LENGTH_SHORT).show();

@@ -39,6 +39,12 @@
     <string name="request_error">Request error</string>
     <string name="product_name">Product name</string>
 
+    <string name="change_password_title">Change Password</string>
+    <string name="old_password_hint">Old Password</string>
+    <string name="new_password_hint">New Password</string>
+    <string name="confirm_password_hint">Confirm Password</string>
+    <string name="update_password_button">Update Password</string>
+
     <!-- Materials -->
     <string name="profile_title">MyProfile</string>
     <string name="logout">Logout</string>
