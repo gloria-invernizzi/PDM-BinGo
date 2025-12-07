@@ -1,5 +1,5 @@
 {
-  "Secchiello umido": {
+  "ORGANIC": {
     "descrizione": "Rifiuti organici e biodegradabili",
     "cosa_mettere": [
       "Scarti alimentari",
@@ -110,7 +110,154 @@
     }
   },
 
-  "Sacco indifferenziato": {
+  "PLASTIC": {
+    "descrizione": "Plastica, alluminio, metalli e Tetrapak nel sacco viola",
+    "cosa_mettere": [
+      "Bottiglie plastica",
+      "Flaconi detergenti",
+      "Flaconi shampoo",
+      "Flaconi sapone",
+      "Bottiglie acqua",
+      "Pellicola plastica",
+      "Cellophane",
+      "Buste e sacchetti",
+      "Vaschette plastica",
+      "Contenitori yogurt (vuoti)",
+      "Reti frutta",
+      "Barattoli plastica",
+      "Imballaggi plastica",
+      "Contenitori detersivi",
+      "Bottiglie spremute",
+      "Cassette plastica",
+      "Vasetti polistirolo",
+      "Imballaggi polistirolo",
+      "Piatti plastica",
+      "Bicchieri plastica",
+      "Appendini plastica",
+      "Tubi dentifricio",
+      "Lattine",
+      "Barattoli latta",
+      "Scatolette tonno",
+      "Vaschette alluminio",
+      "Fogli alluminio",
+      "Tappi corona",
+      "Capsule caffè alluminio",
+      "TetraPak latte",
+      "TetraPak succhi",
+      "Imballaggi poliaccoppiati"
+    ],
+    "cosa_non_mettere": [
+      "Plastica dura (giocattoli)",
+      "Gomma",
+      "Caucciù",
+      "CD e DVD",
+      "Piatti compostabili",
+      "Sacchetti compostabili",
+      "Prodotti in bioplastica compostabile",
+      "Vaschette molto sporche",
+      "Bicchieri sporchi di residui",
+      "Imballaggi con residui liquidi",
+      "Posate biodegradabili"
+    ],
+    "rifiuti": {
+      "bottiglie plastica": ["bottiglia PET"],
+      "flacone detergente": ["flacone detersivo bucato"],
+      "vaschetta plastica": ["vaschetta carne", "vaschetta frutta"],
+      "polistirolo": ["imballo polistirolo"],
+      "lattina": ["lattina bibita", "lattina birra"],
+      "scatoletta tonno": ["scatoletta cibo"],
+      "tetrapak": ["contenitore latte"],
+      "appendino plastica": ["gruccia plastica"],
+      "pellicola": ["film plastico"],
+      "capsule caffe alluminio": ["capsule nespresso compatibili"]
+    }
+  },
+
+  "PAPER": {
+    "descrizione": "Carta e cartone puliti nel bidone giallo rigido",
+    "cosa_mettere": [
+      "Giornali",
+      "Riviste",
+      "Quotidiani",
+      "Libri",
+      "Quaderni",
+      "Fogli carta",
+      "Cartoncino",
+      "Scatole cartone",
+      "Imballaggi cartone",
+      "Cartoni pizza NON unti",
+      "Tubetti carta",
+      "Carta da pacchi",
+      "Sacchetti carta",
+      "Cartoni uova",
+      "Cartelletta in cartoncino",
+      "Documenti",
+      "Fotocopie",
+      "Moduli vari",
+      "Carta da ufficio"
+    ],
+    "cosa_non_mettere": [
+      "Carta termica (scontrini)",
+      "Carta oleata",
+      "Carta forno NON compostabile",
+      "Carta plastificata",
+      "Carta metallizzata",
+      "Carta sporca di cibo",
+      "Imballaggi TetraPak",
+      "Cartoni pizza unti",
+      "Carta vetrata"
+    ],
+    "rifiuti": {
+      "giornali": ["quotidiano", "rivista"],
+      "scatola cartone": ["box cartone", "imballo amazon"],
+      "cartone pizza": ["pizza box"],
+      "sacchetto carta": ["shopper carta"],
+      "libri": ["tomo", "manuale scolastico"],
+      "quaderni": ["notes"],
+      "cartoni uova": ["porta uova"],
+      "foglio carta": ["fogli A4", "carta stampante"]
+    }
+  },
+
+  "GLASS": {
+    "descrizione": "Solo vetro pulito: bottiglie e vasetti senza tappi o coperchi",
+    "cosa_mettere": [
+      "Bottiglie in vetro",
+      "Vasetti in vetro",
+      "Contenitori vetro per alimenti",
+      "Bottiglie vino",
+      "Bottiglie birra",
+      "Barattoli vetro per conserve",
+      "Vasetti miele",
+      "Vasetti marmellata",
+      "Flaconi cosmetici in vetro (puliti)",
+      "Contenitori medicine in vetro (puliti)"
+    ],
+    "cosa_non_mettere": [
+      "Specchi",
+      "Ceramiche",
+      "Porcellane",
+      "Cristalli",
+      "Bicchieri",
+      "Pirex",
+      "Vetroceramica",
+      "Lampadine",
+      "Neon",
+      "Schermi TV",
+      "Schermi monitor",
+      "Tappi metallici",
+      "Tappi plastica",
+      "Vetro sporco"
+    ],
+    "rifiuti": {
+      "bottiglia": ["bottiglia vetro", "bottiglia vino", "bottiglia olio"],
+      "vasetto": ["vasetto vetro", "barattolo vetro"],
+      "barattolo conserva": ["barattolo passata"],
+      "contenitore vetro cosmetici": ["flacone vetro crema"]
+    }
+  },
+
+  "RESIDUAL": {
     "descrizione": "Rifiuti non riciclabili e non pericolosi",
     "cosa_mettere": [
       "Posate in plastica",
@@ -276,205 +423,7 @@
     }
   },
 
-  "Vetro": {
-    "descrizione": "Solo vetro pulito: bottiglie e vasetti senza tappi o coperchi",
-    "cosa_mettere": [
-      "Bottiglie in vetro",
-      "Vasetti in vetro",
-      "Contenitori vetro per alimenti",
-      "Bottiglie vino",
-      "Bottiglie birra",
-      "Barattoli vetro per conserve",
-      "Vasetti miele",
-      "Vasetti marmellata",
-      "Flaconi cosmetici in vetro (puliti)",
-      "Contenitori medicine in vetro (puliti)"
-    ],
-    "cosa_non_mettere": [
-      "Specchi",
-      "Ceramiche",
-      "Porcellane",
-      "Cristalli",
-      "Bicchieri",
-      "Pirex",
-      "Vetroceramica",
-      "Lampadine",
-      "Neon",
-      "Schermi TV",
-      "Schermi monitor",
-      "Tappi metallici",
-      "Tappi plastica",
-      "Vetro sporco"
-    ],
-    "rifiuti": {
-      "bottiglia": ["bottiglia vetro", "bottiglia vino", "bottiglia olio"],
-      "vasetto": ["vasetto vetro", "barattolo vetro"],
-      "barattolo conserva": ["barattolo passata"],
-      "contenitore vetro cosmetici": ["flacone vetro crema"]
-    }
-  },
-
-  "Contenitore carta": {
-    "descrizione": "Carta e cartone puliti nel bidone giallo rigido",
-    "cosa_mettere": [
-      "Giornali",
-      "Riviste",
-      "Quotidiani",
-      "Libri",
-      "Quaderni",
-      "Fogli carta",
-      "Cartoncino",
-      "Scatole cartone",
-      "Imballaggi cartone",
-      "Cartoni pizza NON unti",
-      "Tubetti carta",
-      "Carta da pacchi",
-      "Sacchetti carta",
-      "Cartoni uova",
-      "Cartelletta in cartoncino",
-      "Documenti",
-      "Fotocopie",
-      "Moduli vari",
-      "Carta da ufficio"
-    ],
-    "cosa_non_mettere": [
-      "Carta termica (scontrini)",
-      "Carta oleata",
-      "Carta forno NON compostabile",
-      "Carta plastificata",
-      "Carta metallizzata",
-      "Carta sporca di cibo",
-      "Imballaggi TetraPak",
-      "Cartoni pizza unti",
-      "Carta vetrata"
-    ],
-    "rifiuti": {
-      "giornali": ["quotidiano", "rivista"],
-      "scatola cartone": ["box cartone", "imballo amazon"],
-      "cartone pizza": ["pizza box"],
-      "sacchetto carta": ["shopper carta"],
-      "libri": ["tomo", "manuale scolastico"],
-      "quaderni": ["notes"],
-      "cartoni uova": ["porta uova"],
-      "foglio carta": ["fogli A4", "carta stampante"]
-    }
-  },
-
-  "Sacco viola (multimateriale)": {
-    "descrizione": "Plastica, alluminio, metalli e Tetrapak nel sacco viola",
-    "cosa_mettere": [
-      "Bottiglie plastica",
-      "Flaconi detergenti",
-      "Flaconi shampoo",
-      "Flaconi sapone",
-      "Bottiglie acqua",
-      "Pellicola plastica",
-      "Cellophane",
-      "Buste e sacchetti",
-      "Vaschette plastica",
-      "Contenitori yogurt (vuoti)",
-      "Reti frutta",
-      "Barattoli plastica",
-      "Imballaggi plastica",
-      "Contenitori detersivi",
-      "Bottiglie spremute",
-      "Cassette plastica",
-      "Vasetti polistirolo",
-      "Imballaggi polistirolo",
-      "Piatti plastica",
-      "Bicchieri plastica",
-      "Appendini plastica",
-      "Tubi dentifricio",
-      "Lattine",
-      "Barattoli latta",
-      "Scatolette tonno",
-      "Vaschette alluminio",
-      "Fogli alluminio",
-      "Tappi corona",
-      "Capsule caffè alluminio",
-      "TetraPak latte",
-      "TetraPak succhi",
-      "Imballaggi poliaccoppiati"
-    ],
-    "cosa_non_mettere": [
-      "Plastica dura (giocattoli)",
-      "Gomma",
-      "Caucciù",
-      "CD e DVD",
-      "Piatti compostabili",
-      "Sacchetti compostabili",
-      "Prodotti in bioplastica compostabile",
-      "Vaschette molto sporche",
-      "Bicchieri sporchi di residui",
-      "Imballaggi con residui liquidi",
-      "Posate biodegradabili"
-    ],
-    "rifiuti": {
-      "bottiglie plastica": ["bottiglia PET"],
-      "flacone detergente": ["flacone detersivo bucato"],
-      "vaschetta plastica": ["vaschetta carne", "vaschetta frutta"],
-      "polistirolo": ["imballo polistirolo"],
-      "lattina": ["lattina bibita", "lattina birra"],
-      "scatoletta tonno": ["scatoletta cibo"],
-      "tetrapak": ["contenitore latte"],
-      "appendino plastica": ["gruccia plastica"],
-      "pellicola": ["film plastico"],
-      "capsule caffe alluminio": ["capsule nespresso compatibili"]
-    }
-  },
-
-  "Ecostazione mobile": {
-    "descrizione": "Rifiuti elettrici ed elettronici: si conferiscono presso il centro di raccolta o tramite ritiro su chiamata.",
-    "cosa_mettere": [
-      "Televisori",
-      "Monitor",
-      "Computer",
-      "Stampanti",
-      "Telefoni",
-      "Smartphone",
-      "Tablet",
-      "Notebook",
-      "Lavatrici",
-      "Lavastoviglie",
-      "Frigoriferi",
-      "Congelatori",
-      "Forni elettrici",
-      "Forni microonde",
-      "Aspirapolvere",
-      "Robot cucina",
-      "Asciugacapelli",
-      "Rasoi elettrici",
-      "Ventilatori",
-      "Climatizzatori",
-      "Router",
-      "Modem",
-      "Telecomandi"
-    ],
-    "cosa_non_mettere": [
-      "Lampadine",
-      "Neon",
-      "Batterie",
-      "Pile",
-      "Toner",
-      "Cartucce stampante",
-      "Bombolette spray",
-      "Qualsiasi rifiuto elettrico non svuotato da liquidi"
-    ],
-    "rifiuti": {
-      "tv": ["televisore", "smart tv"],
-      "pc": ["computer", "desktop"],
-      "notebook": ["laptop", "portatile"],
-      "cellulare": ["smartphone", "telefono"],
-      "lavatrice": ["elettrodomestico grande"],
-      "frigo": ["frigorifero", "refrigeratore"],
-      "microonde": ["forno microonde"],
-      "stampante": ["inkjet", "laser"],
-      "router": ["modem", "access point"],
-      "aspirapolvere": ["scopa elettrica"]
-    }
-  },
-
-  "Centro di raccolta": {
+  "CENTER": {
     "descrizione": "Rifiuti voluminosi conferibili presso il centro di raccolta o tramite ritiro a domicilio. Include anche rifiuti speciali come oli esausti, lampadine, farmaci scaduti, pile, inerti e rifiuti pericolosi.",
     "cosa_mettere": [
       "Mobili",
@@ -586,6 +535,57 @@
       "solvente": ["diluente"],
       "toner": ["cartuccia stampante"],
       "spray": ["bombolette"]
+    }
+  },
+
+  "ECOMOBILE": {
+    "descrizione": "Rifiuti elettrici ed elettronici: si conferiscono presso il centro di raccolta o tramite ritiro su chiamata.",
+    "cosa_mettere": [
+      "Televisori",
+      "Monitor",
+      "Computer",
+      "Stampanti",
+      "Telefoni",
+      "Smartphone",
+      "Tablet",
+      "Notebook",
+      "Lavatrici",
+      "Lavastoviglie",
+      "Frigoriferi",
+      "Congelatori",
+      "Forni elettrici",
+      "Forni microonde",
+      "Aspirapolvere",
+      "Robot cucina",
+      "Asciugacapelli",
+      "Rasoi elettrici",
+      "Ventilatori",
+      "Climatizzatori",
+      "Router",
+      "Modem",
+      "Telecomandi"
+    ],
+    "cosa_non_mettere": [
+      "Lampadine",
+      "Neon",
+      "Batterie",
+      "Pile",
+      "Toner",
+      "Cartucce stampante",
+      "Bombolette spray",
+      "Qualsiasi rifiuto elettrico non svuotato da liquidi"
+    ],
+    "rifiuti": {
+      "tv": ["televisore", "smart tv"],
+      "pc": ["computer", "desktop"],
+      "notebook": ["laptop", "portatile"],
+      "cellulare": ["smartphone", "telefono"],
+      "lavatrice": ["elettrodomestico grande"],
+      "frigo": ["frigorifero", "refrigeratore"],
+      "microonde": ["forno microonde"],
+      "stampante": ["inkjet", "laser"],
+      "router": ["modem", "access point"],
+      "aspirapolvere": ["scopa elettrica"]
     }
   }
 }

@@ -76,5 +76,14 @@
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD...</string>
     <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
     <string name="project_id" translatable="false">pdm-bingo</string>
+    <string name="organic">Organic waste</string>
+    <string name="plastic">Plastic and metal</string>
+    <string name="paper">Paper and cardboard</string>
+    <string name="residual">Residual waste</string>
+    <string name="glass">Glass</string>
+    <string name="ecomobile">Mobile echostation</string>
+    <string name="center">Collection center</string>
+    <string name="all">All</string>
+    <string name="where_to_throw">Where it goes</string>
 
 </resources>

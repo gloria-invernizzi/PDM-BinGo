@@ -81,4 +81,15 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Categorie -->
+    <string name="organic">Organico</string>
+    <string name="plastic">Plastica e metalli</string>
+    <string name="paper">Carta e cartone</string>
+    <string name="residual">Indifferenziato</string>
+    <string name="glass">Vetro</string>
+    <string name="ecomobile">Ecostazione mobile</string>
+    <string name="center">Centro di raccolta</string>
+    <string name="all">Tutti</string>
+    <string name="where_to_throw">Dove lo butto?</string>
+
 </resources>

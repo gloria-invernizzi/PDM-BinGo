@@ -5,51 +5,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.application.bingo.R;
+import com.application.bingo.model.WasteItem;
 
 import java.util.List;
-import java.util.Map;
 
-public class WasteAdapter extends ArrayAdapter<String> {
+public class WasteAdapter extends ArrayAdapter<WasteItem> {
 
-    private Map<String, Integer> iconMap;
-    private Map<String, Integer> colorMap;
-
-    public WasteAdapter(Context context, List<String> items,
-                        Map<String, Integer> iconMap,
-                        Map<String, Integer> colorMap) {
+    public WasteAdapter(Context context, List<WasteItem> items) {
         super(context, 0, items);
-        this.iconMap = iconMap;
-        this.colorMap = colorMap;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.list_item_waste, parent, false);
         }
 
-        String item = getItem(position);
-        String category = item.split(" → ")[1];
+        WasteItem item = getItem(position);
 
-        ImageView icon = convertView.findViewById(R.id.icon);
-        TextView text = convertView.findViewById(R.id.text);
+        View colorBar = convertView.findViewById(R.id.colorBar);
+        TextView textTitle = convertView.findViewById(R.id.textTitle);
+        TextView textCategory = convertView.findViewById(R.id.textCategory);
 
-        text.setText(item);
-
-        if (iconMap.containsKey(category))
-            icon.setImageResource(iconMap.get(category));
-
-        if (colorMap.containsKey(category))
-            convertView.setBackgroundColor(colorMap.get(category));
+        if (item != null) {
+            textTitle.setText(item.title);
+            textCategory.setText(item.category);
+            textCategory.setTextColor(item.color);
+            colorBar.setBackgroundColor(item.color);
+        }
 
         return convertView;
     }
