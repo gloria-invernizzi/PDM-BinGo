@@ -32,5 +32,46 @@ public class UserRepository {
     }
 
 
+    /**
+     * Cambia la password di un utente.
+     * Tutta la logica di validazione rimane qui nel repository.
+     */
+    public void changePassword(String email, String oldPassword, String newPassword, String confirmPassword, Callback callback) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            User user = userDao.findByEmail(email);
 
+            if (user == null) {
+                postToMain(() -> callback.onFailure("Utente non trovato"));
+                return;
+            }
+
+            if (!user.getPassword().equals(oldPassword)) {
+                postToMain(() -> callback.onFailure("Vecchia password errata"));
+                return;
+            }
+
+            if (!newPassword.equals(confirmPassword)) {
+                postToMain(() -> callback.onFailure("Le password non corrispondono"));
+                return;
+            }
+
+            user.setPassword(newPassword);
+            userDao.update(user);
+
+            postToMain(() -> callback.onSuccess("Password aggiornata con successo"));
+        });
+    }
+
+    // Helper per chiamare il callback sul main thread
+    private void postToMain(Runnable runnable) {
+        new android.os.Handler(android.os.Looper.getMainLooper()).post(runnable);
+    }
+
+    /**
+     * Interfaccia callback per notificare successi o errori al ViewModel.
+     */
+    public interface Callback {
+        void onSuccess(String message);
+        void onFailure(String error);
+    }
 }

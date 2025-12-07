@@ -54,11 +54,34 @@ public class SettingsViewModel extends ViewModel {
 
 
     // NOTIFICHE
-    public boolean getNotificationsEnabled() {
-        return settingsRepo.isNotificationsEnabled();
+    private final MutableLiveData<Boolean> notificationsLiveData = new MutableLiveData<>();
+
+    public LiveData<Boolean> getNotificationsLiveData() {
+        return notificationsLiveData;
+    }
+
+    public void loadNotificationsState() {
+        notificationsLiveData.setValue(settingsRepo.isNotificationsEnabled());
     }
 
     public void setNotificationsEnabled(boolean enabled) {
         settingsRepo.setNotificationsEnabled(enabled);
+        notificationsLiveData.setValue(enabled); // aggiorna la LiveData
+    }
+
+    public boolean isSoundEnabled() {
+        return settingsRepo.isSoundEnabled();
+    }
+
+    public boolean isVibrationEnabled() {
+        return settingsRepo.isVibrationEnabled();
+    }
+
+    public void setSoundEnabled(boolean isChecked) {
+        settingsRepo.setSoundEnabled(isChecked);
+    }
+
+    public void setVibrationEnabled(boolean isChecked) {
+   settingsRepo.setVibrationEnabled(isChecked);
     }
 }

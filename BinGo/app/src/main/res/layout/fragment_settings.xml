@@ -25,6 +25,7 @@
 
         <!-- Cambia password -->
         <LinearLayout
+            android:id="@+id/layout_cambia_password"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
@@ -175,6 +176,7 @@
 
         <!-- Notifiche -->
         <LinearLayout
+            android:id="@+id/layout_notifiche"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
@@ -198,13 +200,14 @@
                 android:textColor="?attr/colorOnSurface" />
 
             <Switch
-                android:id="@+id/switch_notifications"
+                android:id="@+id/switch_notifiche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <!-- Suono -->
         <LinearLayout
+            android:id="@+id/layout_suono"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
@@ -228,13 +231,14 @@
                 android:textColor="?attr/colorOnSurface" />
 
             <Switch
-                android:id="@+id/switch_sound"
+                android:id="@+id/switch_suono"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <!-- Vibrazione -->
         <LinearLayout
+            android:id="@+id/layout_vibrazione"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
@@ -258,7 +262,7 @@
                 android:textColor="?attr/colorOnSurface" />
 
             <Switch
-                android:id="@+id/switch_vibration"
+                android:id="@+id/switch_vibrazione"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />

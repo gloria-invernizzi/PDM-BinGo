@@ -79,7 +79,11 @@
         android:id="@+id/settingsFragment"
         android:name="com.application.bingo.ui.home.SettingsFragment"
         android:label="Impostazioni"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
 
 
 
@@ -89,6 +93,10 @@
         android:name="com.application.bingo.ui.home.WhereToThrowFragment"
         android:label="Dove lo butto?"
         tools:layout="@layout/fragment_where_to_throw"/>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.application.bingo.ui.home.ChangePasswordFragment"
+        android:label="ChangePasswordFragment" />
 
 
 </navigation>

@@ -68,15 +68,17 @@
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
     <string name="home">Home</string>
 
-        <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
-        <string name="default_web_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>
+    <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
+    <string name="default_web_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>
 
-        <!-- Valori generati da Firebase/Google e usati internamente. -->
-        <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
-        <string name="google_api_key" translatable="false">AIzaSyD...</string>
-        <string name="google_app_id" translatable="false">1:549574946118:android:5ab38ee7b4dd06f140c947</string>
-        <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD...</string>
-        <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
-        <string name="project_id" translatable="false">pdm-bingo</string>
+    <!-- Valori generati da Firebase/Google e usati internamente. -->
+    <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
+    <string name="google_api_key" translatable="false">AIzaSyD...</string>
+    <string name="google_app_id" translatable="false">1:549574946118:android:5ab38ee7b4dd06f140c947</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD...</string>
+    <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
+    <string name="project_id" translatable="false">pdm-bingo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

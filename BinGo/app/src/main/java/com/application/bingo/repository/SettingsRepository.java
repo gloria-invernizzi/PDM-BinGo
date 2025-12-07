@@ -2,6 +2,8 @@ package com.application.bingo.repository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 
 public class SettingsRepository {
 
@@ -10,19 +12,37 @@ public class SettingsRepository {
     private static final String KEY_NOTIFICATIONS = "notifications";
     private static final String KEY_SOUND = "sound";
     private static final String KEY_VIBRATION = "vibration";
-    private static final String KEY_LANGUAGE = "italian";
+    private static final String KEY_LANGUAGE = "language";
     private final SharedPreferences prefs;
+
+    private final Context context;
 
 
     public SettingsRepository(Context context) {
+        this.context=context;
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
 
     // Tema Chiaro / Scuro
     public String getTheme() {
-        return prefs.getString(KEY_DARK_THEME, "light"); // default: chiaro
+        String saved = prefs.getString(KEY_DARK_THEME, null);
+
+        // if null -> nessun tema scelto -> uso tema del sistema
+        if (saved == null) {
+            int nightModeFlags = Resources.getSystem().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+
+            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                return "dark";
+            } else {
+                return "light";
+            }
+        }
+
+        return saved;
     }
+
 
     public boolean isDarkTheme() {
         return getTheme().equals("dark");
@@ -40,7 +60,7 @@ public class SettingsRepository {
     // Notifiche
 
     public boolean isNotificationsEnabled() {
-        return prefs.getBoolean(KEY_NOTIFICATIONS, true); // default: attive
+        return prefs.getBoolean(KEY_NOTIFICATIONS, false); // default: disattive
     }
 
     public void setNotificationsEnabled(boolean enabled) {
@@ -71,9 +91,16 @@ public class SettingsRepository {
 
     // Lingua
     public String getLanguage() {
+        // Usa il context dell'app per leggere la lingua corrente
+        String defaultPhoneLang = context.getResources()
+                .getConfiguration()
+                .getLocales()
+                .get(0)
+                .getLanguage();
 
-        return prefs.getString(KEY_LANGUAGE, KEY_LANGUAGE);
+        return prefs.getString(KEY_LANGUAGE, defaultPhoneLang);
     }
+
     public void setLanguage(String language) {
         prefs.edit().putString(KEY_LANGUAGE, language).apply();
     }
