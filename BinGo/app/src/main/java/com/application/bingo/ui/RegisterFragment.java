@@ -1,4 +1,4 @@
-// file: app/src/main/java/com/application/bingo/ui/RegisterFragment.java
+// File: `BinGo/app/src/main/java/com/application/bingo/ui/RegisterFragment.java`
 package com.application.bingo.ui;
 
 import android.os.Bundle;
@@ -21,8 +21,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
-//per gestire task asincroni??
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
@@ -31,7 +29,6 @@ import java.util.concurrent.Executors;
 
 public class RegisterFragment extends Fragment {
     private TextInputEditText etName, etAddress, etEmail, etPassword, etConfirm;
-    private MaterialButton btnRegister;
     private CheckBox cbRemember;
     private PrefsManager prefs;
     private final Executor bg = Executors.newSingleThreadExecutor();
@@ -56,17 +53,18 @@ public class RegisterFragment extends Fragment {
         etPassword = view.findViewById(R.id.etPassword);
         etConfirm = view.findViewById(R.id.etConfirm);
         cbRemember = view.findViewById(R.id.cbRemember);
-        btnRegister = view.findViewById(R.id.btnRegister);
+        MaterialButton btnRegister = view.findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener((View v) -> attemptRegister());
     }
 
     private void attemptRegister() {
         final String name = getText(etName);
+        final String address = getText(etAddress);
         final String email = getText(etEmail);
         final String pass = getText(etPassword);
         final String confirm = getText(etConfirm);
-        final boolean remember = cbRemember!=null && cbRemember.isChecked();
+        final boolean remember = cbRemember != null && cbRemember.isChecked();
 
         if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
             Toast.makeText(requireContext(), "Campi mancanti", Toast.LENGTH_SHORT).show();
@@ -85,41 +83,41 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        // Registrazione su Firebase e su Room per garantire persistenza
         mAuth.createUserWithEmailAndPassword(email, pass)
-                /* Gestione esito task registrazione Firebase in modo asincrono con listener k per
-                * evitare blocchi dell'interfaccia utente
-                */
                 .addOnCompleteListener(requireActivity(), (Task<AuthResult> task) -> {
                     if (task.isSuccessful()) {
-                        // Firebase user created -> salva anche in Room
-                        // 1. SUCCESSO: L'email non esisteva. Procediamo a salvare in Room.
                         bg.execute(() -> {
-                            // Doppio controllo di sicurezza per Room
                             User existing = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
                             if (existing == null) {
-                                User user = new User(name, "", email, pass);
+                                User user = new User(name, address, email, pass);
                                 long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
 
                                 if (id > 0) {
                                     if (remember) {
-                                        prefs.saveUser(name, "", email, pass); // Aggiornato per salvare anche email/pass
+                                        // salva nome, address, email, password e flag remember
+                                        prefs.saveUser(name, address, email, pass);
+                                        prefs.setRemember(true);
+                                    } else {
+                                        prefs.setRemember(false);
                                     }
                                     requireActivity().runOnUiThread(() -> {
                                         Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
-                                        requireActivity().onBackPressed();
+                                        requireActivity().getOnBackPressedDispatcher().onBackPressed();
                                     });
                                 }
+                            } else {
+                                // già presente in Room (caso raro)
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(requireContext(), "Utente già presente", Toast.LENGTH_SHORT).show();
+                                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                                });
                             }
                         });
                     } else {
-                        // 2. FALLIMENTO: l'email esiste già
                         Exception exception = task.getException();
                         if (exception instanceof FirebaseAuthUserCollisionException) {
-                            // L'utente esiste già con questa email!
                             Toast.makeText(requireContext(), "Email già registrata! Effettua il login.", Toast.LENGTH_LONG).show();
-                            // Rimanda automaticamente al fragment di login
-                            requireActivity().onBackPressed();
+                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
                         } else {
                             String msg = exception != null ? exception.getMessage() : "Errore Firebase";
                             Toast.makeText(requireContext(), "Registrazione fallita: " + msg, Toast.LENGTH_SHORT).show();

@@ -21,20 +21,24 @@ public class PrefsManager {
     }
 
     // Save user information and login status
-    public void saveUser(String pass, String email) {
+    public void saveUser(String email, String pass) {
         prefs.edit()
                 .putString(KEY_EMAIL, email)
                 .putString(KEY_PASS, pass)
                 .putBoolean(KEY_REMEMBER, true)
                 .apply();
     }
+
     public void saveUser(String name, String address, String email, String pass) {
         prefs.edit()
                 .putString(KEY_NAME, name)
+                .putString(KEY_ADDRESS, address)
                 .putString(KEY_EMAIL, email)
+                .putString(KEY_PASS, pass)
                 .putBoolean(KEY_REMEMBER, true)
                 .apply();
     }
+
     public void clearSavedUser() {
         prefs.edit().clear().apply();
     }
@@ -43,7 +47,7 @@ public class PrefsManager {
         return prefs.getString(KEY_NAME, "");
     }
 
-    public String getUserAddress() {
+    public String getSavedAddress() {
         return prefs.getString(KEY_ADDRESS, "");
     }
 
@@ -53,7 +57,14 @@ public class PrefsManager {
     public String getSavedEmail() {
         return prefs.getString(KEY_EMAIL, "");
     }
+    public void setRemember(boolean remember) {
+        prefs.edit().putBoolean(KEY_REMEMBER, remember).apply();
+        if (!remember) {
+            clearSavedUser();
+        }
+    }
 
-
-    //SALVARE I LOGIN??
+    public boolean isRemember() {
+        return prefs.getBoolean(KEY_REMEMBER, false);
+    }
 }
