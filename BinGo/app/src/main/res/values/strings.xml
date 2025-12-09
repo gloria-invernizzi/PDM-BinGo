@@ -72,6 +72,7 @@
     <string name="shape_box">Scatola</string>
     <string name="shape">Forma</string>
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
+
     <string name="home">Home</string>
 
     <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
@@ -87,9 +88,6 @@
     <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
     <string name="project_id" translatable="false">pdm-bingo</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-
     <!-- Categorie -->
     <string name="organic">Organico</string>
     <string name="plastic">Plastica e metalli</string>
@@ -100,5 +98,6 @@
     <string name="center">Centro di raccolta</string>
     <string name="all">Tutti</string>
     <string name="where_to_throw">Dove lo butto?</string>
+    <string name="favorite">Preferiti</string>
 
 </resources>

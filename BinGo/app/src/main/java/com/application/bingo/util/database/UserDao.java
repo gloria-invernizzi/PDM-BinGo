@@ -1,5 +1,5 @@
 // file : app/src/main/java/com/application/bingo/UserDao.java
-package com.application.bingo;
+package com.application.bingo.util.database;
 
 import androidx.room.Dao;
 import androidx.room.Insert;

@@ -1,4 +1,4 @@
-package com.application.bingo.ui.home.calendar;
+package com.application.bingo.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,16 +21,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.application.bingo.R;
-import com.application.bingo.util.calendar.WasteManager;
+import com.application.bingo.model.Notification;
+import com.application.bingo.util.calendar.NotificationManager;
+import com.application.bingo.util.database.AppDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class CalendarFragment extends Fragment {
     private CalendarView calendarView;
     private long selectedDateMillis = 0;
     private TextView infoText;
-    private WasteManager wasteManager;
+    private NotificationManager notificationManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +44,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        wasteManager = new WasteManager(getContext());
+        notificationManager = new NotificationManager(getContext());
         selectedDateMillis = System.currentTimeMillis();
 
         calendarView = view.findViewById(R.id.calendarView);
@@ -49,7 +52,7 @@ public class CalendarFragment extends Fragment {
         FloatingActionButton fabAdd = view.findViewById(R.id.fabAdd);
 
         calendarView.setOnDateChangeListener((calendarView, year, month, dayOfMonth) -> {
-            selectedDateMillis = WasteManager.convertToMillis(year, month, dayOfMonth);
+            selectedDateMillis = NotificationManager.convertToMillis(year, month, dayOfMonth);
             showWasteSummary(selectedDateMillis);
         });
 
@@ -63,17 +66,34 @@ public class CalendarFragment extends Fragment {
     }
 
     private void showWasteSummary(long dateMillis) {
-        String key = wasteManager.getDayKey(dateMillis);
-        List<String> wastes = wasteManager.getWaste(key);
-        if (wastes.isEmpty()) {
-            infoText.setText("Nessuna notifica impostata");
-        } else {
-            StringBuilder sb = new StringBuilder("Notifiche impostate:\n");
-            for (String w : wastes) {
-                sb.append("• ").append(w).append("\n");
-            }
-            infoText.setText(sb.toString());
-        }
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            // Esegui query in background
+            List<Notification> list = notificationManager.getNotificationsForDay(dateMillis);
+
+            // Poi aggiorna la UI sul main thread
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                if (list == null || list.isEmpty()) {
+                    infoText.setText("Nessuna notifica impostata");
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder("Notifiche impostate:\n\n");
+
+                for (Notification n : list) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(n.getNotificationTime());
+                    int hour = cal.get(Calendar.HOUR_OF_DAY);
+                    int minute = cal.get(Calendar.MINUTE);
+
+                    String formatted = String.format("• %s alle %02d:%02d (ogni %d settimane)",
+                            n.getWasteType(), hour, minute, n.getRepeatWeeks());
+                    sb.append(formatted).append("\n");
+                }
+
+                infoText.setText(sb.toString());
+            });
+        });
     }
 
     @SuppressLint("ScheduleExactAlarm")
@@ -112,9 +132,8 @@ public class CalendarFragment extends Fragment {
                     int repeatWeeks = spinnerRepeat.getSelectedItemPosition() + 1;
 
                     // Salva e pianifica la notifica
-                    wasteManager.saveNotification(dateMillis, hour, minute, wasteType, repeatWeeks);
+                    notificationManager.saveNotification(dateMillis, hour, minute, wasteType, repeatWeeks);
 
-                    showWasteSummary(dateMillis);
                     showWasteSummary(dateMillis);
                 })
                 .setNegativeButton("Annulla", null)

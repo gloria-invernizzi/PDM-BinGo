@@ -1,5 +1,5 @@
 // file: app/src/main/java/com/application/bingo/AppDatabase.java
-package com.application.bingo;
+package com.application.bingo.util.database;
 
 import android.content.Context;
 
@@ -7,10 +7,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.application.bingo.model.Notification;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, Notification.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "app-db";
 
@@ -19,6 +21,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     // Abstract method to get UserDao: a data access object (DAO) for User entity
     public abstract UserDao userDao();
+    public abstract NotificationDao notificationDao();
 
     // Thread pool per operazioni di scrittura in background
     // Executor serve solo per scrittura (insert, update, delete)

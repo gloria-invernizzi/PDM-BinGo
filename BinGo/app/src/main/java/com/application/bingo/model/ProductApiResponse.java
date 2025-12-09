@@ -8,25 +8,24 @@ public class ProductApiResponse {
     private String name;
     private String brand;
     private List<Packaging> packagings;
+    private boolean isFavorite;
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public ProductApiResponse setImageUrl(String imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
 
-        return this;
     }
 
     public String getBarcode() {
         return barcode;
     }
 
-    public ProductApiResponse setBarcode(String barcode) {
+    public void setBarcode(String barcode) {
         this.barcode = barcode;
 
-        return this;
     }
 
     public String getName() {
@@ -43,19 +42,26 @@ public class ProductApiResponse {
         return packagings;
     }
 
-    public ProductApiResponse setPackagings(List<Packaging> packagings) {
+    public void setPackagings(List<Packaging> packagings) {
         this.packagings = packagings;
 
-        return this;
     }
 
     public String getBrand() {
         return brand;
     }
 
-    public ProductApiResponse setBrand(String brand) {
+    public void setBrand(String brand) {
         this.brand = brand;
 
-        return this;
     }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
 }

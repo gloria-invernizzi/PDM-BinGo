@@ -123,11 +123,11 @@ public class SettingsFragment extends Fragment {
     // DIALOG PER SCEGLIERE IL TEMA
     // -----------------------------
     private void showThemeDialog() {
-        String[] temi = {"chiaro", "scuro"}; // nomi da mostrare nel dialog
+        String[] temi = {"Chiaro", "Scuro"}; // nomi da mostrare nel dialog
         int checkedItem = settingsVM.isDarkTheme() ? 1 : 0; // selezione iniziale
 
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("scegli tema")
+                .setTitle("Scegli tema")
                 .setSingleChoiceItems(temi, checkedItem, (dialog, which) -> {
                     if (which == 0) {
                         settingsVM.setThemeLight(); // salva tema chiaro

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.application.bingo.R;
 import com.application.bingo.model.WasteItem;
 import com.application.bingo.repository.SettingsRepository;
+import com.application.bingo.util.adapter.WasteAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +43,7 @@ public class WhereToThrowFragment extends Fragment {
     private ListView listResults;
     private Map<String, Integer> colorMap;
     private Map<String, String> categoryToTextMap;
+    private Map<String, String> textToCategoryKey;
 
     public static final String CATEGORY_ALL = "ALL";
     public static final String CATEGORY_ORGANIC = "ORGANIC";
@@ -69,6 +71,12 @@ public class WhereToThrowFragment extends Fragment {
         loadWasteData();
         setupSpinner();
         setupSearch();
+
+        textToCategoryKey = new HashMap<>();
+        for (Map.Entry<String, String> entry : categoryToTextMap.entrySet()) {
+            textToCategoryKey.put(entry.getValue(), entry.getKey());
+        }
+
     }
     private void setupCategoryTextMap() {
         categoryToTextMap = new HashMap<>();
@@ -129,15 +137,15 @@ public class WhereToThrowFragment extends Fragment {
             Iterator<String> categories = root.keys();
 
             while (categories.hasNext()) {
-                String categoria = categories.next();
-                JSONObject catObj = root.getJSONObject(categoria);
+                String categoryKey = categories.next();
+                JSONObject catObj = root.getJSONObject(categoryKey);
 
-                wasteMap.put(categoria, categoria);
+                wasteMap.put(categoryKey, categoryKey);
 
                 if (catObj.has("cosa_mettere")) {
                     JSONArray rifiuti = catObj.getJSONArray("cosa_mettere");
                     for (int i = 0; i < rifiuti.length(); i++) {
-                        wasteMap.put(rifiuti.getString(i).toLowerCase(), categoria);
+                        wasteMap.put(rifiuti.getString(i).toLowerCase(), categoryKey);
                     }
                 }
 
@@ -146,10 +154,10 @@ public class WhereToThrowFragment extends Fragment {
                     Iterator<String> keys = rifiuti.keys();
                     while (keys.hasNext()) {
                         String key = keys.next().toLowerCase();
-                        wasteMap.put(key, categoria);
+                        wasteMap.put(key, categoryKey);
                         JSONArray synonyms = rifiuti.getJSONArray(key);
                         for (int i = 0; i < synonyms.length(); i++) {
-                            wasteMap.put(synonyms.getString(i).toLowerCase(), categoria);
+                            wasteMap.put(synonyms.getString(i).toLowerCase(), categoryKey);
                         }
                     }
                 }
@@ -206,22 +214,21 @@ public class WhereToThrowFragment extends Fragment {
 
         for (Map.Entry<String, String> entry : wasteMap.entrySet()) {
             String waste = entry.getKey();
-            waste = waste.substring(0, 1).toUpperCase() + waste.substring(1);
             String category = entry.getValue();
 
             boolean matchesText = waste.toLowerCase().contains(query);
-            boolean matchesCategory = CATEGORY_ALL.equalsIgnoreCase(categoryFilter) || categoryToTextMap.getOrDefault(category, category).equals(categoryFilter);;
+            boolean matchesCategory = CATEGORY_ALL.equalsIgnoreCase(categoryFilter)
+                    || categoryToTextMap.getOrDefault(category, category).equals(categoryFilter);
 
             if (matchesText && matchesCategory) {
                 results.add(new WasteItem(
-                        waste,
-                        categoryToTextMap.getOrDefault(category, category),
-                        colorMap.getOrDefault(category, 0xFF888888)
+                        waste.substring(0,1).toUpperCase() + waste.substring(1),
+                        categoryToTextMap.getOrDefault(category, category)
                 ));
             }
         }
 
-        listResults.setAdapter(new WasteAdapter(getContext(), results));
+        listResults.setAdapter(new WasteAdapter(getContext(), results, colorMap, textToCategoryKey));
     }
 
 }

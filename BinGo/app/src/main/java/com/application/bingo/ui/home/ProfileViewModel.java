@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.application.bingo.User;
-import com.application.bingo.repository.SettingsRepository;
+import com.application.bingo.util.database.User;
 import com.application.bingo.repository.UserRepository;
 
 //media tra Fragment e Repository

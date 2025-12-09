@@ -2,9 +2,9 @@ package com.application.bingo.repository;
 
 import android.content.Context;
 
-import com.application.bingo.AppDatabase;
-import com.application.bingo.User;
-import com.application.bingo.UserDao;
+import com.application.bingo.util.database.AppDatabase;
+import com.application.bingo.util.database.User;
+import com.application.bingo.util.database.UserDao;
 
 public class UserRepository {
     /*recupero dell’utente dal database

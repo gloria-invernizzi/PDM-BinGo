@@ -1,5 +1,5 @@
 // file: app/src/main/java/com/application/bingo/User.java
-package com.application.bingo;
+package com.application.bingo.util.database;
 
 import androidx.room.Entity; // Define the class as a Room entity
 import androidx.room.PrimaryKey; // Specify the primary key for each entity

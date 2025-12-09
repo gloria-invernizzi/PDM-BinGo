@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,8 +36,9 @@ public class ResultFragment extends Fragment {
     TextView productName, productBrand, productBarcode, recyclingInfo, textResult;
     ImageView productImage;
     String barcode;
-
     ProgressBar loadingSpinner;
+
+    CheckBox favoriteCheckbox;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +57,7 @@ public class ResultFragment extends Fragment {
         recyclingInfo = view.findViewById(R.id.recycling_info);
         textResult = view.findViewById(R.id.text_result);
         productImage = view.findViewById(R.id.product_image);
+        favoriteCheckbox = view.findViewById(R.id.favorite_checkbox);
 
         barcode = getArguments().getString("barcode");
         productBarcode.setText(getString(R.string.barcode,barcode));
@@ -92,6 +96,19 @@ public class ResultFragment extends Fragment {
                         if (!product.getImageUrl().isEmpty()) {
                             Picasso.get().load(product.getImageUrl()).into(productImage);
                         }
+
+                        favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                if (isChecked) {
+                                    // cuore selezionato
+                                } else {
+                                    // cuore deselezionato
+                                }
+                            }
+                        });
+
+
                     } catch (Exception e) {
                         textResult.setText(R.string.parsing_error);
                         loadingSpinner.setVisibility(View.GONE);

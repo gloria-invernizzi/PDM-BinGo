@@ -9,7 +9,7 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import com.application.bingo.R;
 
-public class WasteNotificationReceiver extends BroadcastReceiver {
+public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

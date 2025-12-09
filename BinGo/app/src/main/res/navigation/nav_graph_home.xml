@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_homeFragment_to_whereToThrowFragment"
             app:destination="@id/whereToThrowFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favoriteFragment"
+            app:destination="@id/favoriteFragment" />
     </fragment>
 
     <!-- Scan Fragment -->
@@ -50,7 +53,7 @@
     <!-- Calendar Fragment -->
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.application.bingo.ui.home.calendar.CalendarFragment"
+        android:name="com.application.bingo.ui.CalendarFragment"
         android:label="Calendar"
         tools:layout="@layout/fragment_calendar"/>
 
@@ -85,18 +88,25 @@
             app:destination="@id/changePasswordFragment" />
     </fragment>
 
-
-
     <!-- WhereToThrow Fragment -->
     <fragment
         android:id="@+id/whereToThrowFragment"
         android:name="com.application.bingo.ui.home.WhereToThrowFragment"
         android:label="Dove lo butto?"
         tools:layout="@layout/fragment_where_to_throw"/>
+
+    <!-- ChangePassword Fragment -->
     <fragment
         android:id="@+id/changePasswordFragment"
         android:name="com.application.bingo.ui.home.ChangePasswordFragment"
-        android:label="ChangePasswordFragment" />
+        android:label="ChangePasswordFragment"
+        tools:layout="@layout/fragment_change_password"/>
 
+    <!-- Favorite Fragment -->
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.application.bingo.ui.FavoriteFragment"
+        android:label="Preferiti"
+        tools:layout="@layout/fragment_favorite" />
 
 </navigation>

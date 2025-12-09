@@ -9,6 +9,7 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="remember_me">Remember me</string>
+    <string name="hint_email">Email</string>
     <string name="hint_address">Address</string>
     <string name="edit_profile">Edit profile</string>
     <string name="edit_address">Edit address</string>
@@ -47,6 +48,7 @@
 
     <!-- Materials -->
     <string name="profile_title">MyProfile</string>
+    <string name="settings">Settings</string>
     <string name="logout">Logout</string>
     <string name="material_metal">Metal</string>
     <string name="material_plastic">Plastic</string>
@@ -66,20 +68,19 @@
     <string name="profile_picture">Profile photo</string>
     <string name="edit_photo">Edit photo</string>
     <string name="hint_name">Name and Surname</string>
-    <string name="hint_email">Email</string>
-    <string name="save_changes">Save changes</string>
-    <string name="notification_preferences">Notifications preferences</string>
-    <string name="settings">Settings</string>
-    <string name="home">Home</string>
 
-    <string name="organic">Organic waste</string>
-    <string name="plastic">Plastic and metal</string>
+    <string name="organic">Organic</string>
+    <string name="plastic">Plastic and metals</string>
     <string name="paper">Paper and cardboard</string>
-    <string name="residual">Residual waste</string>
+    <string name="residual">Residual</string>
     <string name="glass">Glass</string>
     <string name="ecomobile">Mobile echostation</string>
     <string name="center">Collection center</string>
     <string name="all">All</string>
     <string name="where_to_throw">Where it goes</string>
+    <string name="favorite">Favorite</string>
+    <string name="save_changes">Save changes</string>
+    <string name="notification_preferences">Notifications preferences</string>
+    <string name="home">Home</string>
 
 </resources>

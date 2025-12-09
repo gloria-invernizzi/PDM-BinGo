@@ -1,13 +1,15 @@
 package com.application.bingo.model;
 
 public class WasteItem {
-    public String title;
-    public String category;
-    public int color;
+    private final String title;
+    private final String category;
 
-    public WasteItem(String title, String category, int color) {
+    public WasteItem(String title, String category) {
         this.title = title;
         this.category = category;
-        this.color = color;
     }
+
+    public String getTitle() { return title; }
+    public String getCategory() { return category; }
+
 }

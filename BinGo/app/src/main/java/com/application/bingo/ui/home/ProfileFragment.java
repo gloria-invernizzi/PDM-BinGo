@@ -31,10 +31,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.application.bingo.AppDatabase;
+import com.application.bingo.util.database.AppDatabase;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.User;
+import com.application.bingo.util.database.User;
 import com.application.bingo.repository.UserRepository;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
