@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.view.View;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -27,39 +28,63 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Recupera il tema dall'app
+
+        // Tema dinamico (dark/light)
         SettingsRepository settingsRepo = new SettingsRepository(this);
-        if (settingsRepo.isDarkTheme()) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
+        AppCompatDelegate.setDefaultNightMode(
+                settingsRepo.isDarkTheme()
+                        ? AppCompatDelegate.MODE_NIGHT_YES
+                        : AppCompatDelegate.MODE_NIGHT_NO
+        );
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top,
+                    systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
-                findFragmentById(R.id.fragmentContainerView);
+        // NavController
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
 
         NavController navController = navHostFragment.getNavController();
 
+        // Bottom Navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.calendarFragment, R.id.favoriteFragment, R.id.profileFragment).build();
+        // Schermate principali (no back button)
+        AppBarConfiguration appBarConfiguration =
+                new AppBarConfiguration.Builder(
+                        R.id.homeFragment,
+                        R.id.calendarFragment,
+                        R.id.favoriteFragment,
+                        R.id.profileFragment
+                ).build();
 
         NavigationUI.setupWithNavController(bottomNav, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        // Richiesta permesso notifiche su Android 13+
+        // NASCONDE TOOLBAR E BOTTOM NAV NEL LOGIN
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.loginFragment2) {
+                toolbar.setVisibility(View.GONE);
+                bottomNav.setVisibility(View.GONE);
+            } else {
+                toolbar.setVisibility(View.VISIBLE);
+                bottomNav.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Permesso notifiche (Android 13+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -76,5 +101,4 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         return navController.navigateUp() || super.onSupportNavigateUp();
     }
-
 }

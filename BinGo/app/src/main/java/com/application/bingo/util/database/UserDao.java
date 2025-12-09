@@ -27,6 +27,9 @@ public interface UserDao {
 
     @Update
     void update(User user);
+    // Nuovo metodo per aggiornare la foto del profilo
+    @Query("UPDATE users SET photo_uri = :uri WHERE email = :email")
+    void updatePhotoUri(String email, String uri);
 
 }
 

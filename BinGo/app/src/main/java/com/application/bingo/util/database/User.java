@@ -1,6 +1,7 @@
 // file: app/src/main/java/com/application/bingo/User.java
 package com.application.bingo.util.database;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity; // Define the class as a Room entity
 import androidx.room.PrimaryKey; // Specify the primary key for each entity
 import androidx.room.Index; // Create indices for faster queries
@@ -14,6 +15,9 @@ public class User {
     private String address;
     private String email;
     private String password;
+    // Nuovo campo per la foto profilo
+    @ColumnInfo(name = "photo_uri")
+    private String photoUri;
 
     // User constructor
     public User(String name, String address, String email, String password) {
@@ -21,6 +25,7 @@ public class User {
         this.address = address;
         this.email = email;
         this.password = password;
+
     }
 
     public long getId() { return id; }
@@ -33,4 +38,7 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    // Getter e setter per la foto
+    public String getPhotoUri() { return photoUri; }
+    public void setPhotoUri(String photoUri) { this.photoUri = photoUri; }
 }

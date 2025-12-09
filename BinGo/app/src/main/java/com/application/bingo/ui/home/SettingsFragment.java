@@ -192,7 +192,7 @@ public class SettingsFragment extends Fragment {
     }
 
     // -----------------------------
-    // METODO PRIVATO PER AGGIORNARE LA LINGUA DELL'APP
+    // METODO PER AGGIORNARE LA LINGUA DELL'APP
     // -----------------------------
     private void updateLocale(String langCode) {
         // crea un oggetto Locale con la lingua scelta

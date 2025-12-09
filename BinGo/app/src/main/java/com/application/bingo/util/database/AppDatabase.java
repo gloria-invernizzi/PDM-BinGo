@@ -3,9 +3,12 @@ package com.application.bingo.util.database;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.application.bingo.model.Notification;
 
@@ -16,7 +19,7 @@ import java.util.concurrent.Executors;
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "app-db";
 
-    //Using volatile to ensure visibility of changes to instance across threads (singleton pattern)
+    // Using volatile to ensure visibility of changes to instance across threads (singleton pattern)
     private static volatile AppDatabase instance;
 
     // Abstract method to get UserDao: a data access object (DAO) for User entity
@@ -28,21 +31,30 @@ public abstract class AppDatabase extends RoomDatabase {
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(4);
 
-    //Context is variable that provides access to application-specific resources and classes
+    // Context is variable that provides access to application-specific resources and classes
     public static AppDatabase getInstance(Context ctx) {
         if (instance == null) {
-            //using synchronized block to ensure only one thread can access this block at a time
+            // using synchronized block to ensure only one thread can access this block at a time
             synchronized (AppDatabase.class) {
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                                     ctx.getApplicationContext(),
                                     AppDatabase.class,
                                     DB_NAME)
-                            .fallbackToDestructiveMigration()
+                            .addMigrations(MIGRATION_1_2) // utilizza la migration invece di distruggere il DB
                             .build();
                 }
             }
         }
         return instance;
     }
+
+    // Migration dalla versione 1 alla 2: aggiunge la colonna photo_uri alla tabella users
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Aggiunge la colonna photo_uri di tipo TEXT
+            database.execSQL("ALTER TABLE users ADD COLUMN photo_uri TEXT");
+        }
+    };
 }
