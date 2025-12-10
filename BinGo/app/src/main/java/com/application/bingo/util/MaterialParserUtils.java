@@ -49,12 +49,14 @@ public class MaterialParserUtils {
 
             JSONObject material = obj.getJSONObject(packaging.getMaterial());
 
-            JSONObject description = material.getJSONObject("description");
+            if (material.has("description")) {
+                JSONObject description = material.getJSONObject("description");
 
-            if (description.has("it")) {
-                packaging.setMaterialDescription(description.getString("it"));
-            } else {
-                packaging.setMaterialDescription(description.getString("en"));
+                if (description.has("it")) {
+                    packaging.setMaterialDescription(description.getString("it"));
+                } else {
+                    packaging.setMaterialDescription(description.getString("en"));
+                }
             }
 
             JSONObject name = material.getJSONObject("name");
