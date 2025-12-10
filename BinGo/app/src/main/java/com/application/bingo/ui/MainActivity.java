@@ -61,6 +61,24 @@ public class MainActivity extends AppCompatActivity {
         // Bottom Navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
+        // Nascondi Bottom Navigation nel login
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int id = destination.getId();
+
+        //Elenco fragment che non devono avere Bottom Navigation
+        if (id == R.id.welcomeFragment ||
+            id == R.id.loginFragment ||
+            id == R.id.registerFragment ||
+            id == R.id.recoverPasswordFragment) {
+            bottomNav.setVisibility(View.GONE);
+            //toolbar.setVisibility(View.GONE);
+        } else {
+            bottomNav.setVisibility(View.VISIBLE);
+            //toolbar.setVisibility(View.VISIBLE);
+        }
+        });
+
+
         // Schermate principali (no back button)
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(
@@ -73,16 +91,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        // NASCONDE TOOLBAR E BOTTOM NAV NEL LOGIN
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.loginFragment2) {
-                toolbar.setVisibility(View.GONE);
-                bottomNav.setVisibility(View.GONE);
-            } else {
-                toolbar.setVisibility(View.VISIBLE);
-                bottomNav.setVisibility(View.VISIBLE);
-            }
-        });
 
         // Permesso notifiche (Android 13+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
