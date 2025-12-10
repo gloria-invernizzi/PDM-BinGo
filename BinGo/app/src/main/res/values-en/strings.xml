@@ -82,5 +82,8 @@
     <string name="save_changes">Save changes</string>
     <string name="notification_preferences">Notifications preferences</string>
     <string name="home">Home</string>
+    <string name="packagings_title">where do I throw it?</string>
+    <string name="no_packaging_details">No information provided regarding product packaging</string>
+
 
 </resources>
