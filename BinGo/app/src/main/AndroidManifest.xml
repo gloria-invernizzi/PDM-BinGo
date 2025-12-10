@@ -45,7 +45,5 @@
 
         <receiver android:name=".util.calendar.NotificationReceiver"
             android:exported="false"/>
-
     </application>
-
 </manifest>
