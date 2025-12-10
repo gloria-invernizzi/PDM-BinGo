@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- TOOLBAR IN ALTO -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSurface"
+        app:title="@string/profile_title"
+        app:menu="@menu/profile_top_menu"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <!-- CONTENUTO SCROLLABILE -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- FOTO PROFILO CON ICONA FOTOCAMERA -->
+            <FrameLayout
+                android:layout_width="140dp"
+                android:layout_height="140dp">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_background"
+                    android:src="@drawable/ic_profile_placeholder"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/profile_picture"/>
+
+                <!-- ICONA FOTOCAMERA SOVRAPPOSTA -->
+                <ImageView
+                    android:id="@+id/btn_change_photo"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="bottom|end"
+                    android:src="@drawable/ic_camera"
+                    android:background="@drawable/circle_surface"
+                    android:padding="6dp"
+                    android:elevation="6dp"/>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_photo"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/colorPrimary" />
+
+            <!-- CAMPI UTENTE -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_name_layout"
+                app:startIconDrawable="@drawable/ic_person"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:enabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_name"
+                    android:hint="@string/hint_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                app:startIconDrawable="@drawable/ic_email"
+                android:id="@+id/input_email_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:layout_marginTop="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_email"
+                    android:hint="@string/hint_email"
+                    android:inputType="textEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                app:startIconDrawable="@drawable/ic_location"
+                android:id="@+id/input_address_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:layout_marginTop="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_address"
+                    android:hint="@string/hint_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- BOTTONI -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_profile"
+                android:textColor="?attr/colorOnPrimary"
+                android:backgroundTint="?attr/colorPrimary"
+                app:cornerRadius="12dp"
+                android:layout_marginTop="24dp"/>
+
+            <!-- LOGOUT SEPARATO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:text="@string/logout"
+                android:textColor="?attr/colorError"
+                android:backgroundTint="@android:color/transparent"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="?attr/colorError"
+                app:iconGravity="textStart"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

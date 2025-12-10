@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <!-- Home Fragment -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.application.bingo.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_scanFragment"
+            app:destination="@id/scanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_manualEntryFragment"
+            app:destination="@id/manualEntryFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_whereToThrowFragment"
+            app:destination="@id/whereToThrowFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favoriteFragment"
+            app:destination="@id/favoriteFragment" />
+    </fragment>
+
+    <!-- Scan Fragment -->
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="com.application.bingo.ui.home.scan.ScanFragment"
+        android:label="Scan"
+        tools:layout="@layout/fragment_scan">
+        <action
+            android:id="@+id/action_scanFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+
+    <!-- Manual Entry Fragment -->
+    <fragment
+        android:id="@+id/manualEntryFragment"
+        android:name="com.application.bingo.ui.home.scan.ManualEntryFragment"
+        android:label="Manual Entry"
+        tools:layout="@layout/fragment_manual_entry">
+        <action
+            android:id="@+id/action_manualEntryFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+
+    <!-- Calendar Fragment -->
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.application.bingo.ui.CalendarFragment"
+        android:label="Calendar"
+        tools:layout="@layout/fragment_calendar"/>
+
+    <!-- Result Fragment -->
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.application.bingo.ui.home.scan.ResultFragment"
+        android:label="Result"
+        tools:layout="@layout/fragment_result"/>
+
+    <!-- Profile Fragment -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.application.bingo.ui.home.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+
+        <!-- Azione verso SettingsFragment -->
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment2"
+            app:destination="@id/loginFragment2" />
+    </fragment>
+
+    <!-- Settings Fragment -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.application.bingo.ui.home.SettingsFragment"
+        android:label="Impostazioni"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+
+    <!-- WhereToThrow Fragment -->
+    <fragment
+        android:id="@+id/whereToThrowFragment"
+        android:name="com.application.bingo.ui.home.WhereToThrowFragment"
+        android:label="Dove lo butto?"
+        tools:layout="@layout/fragment_where_to_throw"/>
+
+    <!-- ChangePassword Fragment -->
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.application.bingo.ui.home.ChangePasswordFragment"
+        android:label="ChangePasswordFragment"
+        tools:layout="@layout/fragment_change_password"/>
+
+    <!-- Favorite Fragment -->
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.application.bingo.ui.FavoriteFragment"
+        android:label="Preferiti"
+        tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/loginFragment2"
+        android:name="com.application.bingo.ui.LoginFragment"
+        android:label="LoginFragment" />
+
+</navigation>

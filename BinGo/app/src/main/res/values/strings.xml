@@ -1,12 +1,20 @@
 <resources>
     <string name="app_name">BinGo!</string>
     <string name="password">Password</string>
-    <string name="email">Email</string>
+    <string name="confirm_password">Conferma password</string>
     <string name="login">Accedi</string>
+    <string name="register">Registrati</string>
+    <string name="name">Nome</string>
+    <string name="surname">Cognome</string>
+    <string name="address">Indirizzo</string>
+    <string name="edit_address">Modifica indirizzo</string>
+    <string name="notify_settings">Impostazioni notifiche</string>
+    <string name="change_password">Cambia password</string>
     <string name="did_you_forget_your_password">Hai dimenticato la password?</string>
+    <string name="remember_me">Ricordami</string>
     <string name="login_with_google">Accedi con google</string>
-    <string name="welcome">Benvenuto</string>
-    <string name="are_you_already_registered">Sei già registrato?</string>
+    <string name="welcome">BENVENUTO!</string>
+    <string name="create_account">Crea account</string>
     <string name="product_image">Immagine del prodotto</string>
     <string name="tips">Suggerimenti per lo smaltimento…</string>
     <string name="result">Risultato</string>
@@ -16,6 +24,7 @@
     <string name="frame_barcode">Inquadra il codice a barre</string>
     <string name="scan_barcode">Scansiona codice a barre</string>
     <string name="manual_entry">Inserisci manualmente</string>
+    <string name="calendar">Calendario</string>
     <string name="insert_barcode">Inserisci il codice a barre</string>
     <string name="insert_valid_barcode">Inserisci un codice a barre valido</string>
     <string name="packaging">Imballaggio</string>
@@ -26,6 +35,27 @@
     <string name="result_failed">Prodotto non trovato o errore di rete</string>
     <string name="request_error">Errore nella richiesta</string>
     <string name="product_name">Nome prodotto</string>
+    <string name="notifications">Notifiche</string>
+    <string name="profile_title">Profilo</string>
+    <string name="profile_picture">Foto profilo</string>
+    <string name="edit_photo">Modifica foto</string>
+
+    <string name="hint_name">Nome e Cognome</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_address">Residenza</string>
+
+    <string name="edit_profile">Modifica profilo</string>
+    <string name="save_changes">Salva modifiche</string>
+
+    <string name="notification_preferences">Preferenze notifiche</string>
+    <string name="settings">Impostazioni</string>
+    <string name="logout">Logout</string>
+
+    <string name="change_password_title">Cambia Password</string>
+    <string name="old_password_hint">Vecchia Password</string>
+    <string name="new_password_hint">Nuova Password</string>
+    <string name="confirm_password_hint">Conferma Password</string>
+    <string name="update_password_button">Aggiorna Password</string>
 
     <!-- Materiali -->
     <string name="material_metal">Metallo</string>
@@ -33,6 +63,7 @@
     <string name="material_glass">Vetro</string>
     <string name="material_paper">Carta</string>
     <string name="material_cardboard">Cartone</string>
+    <string name="material_paper_aluminium">Plastica e lattine</string>
 
     <!-- Forme -->
     <string name="shape_food_can">Lattina</string>
@@ -41,7 +72,34 @@
     <string name="shape_box">Scatola</string>
     <string name="shape">Forma</string>
     <string name="no_packaging_info">Nessuna informazione disponibile sul packaging</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="home">Home</string>
+    <string name="packagings_title">Dove lo butto?</string>
+    <string name="no_packaging_details">Non sono presenti informazioni sull\'imballaggio del prodotto</string>
+
+    <!-- ID client OAuth 2.0 per trovare la credenziale di tipo Web. -->
+    <string name="default_app_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com</string>
+
+
+    <!-- Valori generati da Firebase/Google e usati internamente. -->
+    <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
+    <string name="google_api_key" translatable="false">AIzaSyD7wR0oT7__FqZ67haVyguBpfUZir2chlg</string>
+    <string name="google_app_id" translatable="false">1:549574946118:android:5ab38ee7b4dd06f140c947</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD7wR0oT7__FqZ67haVyguBpfUZir2chlg</string>
+    <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
+    <string name="project_id" translatable="false">pdm-bingo</string>
+
+    <!-- Categorie -->
+    <string name="organic">Organico</string>
+    <string name="plastic">Plastica e metalli</string>
+    <string name="paper">Carta e cartone</string>
+    <string name="residual">Indifferenziato</string>
+    <string name="glass">Vetro</string>
+    <string name="ecomobile">Ecostazione mobile</string>
+    <string name="center">Centro di raccolta</string>
+    <string name="all">Tutti</string>
+    <string name="where_to_throw">Dove lo butto?</string>
+    <string name="favorite">Preferiti</string>
 
 </resources>

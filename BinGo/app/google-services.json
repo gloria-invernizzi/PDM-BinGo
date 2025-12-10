@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "549574946118",
+    "project_id": "pdm-bingo",
+    "storage_bucket": "pdm-bingo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549574946118:android:5ab38ee7b4dd06f140c947",
+        "android_client_info": {
+          "package_name": "com.application.bingo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.application.bingo",
+            "certificate_hash": "c185477f5db05bef9b107ed58b5d13320c4ee4ae"
+          }
+        },
+        {
+          "client_id": "549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7wR0oT7__FqZ67haVyguBpfUZir2chlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
