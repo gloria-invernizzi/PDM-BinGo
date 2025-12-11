@@ -1,9 +1,12 @@
-package com.application.bingo.ui.adapter;
+package com.application.bingo.util.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         void onFavoriteButtonPressed(int position);
     }
 
+    private int layout;
     private List<ProductApiResponse> productList;
     private boolean heartVisible;
     private Context context;
@@ -83,7 +87,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.product_item, viewGroup, false);
+                .inflate(R.layout.card_product, viewGroup, false);
 
         if (this.context == null) this.context = viewGroup.getContext();
 

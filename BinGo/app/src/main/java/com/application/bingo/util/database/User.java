@@ -1,5 +1,5 @@
 // file: app/src/main/java/com/application/bingo/User.java
-package com.application.bingo.database;
+package com.application.bingo.util.database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity; // Define the class as a Room entity

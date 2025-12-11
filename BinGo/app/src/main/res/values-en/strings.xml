@@ -84,8 +84,6 @@
     <string name="home">Home</string>
     <string name="packagings_title">where do I throw it?</string>
     <string name="no_packaging_details">No information provided regarding product packaging</string>
-    <string name="add_notification">Create notification</string>
-    <string name="delete_notification">Delete notification</string>
 
     <string name="cambia_password">Change password</string>
     <string name="consensi_app">App consents</string>

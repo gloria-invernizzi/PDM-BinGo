@@ -13,7 +13,7 @@
         android:id="@+id/colorBar"
         android:layout_width="4dp"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/margin_medium" />
+        android:layout_marginEnd="16dp" />
 
     <!-- Contenuto testo -->
     <LinearLayout
@@ -34,7 +34,7 @@
             android:id="@+id/textCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_xsmall"
+            android:layout_marginTop="2dp"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textAllCaps="true" />

@@ -1,5 +1,5 @@
 // file: app/src/main/java/com/application/bingo/AppDatabase.java
-package com.application.bingo.database;
+package com.application.bingo.util.database;
 
 import android.content.Context;
 

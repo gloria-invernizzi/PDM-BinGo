@@ -1,4 +1,4 @@
-package com.application.bingo.ui.adapter;
+package com.application.bingo.util.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -34,7 +34,7 @@ public class WasteAdapter extends ArrayAdapter<WasteItem> {
     public View getView(int position, View view, @NonNull ViewGroup parent) {
         if (view == null) {
             view = LayoutInflater.from(getContext())
-                    .inflate(R.layout.waste_item, parent, false);
+                    .inflate(R.layout.list_item_waste, parent, false);
         }
 
         WasteItem item = getItem(position);

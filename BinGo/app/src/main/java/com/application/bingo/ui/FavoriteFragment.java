@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.model.ProductApiResponse;
-import com.application.bingo.ui.adapter.ProductAdapter;
+import com.application.bingo.util.adapter.ProductAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
