@@ -101,13 +101,5 @@
     <string name="all">Tutti</string>
     <string name="where_to_throw">Dove lo butto?</string>
     <string name="favorite">Preferiti</string>
-    <string name="cambia_password">Cambia password</string>
-    <string name="consensi_app">Consensi app</string>
-    <string name="preferenze_app">Preferenze app</string>
-    <string name="tema">Tema</string>
-    <string name="lingua">Lingua</string>
-    <string name="notifiche">Notifiche</string>
-    <string name="suono">Suono</string>
-    <string name="vibrazione">Vibrazione</string>
 
 </resources>

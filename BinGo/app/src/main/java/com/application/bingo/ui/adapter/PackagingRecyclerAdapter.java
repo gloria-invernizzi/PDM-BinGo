@@ -1,4 +1,4 @@
-package com.application.bingo.adapter;
+package com.application.bingo.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
