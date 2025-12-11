@@ -1,4 +1,4 @@
-package com.application.bingo.ui.home;
+package com.application.bingo.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

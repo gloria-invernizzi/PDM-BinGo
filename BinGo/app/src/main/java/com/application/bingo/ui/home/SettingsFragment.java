@@ -19,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
 import com.application.bingo.repository.SettingsRepository;
+import com.application.bingo.viewmodel.SettingsViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Locale;

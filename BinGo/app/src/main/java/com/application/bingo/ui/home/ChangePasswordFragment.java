@@ -1,7 +1,5 @@
 package com.application.bingo.ui.home;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
 import com.application.bingo.repository.UserRepository;
+import com.application.bingo.viewmodel.ChangePasswordViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

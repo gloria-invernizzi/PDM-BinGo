@@ -101,5 +101,7 @@
     <string name="all">Tutti</string>
     <string name="where_to_throw">Dove lo butto?</string>
     <string name="favorite">Preferiti</string>
+    <string name="add_notification">Crea notifica</string>
+    <string name="delete_notification">Cancella notifica</string>
 
 </resources>

@@ -1,11 +1,10 @@
 package com.application.bingo.repository;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.application.bingo.util.database.AppDatabase;
-import com.application.bingo.util.database.User;
-import com.application.bingo.util.database.UserDao;
+import com.application.bingo.database.AppDatabase;
+import com.application.bingo.database.User;
+import com.application.bingo.database.UserDao;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

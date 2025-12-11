@@ -1,11 +1,11 @@
-package com.application.bingo.ui.home;
+package com.application.bingo.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.application.bingo.util.database.AppDatabase;
-import com.application.bingo.util.database.User;
+import com.application.bingo.database.AppDatabase;
+import com.application.bingo.database.User;
 import com.application.bingo.repository.UserRepository;
 
 //media tra Fragment e Repository

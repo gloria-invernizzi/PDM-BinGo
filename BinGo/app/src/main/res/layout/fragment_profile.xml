@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/edit_photo"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
                 android:textColor="?attr/colorPrimary" />
 
             <!-- CAMPI UTENTE -->
@@ -68,7 +68,7 @@
                 app:startIconDrawable="@drawable/ic_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="@dimen/margin_xlarge"
                 android:enabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="@dimen/margin_medium">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_email"
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="@dimen/margin_medium">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_address"
@@ -119,14 +119,14 @@
                 android:textColor="?attr/colorOnPrimary"
                 android:backgroundTint="?attr/colorPrimary"
                 app:cornerRadius="12dp"
-                android:layout_marginTop="24dp"/>
+                android:layout_marginTop="@dimen/margin_large"/>
 
             <!-- LOGOUT SEPARATO -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="@dimen/margin_xlarge"
                 android:text="@string/logout"
                 android:textColor="?attr/colorError"
                 android:backgroundTint="@android:color/transparent"

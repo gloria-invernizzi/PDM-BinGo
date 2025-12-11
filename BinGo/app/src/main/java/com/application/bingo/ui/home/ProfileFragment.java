@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -26,11 +25,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.application.bingo.util.database.AppDatabase;
+import com.application.bingo.database.AppDatabase;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.util.database.User;
+import com.application.bingo.database.User;
 import com.application.bingo.repository.UserRepository;
+import com.application.bingo.viewmodel.ProfileViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;

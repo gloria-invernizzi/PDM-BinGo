@@ -1,11 +1,10 @@
-package com.application.bingo.ui.home;
+package com.application.bingo.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.application.bingo.repository.UserRepository;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * ViewModel per gestire la logica di cambio password.

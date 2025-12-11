@@ -23,7 +23,8 @@ import android.widget.Toast;
 import com.application.bingo.R;
 import com.application.bingo.model.WasteItem;
 import com.application.bingo.repository.SettingsRepository;
-import com.application.bingo.util.adapter.WasteAdapter;
+import com.application.bingo.ui.adapter.WasteAdapter;
+import com.application.bingo.viewmodel.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
