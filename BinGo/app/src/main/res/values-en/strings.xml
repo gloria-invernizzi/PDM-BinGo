@@ -85,5 +85,13 @@
     <string name="packagings_title">where do I throw it?</string>
     <string name="no_packaging_details">No information provided regarding product packaging</string>
 
+    <string name="cambia_password">Change password</string>
+    <string name="consensi_app">App consents</string>
+    <string name="preferenze_app">App preferences</string>
+    <string name="tema">Theme</string>
+    <string name="lingua">Linguage</string>
+    <string name="notifiche">Notifications</string>
+    <string name="suono">Sound</string>
+    <string name="vibrazione">Vibration</string>
 
 </resources>

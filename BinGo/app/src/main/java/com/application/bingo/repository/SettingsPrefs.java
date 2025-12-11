@@ -3,56 +3,71 @@ package com.application.bingo.repository;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * Classe helper per leggere e scrivere le impostazioni principali dell'app
+ * (tema, lingua, notifiche, suono, vibrazione) usando SharedPreferences.
+ */
 public class SettingsPrefs {
-    private static final String PREFS_NAME = "settings_prefs";   // Nome del file delle preferenze
 
-    private static final String KEY_THEME = "theme";             // Chiave per salvare il tema
-    private static final String KEY_LANGUAGE = "language";       // Chiave per salvare la lingua
-    private static final String KEY_NOTIFICATIONS = "notifications"; // Chiave per le notifiche
-    private SharedPreferences prefs;                        // Oggetto SharedPreferences usato dalla classe
+    private static final String PREFS_NAME = "settings_prefs";
 
-    public  SettingsPrefs(Context context) {                       // Costruttore che riceve un Context
-        prefs = context.getSharedPreferences(                     // Ottiene/crea il file delle preferenze
-                PREFS_NAME,
-                Context.MODE_PRIVATE                              // Modalità privata (visibile solo all'app)
-        );
+    private static final String KEY_THEME = "theme";
+    private static final String KEY_LANGUAGE = "language";
+    private static final String KEY_NOTIFICATIONS = "notifications";
+    private static final String KEY_SOUND = "sound";
+    private static final String KEY_VIBRATION = "vibration";
+
+    private final SharedPreferences prefs;
+
+    public SettingsPrefs(Context context) {
+        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    //  THEME
-    public void setTheme(String theme) {                          // Metodo per salvare il tema
-        prefs.edit()                                              // Apre l'editor
-                .putString(KEY_THEME, theme)                         // Inserisce una stringa con la chiave "theme"
-                .apply();                                            // Applica le modifiche in modo asincrono
+    // ---------------- Tema ----------------
+    public void setTheme(String theme) {
+        prefs.edit().putString(KEY_THEME, theme).apply();
     }
 
-    public String getTheme() {                                    // Metodo per leggere il tema salvato
-        return prefs.getString(KEY_THEME, "system");              // Ritorna il valore o "system" se non esiste
+    public String getTheme() {
+        return prefs.getString(KEY_THEME, null); // null indica che non è stato mai scelto
     }
 
-    // LANGUAGE
-    public void setLanguage(String lang) {                        // Salva la lingua
-        prefs.edit()                                              // Apre l'editor
-                .putString(KEY_LANGUAGE, lang)                       // Inserisce la stringa sotto la chiave "language"
-                .apply();                                            // Salva
+    // ---------------- Lingua ----------------
+    public void setLanguage(String lang) {
+        prefs.edit().putString(KEY_LANGUAGE, lang).apply();
     }
 
-    public String getLanguage() {                                 // Legge la lingua
-        return prefs.getString(KEY_LANGUAGE, "it");               // Default: italiano
+    public String getLanguage() {
+        return prefs.getString(KEY_LANGUAGE, "it"); // default italiano
     }
 
-    // NOTIFICATIONS
-    public void setNotificationsEnabled(boolean enabled) {         // Salva lo stato delle notifiche
-        prefs.edit()                                               // Apre l'editor
-                .putBoolean(KEY_NOTIFICATIONS, enabled)              // Inserisce un boolean
-                .apply();                                             // Salva
+    // ---------------- Notifiche ----------------
+    public void setNotificationsEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS, enabled).apply();
     }
 
-    public boolean getNotificationsEnabled() {                     // Legge lo stato notifiche
-        return prefs.getBoolean(KEY_NOTIFICATIONS, false);          // Default true (notifiche attive)
+    public boolean isNotificationsEnabled() {
+        return prefs.getBoolean(KEY_NOTIFICATIONS, false); // default disattive
+    }
+
+    // ---------------- Suono ----------------
+    public void setSoundEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_SOUND, enabled).apply();
+    }
+
+    public boolean isSoundEnabled() {
+        return prefs.getBoolean(KEY_SOUND, true); // default attivo
+    }
+
+    // ---------------- Vibrazione ----------------
+    public void setVibrationEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_VIBRATION, enabled).apply();
+    }
+
+    public boolean isVibrationEnabled() {
+        return prefs.getBoolean(KEY_VIBRATION, true); // default attiva
     }
 }
-
-
 
 
 

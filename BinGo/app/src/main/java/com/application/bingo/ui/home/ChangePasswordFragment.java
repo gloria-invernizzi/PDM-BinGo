@@ -1,7 +1,5 @@
 package com.application.bingo.ui.home;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,6 +21,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+/**
+ * Fragment per modificare la password utente.
+ * Gestisce l'interazione UI:
+ * - Recupero campi
+ * - Validazione base
+ * - Invio richiesta al ViewModel
+ * - Visualizzazione notifiche
+ */
 public class ChangePasswordFragment extends Fragment {
 
     private TextInputEditText vecchiaPasswordEditText, nuovaPasswordEditText, confermaPasswordEditText;
@@ -41,75 +47,90 @@ public class ChangePasswordFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Trova i TextInputEditText all'interno dei TextInputLayout
+        // -------------------------------
+        // Recupero dei campi dal layout
+        // -------------------------------
         vecchiaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.vecchia_password)).getEditText();
         nuovaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.nuova_password)).getEditText();
         confermaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.conferma_password)).getEditText();
 
-        // Trova il pulsante Aggiorna password
         btnChangePassword = view.findViewById(R.id.btn_change_password);
-        Log.d("ChangePasswordFragment", "btnChangePassword: " + btnChangePassword);
 
-        // Recupera l'email dell'utente loggato da SharedPreferences
+        // -------------------------------
+        // Recupero email utente loggato
+        // -------------------------------
         PrefsManager prefsManager = new PrefsManager(requireContext());
         userEmail = prefsManager.getSavedEmail();
         Log.d("ChangePasswordFragment", "Email letta : " + userEmail);
 
-        if (userEmail == null) {
+        if (userEmail == null || userEmail.isEmpty()) {
             Toast.makeText(requireContext(), "Utente non loggato", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Crea repository e ViewModel
+        // -------------------------------
+        // Creazione Repository + ViewModel
+        // -------------------------------
         UserRepository repository = new UserRepository(requireContext());
-        changePasswordViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                if (modelClass.isAssignableFrom(ChangePasswordViewModel.class)) {
-                    return (T) new ChangePasswordViewModel(repository);
-                }
-                throw new IllegalArgumentException("Unknown ViewModel class");
-            }
-        }).get(ChangePasswordViewModel.class);
 
+        changePasswordViewModel = new ViewModelProvider(
+                this,
+                new ViewModelProvider.Factory() {
+                    @NonNull
+                    @Override
+                    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                        if (modelClass.isAssignableFrom(ChangePasswordViewModel.class)) {
+                            return (T) new ChangePasswordViewModel(repository);
+                        }
+                        throw new IllegalArgumentException("Unknown ViewModel class");
+                    }
+                }
+        ).get(ChangePasswordViewModel.class);
+
+        // -------------------------------
         // Osserva i messaggi dal ViewModel
+        // -------------------------------
         changePasswordViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), message -> {
-            // Mostra sempre un Toast con il messaggio ricevuto dal ViewModel
+
+            // Mostra toast con esito
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 
-            // Se cambio avvenuto con successo (sia Room che Firebase o solo Room), resetta i campi
-            if (message.contains("Password aggiornata con successo")) {
-                if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
-                if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
-                if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
+            // Se password cambiata correttamente → reset campi
+            if (message.equals("Password aggiornata con successo")) {
+                vecchiaPasswordEditText.setText("");
+                nuovaPasswordEditText.setText("");
+                confermaPasswordEditText.setText("");
             }
         });
 
-        // Click listener del pulsante
+        // -------------------------------
+        // Pulsante "Cambia password"
+        // -------------------------------
         btnChangePassword.setOnClickListener(v -> {
             Log.d("ChangePasswordFragment", "Pulsante cliccato!");
 
-            // Recupera i valori inseriti dall'utente
-            String vecchiaPassword = vecchiaPasswordEditText != null ? vecchiaPasswordEditText.getText().toString().trim() : "";
-            String nuovaPassword = nuovaPasswordEditText != null ? nuovaPasswordEditText.getText().toString().trim() : "";
-            String confermaPassword = confermaPasswordEditText != null ? confermaPasswordEditText.getText().toString().trim() : "";
+            String oldPass = vecchiaPasswordEditText.getText() != null ? vecchiaPasswordEditText.getText().toString().trim() : "";
+            String newPass = nuovaPasswordEditText.getText() != null ? nuovaPasswordEditText.getText().toString().trim() : "";
+            String confirmPass = confermaPasswordEditText.getText() != null ? confermaPasswordEditText.getText().toString().trim() : "";
 
-            // Controllo dei campi vuoti
-            if (TextUtils.isEmpty(vecchiaPassword) || TextUtils.isEmpty(nuovaPassword) || TextUtils.isEmpty(confermaPassword)) {
-                Log.d("ChangePasswordFragment", "Compila tutti i campi");
+            // -------------------------------
+            // Verifica se l’utente ha effettivamente compilato vecchia password, nuova password e conferma password
+            // -------------------------------
+            if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmPass)) {
                 Toast.makeText(requireContext(), "Compila tutti i campi", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Controllo che la nuova password e conferma siano uguali
-            if (!nuovaPassword.equals(confermaPassword)) {
+            if (!newPass.equals(confirmPass)) {
                 Toast.makeText(requireContext(), "Le password non corrispondono", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Richiesta di cambio password al ViewModel
-            changePasswordViewModel.changePassword(userEmail, vecchiaPassword, nuovaPassword, confermaPassword);});
+            // -------------------------------
+            // Richiesta di modifica al ViewModel
+            // -------------------------------
+            changePasswordViewModel.changePassword(userEmail, oldPass, newPass, confirmPass);
+        });
     }
 }
 

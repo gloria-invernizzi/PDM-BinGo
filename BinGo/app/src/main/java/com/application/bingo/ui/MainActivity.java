@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import android.view.View;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -65,19 +66,18 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int id = destination.getId();
 
-        //Elenco fragment che non devono avere Bottom Navigation
-        if (id == R.id.welcomeFragment ||
-            id == R.id.loginFragment ||
-            id == R.id.registerFragment ||
-            id == R.id.recoverPasswordFragment) {
-            bottomNav.setVisibility(View.GONE);
-            //toolbar.setVisibility(View.GONE);
-        } else {
-            bottomNav.setVisibility(View.VISIBLE);
-            //toolbar.setVisibility(View.VISIBLE);
-        }
+            //Elenco fragment che non devono avere Bottom Navigation
+            if (id == R.id.welcomeFragment ||
+                    id == R.id.loginFragment ||
+                    id == R.id.registerFragment ||
+                    id == R.id.recoverPasswordFragment) {
+                bottomNav.setVisibility(View.GONE);
+                //toolbar.setVisibility(View.GONE);
+            } else {
+                bottomNav.setVisibility(View.VISIBLE);
+                //toolbar.setVisibility(View.VISIBLE);
+            }
         });
-
 
         // Schermate principali (no back button)
         AppBarConfiguration appBarConfiguration =
@@ -91,13 +91,33 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        // -------------------- GESTIONE PERMESSO NOTIFICHE --------------------
+        settingsRepo = new SettingsRepository(this);
 
-        // Permesso notifiche (Android 13+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            } else {
+                // Permesso già concesso: aggiorno subito le impostazioni
+                settingsRepo.setNotificationsEnabled(true);
+            }
+        }
+    }
+
+    // -------------------- OVERRIDE PER RICEVERE RISULTATO PERMESSO --------------------
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1 && permissions.length > 0) {
+            SettingsRepository settingsRepo = new SettingsRepository(this);
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                settingsRepo.setNotificationsEnabled(true);
+            } else {
+                settingsRepo.setNotificationsEnabled(false);
             }
         }
     }
