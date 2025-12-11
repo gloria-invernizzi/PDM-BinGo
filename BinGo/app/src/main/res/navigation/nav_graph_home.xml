@@ -76,8 +76,8 @@
             android:id="@+id/action_profileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_loginFragment2"
-            app:destination="@id/loginFragment2" />
+            android:id="@+id/action_profileFragment_to_welcomeFragment2"
+            app:destination="@id/welcomeFragment2" />
     </fragment>
 
     <!-- Settings Fragment -->
@@ -112,8 +112,8 @@
         android:label="Preferiti"
         tools:layout="@layout/fragment_favorite" />
     <fragment
-        android:id="@+id/loginFragment2"
-        android:name="com.application.bingo.ui.LoginFragment"
-        android:label="LoginFragment" />
+        android:id="@+id/welcomeFragment2"
+        android:name="com.application.bingo.ui.WelcomeFragment"
+        android:label="WelcomeFragment" />
 
 </navigation>

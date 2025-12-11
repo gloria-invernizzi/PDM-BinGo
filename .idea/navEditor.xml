@@ -333,18 +333,6 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="loginFragment2">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="-345" />
-                            <option name="y" value="-113" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                   <entry key="manualEntryFragment">
                     <value>
                       <LayoutPositions>
@@ -377,11 +365,6 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_profileFragment_to_loginFragment2">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                             <entry key="action_profileFragment_to_settingsFragment">
                               <value>
                                 <LayoutPositions />
@@ -442,6 +425,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="welcomeFragment2">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-360" />
+                            <option name="y" value="-164" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

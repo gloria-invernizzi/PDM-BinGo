@@ -19,12 +19,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.application.bingo.R;
 import com.application.bingo.model.Notification;
 import com.application.bingo.ui.adapter.NotificationAdapter;
 import com.application.bingo.repository.NotificationRepository;
 import com.application.bingo.viewmodel.NotificationViewModel;
+import com.application.bingo.repository.SettingsRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -145,6 +147,15 @@ public class CalendarFragment extends Fragment {
                     cal.set(Calendar.MINUTE, minute);
                     cal.set(Calendar.SECOND, 0);
                     cal.set(Calendar.MILLISECOND, 0);
+
+                    //  Controllo in base alle impostazioni se le notifiche sono attive
+                    SettingsRepository settingsRepo = new SettingsRepository(requireContext());
+                    if (!settingsRepo.isNotificationsEnabled()) {
+                        Toast.makeText(getContext(),
+                                "Notifiche disattivate nelle impostazioni",
+                                Toast.LENGTH_SHORT).show();
+                        return; //  Blocca la creazione della notifica
+                    }
 
                     Notification notification;
                     if (existingNotification != null) {

@@ -19,16 +19,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.application.bingo.database.AppDatabase;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.database.User;
 import com.application.bingo.repository.UserRepository;
 import com.application.bingo.viewmodel.ProfileViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -36,26 +35,23 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.concurrent.Executors;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileFragment extends Fragment {
 
     private MaterialToolbar topAppBar;
-    private ImageView profileImage;
-    private ImageView btnEditPhoto;
-    private TextInputEditText inputName;
-    private TextInputEditText inputEmail;
-    private TextInputEditText inputAddress;
+    private ImageView profileImage, btnEditPhoto;
+    private TextInputEditText inputName, inputEmail, inputAddress;
     private MaterialButton btnEditSave, btnLogout;
 
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
+    private ActivityResultLauncher<String> cameraPermissionLauncher;
     private Uri cameraImageUri;
 
     private boolean isEditing = false;
+
     private ProfileViewModel vm;
-    private ActivityResultLauncher<String> cameraPermissionLauncher;
 
     public ProfileFragment() {}
 
@@ -63,16 +59,15 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // -------------------------------
-        //  LANCIO GALLERIA
-        // -------------------------------
+        // -----------------------------------------------------------------------------------------
+        // LANCIO GALLERIA
+        // -----------------------------------------------------------------------------------------
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri img = result.getData().getData();
 
-                        // Salva la URI in database + LiveData
                         String email = inputEmail.getText().toString().trim();
                         vm.savePhotoUri(email, img.toString());
 
@@ -81,37 +76,33 @@ public class ProfileFragment extends Fragment {
                 }
         );
 
-        // -------------------------------
-        //  LANCIO FOTOCAMERA
-        // -------------------------------
+        // -----------------------------------------------------------------------------------------
+        // LANCIO FOTOCAMERA
+        // -----------------------------------------------------------------------------------------
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         String email = inputEmail.getText().toString().trim();
                         vm.savePhotoUri(email, cameraImageUri.toString());
-
                         profileImage.setImageURI(cameraImageUri);
                     }
                 }
         );
 
-        // -------------------------------
-        //  PERMESSO FOTOCAMERA
-        // -------------------------------
+        // -----------------------------------------------------------------------------------------
+        // PERMESSO FOTOCAMERA
+        // -----------------------------------------------------------------------------------------
         cameraPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
-                    if (granted) {
-                        takePhotoInternal();
-                    } else {
-                        Toast.makeText(getContext(), "Permesso fotocamera negato", Toast.LENGTH_SHORT).show();
-                    }
+                    if (granted) takePhotoInternal();
+                    else Toast.makeText(getContext(), "Permesso negato", Toast.LENGTH_SHORT).show();
                 });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -119,79 +110,68 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        topAppBar = view.findViewById(R.id.topAppBar);
-        profileImage = view.findViewById(R.id.profile_image);
-        btnEditPhoto = view.findViewById(R.id.btn_change_photo);
-        inputName = view.findViewById(R.id.input_name);
-        inputEmail = view.findViewById(R.id.input_email);
-        inputAddress = view.findViewById(R.id.input_address);
-        btnEditSave = view.findViewById(R.id.btn_edit_save);
-        btnLogout = view.findViewById(R.id.btn_logout);
+        setupViews(view);
+        setupViewModel();
+        setupObservers();
+        loadUserFromPrefs();
+        setupButtons();
+    }
 
-        inputEmail.setEnabled(false);
+    // ---------------------------------------------------------------------------------------------
+    // INIZIALIZZAZIONE VIEWMODEL
+    // ---------------------------------------------------------------------------------------------
+    private void setupViewModel() {
+        vm = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                UserRepository repo = new UserRepository(requireContext());
+                return (T) new ProfileViewModel(repo);
+            }
+        }).get(ProfileViewModel.class);
+    }
 
-        // -------------------------------
-        //  CREATE VIEWMODEL
-        // -------------------------------
-        vm = new ViewModelProvider(
-                this,
-                new ViewModelProvider.Factory() {
-                    @NonNull
-                    @Override
-                    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                        UserRepository userRepo = new UserRepository(requireContext());
-                        return (T) new ProfileViewModel(userRepo);
-                    }
-                }
-        ).get(ProfileViewModel.class);
-
-        // -------------------------------
-        //  OBSERVER -> aggiorna UI quando l'utente cambia
-        // -------------------------------
+    // ---------------------------------------------------------------------------------------------
+    // OSSERVA LIVE DATA UTENTE
+    // ---------------------------------------------------------------------------------------------
+    private void setupObservers() {
         vm.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 inputName.setText(user.getName());
                 inputEmail.setText(user.getEmail());
                 inputAddress.setText(user.getAddress());
 
-                // Imposta la foto dall'URI salvata
                 if (user.getPhotoUri() != null && !user.getPhotoUri().isEmpty()) {
                     profileImage.setImageURI(Uri.parse(user.getPhotoUri()));
                 }
             }
         });
+    }
 
-        // -------------------------------
-        //  PREFS LOADING
-        // -------------------------------
-        PrefsManager prefs = new PrefsManager(getContext());
+    // ---------------------------------------------------------------------------------------------
+    // CARICA UTENTE DAI PREFS
+    // ---------------------------------------------------------------------------------------------
+    private void loadUserFromPrefs() {
+        PrefsManager prefs = new PrefsManager(requireContext());
         String savedEmail = prefs.getSavedEmail();
 
-        if (!savedEmail.isEmpty()) {
-            vm.loadUser(savedEmail); // carica User da DB + LiveData
-        }
+        if (!savedEmail.isEmpty()) vm.loadUser(savedEmail);
+    }
 
-        // -------------------------------
-        //  FOTO PROFILO
-        // -------------------------------
+    // ---------------------------------------------------------------------------------------------
+    // BOTTONI
+    // ---------------------------------------------------------------------------------------------
+    private void setupButtons() {
+
         btnEditPhoto.setOnClickListener(v -> showPhotoDialog());
 
-        // -------------------------------
-        //  MODIFICA -> SALVA PROFILO
-        // -------------------------------
         btnEditSave.setOnClickListener(v -> handleEditSave());
 
-        // -------------------------------
-        //  LOGOUT
-        // -------------------------------
         btnLogout.setOnClickListener(v -> performLogout());
 
-        // -------------------------------
-        //  SETTINGS NELLA TOPBAR
-        // -------------------------------
         topAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_settings) {
-                NavHostFragment.findNavController(ProfileFragment.this)
+                NavHostFragment.findNavController(this)
                         .navigate(R.id.action_profileFragment_to_settingsFragment);
                 return true;
             }
@@ -199,9 +179,9 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    // ----------------------------------------------------
-    //   GESTIONE BOTTONE MODIFICA/SALVA
-    // ----------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+    // MODIFICA / SALVA
+    // ---------------------------------------------------------------------------------------------
     private void handleEditSave() {
         if (!isEditing) {
             isEditing = true;
@@ -215,66 +195,47 @@ public class ProfileFragment extends Fragment {
         inputName.setEnabled(false);
         inputAddress.setEnabled(false);
 
-        final String name = inputName.getText() == null ? "" : inputName.getText().toString().trim();
-        final String email = inputEmail.getText().toString().trim();
-        final String address = inputAddress.getText() == null ? "" : inputAddress.getText().toString().trim();
+        String name = inputName.getText().toString().trim();
+        String address = inputAddress.getText().toString().trim();
 
-        PrefsManager pm = new PrefsManager(requireContext());
+        vm.updateProfile(name, address);
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-
-            User existing = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
-
-            if (existing != null) {
-                existing.setName(name);
-                existing.setAddress(address);
-                AppDatabase.getInstance(requireContext()).userDao().update(existing);
-
-                // Aggiorna LiveData nel ViewModel
-                vm.loadUser(email);
-            }
-
-            if (pm.isRemember()) {
-                pm.saveUser(name, address, email, pm.getSavedPassword());
-            }
-
-            requireActivity().runOnUiThread(() -> {
-                Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
-                btnEditSave.setText("Modifica");
-            });
-        });
+        Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
+        btnEditSave.setText("Modifica");
     }
 
-    // ----------------------------------------------------
-    //   LOGOUT
-    // ----------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+    // LOGOUT
+    // ---------------------------------------------------------------------------------------------
     private void performLogout() {
         FirebaseAuth.getInstance().signOut();
 
-        PrefsManager pm = new PrefsManager(requireContext());
-        pm.clearSavedUser();
-        pm.setRemember(false);
+        // 2. Verifica se l'utente è disconnesso
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Log.d("LOGOUT", "Logout riuscito: nessun utente loggato");
+        } else {
+            Log.d("LOGOUT", "Logout FALLITO: utente ancora loggato -> " + user.getEmail());
+        }
+        PrefsManager prefs = new PrefsManager(requireContext());
+        prefs.clearSavedUser();
+        prefs.setRemember(false);
 
         NavHostFragment.findNavController(this)
-                .navigate(R.id.action_profileFragment_to_loginFragment2);
-
-        Toast.makeText(getContext(), "Logout eseguito", Toast.LENGTH_SHORT).show();
+                .navigate(R.id.action_profileFragment_to_welcomeFragment2);
     }
 
-    // ----------------------------------------------------
-    //   FOTO PROFILO
-    // ----------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+    // FOTO PROFILO
+    // ---------------------------------------------------------------------------------------------
     private void showPhotoDialog() {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
-        builder.setTitle("Cambia foto profilo");
-        String[] opzioni = {"Scegli dalla galleria", "Scatta una foto"};
-
-        builder.setItems(opzioni, (dialog, which) -> {
-            if (which == 0) pickFromGallery();
-            else takePhoto();
-        });
-
-        builder.show();
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Cambia foto")
+                .setItems(new String[]{"Galleria", "Fotocamera"}, (dialog, which) -> {
+                    if (which == 0) pickFromGallery();
+                    else takePhoto();
+                })
+                .show();
     }
 
     private void pickFromGallery() {
@@ -287,9 +248,9 @@ public class ProfileFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
-            return;
+        } else {
+            takePhotoInternal();
         }
-        takePhotoInternal();
     }
 
     private void takePhotoInternal() {
@@ -304,4 +265,21 @@ public class ProfileFragment extends Fragment {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
         cameraLauncher.launch(intent);
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // SETUP VIEW
+    // ---------------------------------------------------------------------------------------------
+    private void setupViews(View view) {
+        topAppBar = view.findViewById(R.id.topAppBar);
+        profileImage = view.findViewById(R.id.profile_image);
+        btnEditPhoto = view.findViewById(R.id.btn_change_photo);
+        inputName = view.findViewById(R.id.input_name);
+        inputEmail = view.findViewById(R.id.input_email);
+        inputAddress = view.findViewById(R.id.input_address);
+        btnEditSave = view.findViewById(R.id.btn_edit_save);
+        btnLogout = view.findViewById(R.id.btn_logout);
+
+        inputEmail.setEnabled(false);
+    }
 }
+

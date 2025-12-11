@@ -45,7 +45,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cambia password"
+                android:text="@string/cambia_password"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Consensi app"
+                android:text="@string/consensi_app"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -99,7 +99,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Preferenze app"
+            android:text="@string/preferenze_app"
             android:textStyle="bold"
             android:textSize="16sp"
             android:paddingTop="8dp"
@@ -128,7 +128,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tema"
+                android:text="@string/tema"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -162,7 +162,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Lingua"
+                android:text="@string/lingua"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -194,7 +194,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Notifiche"
+                android:text="@string/notifiche"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -225,7 +225,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Suono"
+                android:text="@string/suono"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -256,7 +256,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Vibrazione"
+                android:text="@string/vibrazione"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />

@@ -3,24 +3,32 @@ package com.application.bingo.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.application.bingo.repository.SettingsRepository;
-//La UI si limita a chiamare metodi come:
-//viewModel.setTheme("dark")
+
+/**
+ * ViewModel per SettingsFragment.
+ * Espone metodi e LiveData per tema, lingua, notifiche, suono e vibrazione.
+ */
 public class SettingsViewModel extends ViewModel {
 
     private final SettingsRepository settingsRepo;
+
+    // LiveData per lingua e notifiche
+    private final MutableLiveData<String> languageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> notificationsLiveData = new MutableLiveData<>();
 
     public SettingsViewModel(SettingsRepository settingsRepo) {
         this.settingsRepo = settingsRepo;
     }
 
-    // TEMA
+    // ---------------- Tema ----------------
     public String getTheme() {
         return settingsRepo.getTheme();
     }
 
     public boolean isDarkTheme() {
-        return "dark".equals(settingsRepo.getTheme());
+        return settingsRepo.isDarkTheme();
     }
 
     public void setThemeLight() {
@@ -31,57 +39,56 @@ public class SettingsViewModel extends ViewModel {
         settingsRepo.setTheme("dark");
     }
 
-    // LINGUA -> LiveData per osservare la lingua in tempo reale
-    //Così la UI può osservare i cambiamenti di lingua senza leggere direttamente il repository
-    private final MutableLiveData<String> languageLiveData = new MutableLiveData<>();
-
+    // ---------------- Lingua ----------------
     public LiveData<String> getLanguageLiveData() {
         return languageLiveData;
     }
 
     public void loadLanguage() {
+        // Carica la lingua corrente e aggiorna la LiveData
         languageLiveData.setValue(settingsRepo.getLanguage());
     }
 
     public void setLanguage(String lang) {
         settingsRepo.setLanguage(lang);
-        languageLiveData.setValue(lang); // aggiorna la LiveData
+        languageLiveData.setValue(lang); // aggiorna LiveData
     }
+
     public String getLanguage() {
         return settingsRepo.getLanguage();
     }
 
-
-
-    // NOTIFICHE
-    private final MutableLiveData<Boolean> notificationsLiveData = new MutableLiveData<>();
-
+    // ---------------- Notifiche ----------------
     public LiveData<Boolean> getNotificationsLiveData() {
         return notificationsLiveData;
     }
 
     public void loadNotificationsState() {
+        // Carica lo stato corrente delle notifiche
         notificationsLiveData.setValue(settingsRepo.isNotificationsEnabled());
     }
 
     public void setNotificationsEnabled(boolean enabled) {
         settingsRepo.setNotificationsEnabled(enabled);
-        notificationsLiveData.setValue(enabled); // aggiorna la LiveData
+        notificationsLiveData.setValue(enabled); // aggiorna LiveData
     }
 
+    // ---------------- Suono ----------------
     public boolean isSoundEnabled() {
         return settingsRepo.isSoundEnabled();
     }
 
+    public void setSoundEnabled(boolean enabled) {
+        settingsRepo.setSoundEnabled(enabled);
+    }
+
+    // ---------------- Vibrazione ----------------
     public boolean isVibrationEnabled() {
         return settingsRepo.isVibrationEnabled();
     }
 
-    public void setSoundEnabled(boolean isChecked) {
-        settingsRepo.setSoundEnabled(isChecked);
-    }
-
-    public void setVibrationEnabled(boolean isChecked) {
-   settingsRepo.setVibrationEnabled(isChecked);
+    public void setVibrationEnabled(boolean enabled) {
+        settingsRepo.setVibrationEnabled(enabled);
     }
 }
+
