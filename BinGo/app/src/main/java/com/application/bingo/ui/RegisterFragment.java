@@ -13,10 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.application.bingo.util.database.AppDatabase;
+import com.application.bingo.database.AppDatabase;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.util.database.User;
+import com.application.bingo.database.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;

@@ -24,7 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.bingo.R;
-import com.application.bingo.adapter.PackagingRecyclerAdapter;
+import com.application.bingo.ui.adapter.PackagingRecyclerAdapter;
 import com.application.bingo.model.ProductApiResponse;
 import com.application.bingo.util.MaterialParserUtils;
 import com.application.bingo.util.normalizer.ProductDeserializer;

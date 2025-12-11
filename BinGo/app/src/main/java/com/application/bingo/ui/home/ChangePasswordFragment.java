@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
 import com.application.bingo.repository.UserRepository;
+import com.application.bingo.viewmodel.ChangePasswordViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

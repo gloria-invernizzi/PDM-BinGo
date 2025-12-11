@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.application.bingo.R;
 import com.application.bingo.model.Notification;
-import com.application.bingo.repository.SettingsRepository;
 import com.application.bingo.util.calendar.NotificationManager;
 import com.application.bingo.util.database.AppDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -132,16 +131,7 @@ public class CalendarFragment extends Fragment {
                     int minute = timePicker.getMinute();
                     int repeatWeeks = spinnerRepeat.getSelectedItemPosition() + 1;
 
-                    //  Controllo in base alle impostazioni se le notifiche sono attive
-                    SettingsRepository settingsRepo = new SettingsRepository(requireContext());
-                    if (!settingsRepo.isNotificationsEnabled()) {
-                        Toast.makeText(getContext(),
-                                "Notifiche disattivate nelle impostazioni",
-                                Toast.LENGTH_SHORT).show();
-                        return; //  Blocca la creazione della notifica
-                    }
-
-// Salva e pianifica la notifica
+                    // Salva e pianifica la notifica
                     notificationManager.saveNotification(dateMillis, hour, minute, wasteType, repeatWeeks);
 
                     showWasteSummary(dateMillis);

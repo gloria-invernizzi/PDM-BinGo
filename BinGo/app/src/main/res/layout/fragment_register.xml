@@ -13,8 +13,8 @@
         android:id="@+id/tvRegisterTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginTop="@dimen/margin_xlarge"
+        android:layout_marginBottom="@dimen/margin_xlarge"
         android:textSize="34sp"
         android:text="@string/register"
         android:textAppearance="?attr/textAppearanceHeadline6"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvRegisterTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="@dimen/margin_medium">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etName"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/tilName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="@dimen/margin_medium">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSurname"
@@ -73,7 +73,7 @@
         app:layout_constraintTop_toBottomOf="@id/tilSurname"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="@dimen/margin_medium">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etAddress"
@@ -93,7 +93,7 @@
         app:layout_constraintTop_toBottomOf="@id/tilAddress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="@dimen/margin_medium">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmail"
@@ -113,7 +113,7 @@
         app:layout_constraintTop_toBottomOf="@id/tilEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="@dimen/margin_medium">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
@@ -133,7 +133,7 @@
         app:layout_constraintTop_toBottomOf="@id/tilPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="@dimen/margin_medium">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etConfirm"
@@ -150,7 +150,7 @@
         android:text="@string/remember_me"
         app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="@dimen/margin_medium" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
@@ -160,6 +160,6 @@
         app:layout_constraintTop_toBottomOf="@id/cbRemember"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="@dimen/margin_large" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
