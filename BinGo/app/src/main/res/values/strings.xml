@@ -104,12 +104,12 @@
     <string name="add_notification">Crea notifica</string>
     <string name="delete_notification">Cancella notifica</string>
     <string name="cambia_password">Cambia password</string>
-    <string name="consensi_app">Consensi app</string>
     <string name="preferenze_app">Preferenze app</string>
     <string name="tema">Tema</string>
     <string name="lingua">Lingua</string>
     <string name="notifiche">Notifiche</string>
     <string name="suono">Suono</string>
     <string name="vibrazione">Vibrazione</string>
+    <string name="cambia_email"> Cambia Email</string>
 
 </resources>

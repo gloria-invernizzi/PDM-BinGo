@@ -57,8 +57,9 @@
                 app:tint="?attr/colorOnSurface" />
         </LinearLayout>
 
-        <!-- Gestione consensi -->
+        <!-- Cambia email -->
         <LinearLayout
+            android:id="@+id/layout_cambia_email"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
@@ -71,14 +72,14 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_shield"
+                android:src="@drawable/ic_email"
                 app:tint="?attr/colorPrimary" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/consensi_app"
+                android:text="@string/cambia_email"
                 android:textSize="14sp"
                 android:paddingStart="16dp"
                 android:textColor="?attr/colorOnSurface" />
@@ -89,7 +90,6 @@
                 android:src="@drawable/ic_chevron_right"
                 app:tint="?attr/colorOnSurface" />
         </LinearLayout>
-
         <!-- SPACER -->
         <View
             android:layout_width="match_parent"

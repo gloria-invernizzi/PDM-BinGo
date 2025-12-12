@@ -9,6 +9,7 @@ import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
 import com.application.bingo.database.User;
 import com.application.bingo.database.UserDao;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -140,8 +141,9 @@ public class UserRepository {
             String confirmPassword,
             Callback callback
     ) {
-
-        // VALIDAZIONE BASE (prima ancora del thread)
+        // -------------------------------
+        // VALIDAZIONE BASE
+        // -------------------------------
         if (!newPassword.equals(confirmPassword)) {
             postToMain(() -> callback.onFailure("Le password non corrispondono"));
             return;
@@ -149,53 +151,71 @@ public class UserRepository {
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                // -------------------------------------------
-                // 1) AGGIORNAMENTO LOCALE (ROOM)
-                // -------------------------------------------
+                // -------------------------------
+                // 1) Recupero utente da Room
+                // -------------------------------
                 User localUser = userDao.findByEmail(email);
+                PrefsManager prefs = new PrefsManager(context);
 
-                if (localUser != null) {
-                    // Controllo vecchia password nel database locale
-                    if (!localUser.getPassword().equals(oldPassword)) {
-                        postToMain(() -> callback.onFailure("Vecchia password errata"));
-                        return;
-                    }
-                    // Aggiorna password locale
-                    localUser.setPassword(newPassword);
-                    userDao.update(localUser);
+                if (localUser == null) {
+                    String savedPassword = prefs.getSavedPassword();
+                    localUser = new User(
+                            prefs.getSavedName(),
+                            prefs.getSavedAddress(),
+                            email,
+                            savedPassword != null ? savedPassword : ""
+                    );
+                    userDao.insert(localUser);
+                    Log.d("UserRepo", "User creato in Room da Prefs: " + localUser);
                 }
 
-                // -------------------------------------------
-                // 2) AGGIORNAMENTO SU FIREBASE (se utente loggato)
-                // -------------------------------------------
+                // -------------------------------
+                // LOG DEBUG
+                // -------------------------------
+                Log.d("UserRepo", "Vecchia password inserita: '" + oldPassword + "'");
+                Log.d("UserRepo", "Vecchia password in Room: '" + localUser.getPassword() + "'");
+
+                // -------------------------------
+                // 2) Controllo vecchia password locale
+                // -------------------------------
+                if (!localUser.getPassword().equals(oldPassword)) {
+                    postToMain(() -> callback.onFailure("Vecchia password errata"));
+                    return;
+                }
+
+                // -------------------------------
+                // 3) Aggiorna password locale in Room + Prefs
+                // -------------------------------
+                localUser.setPassword(newPassword);
+                userDao.update(localUser);
+                prefs.saveUser(localUser.getName(), localUser.getAddress(), email, newPassword);
+                Log.d("UserRepo", "Password aggiornata in Room per " + email);
+
+                // Notifica immediata di successo
+                Log.d("UserRepo", "Notifico successo cambio password");
+                postToMain(() -> callback.onSuccess(UserRepository.PASSWORD_OK));
+
+                // -------------------------------
+                // 4) Aggiornamento Firebase se utente loggato
+                // -------------------------------
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
                 if (firebaseUser != null && email.equals(firebaseUser.getEmail())) {
-
-                    // Ri-autenticazione necessaria
-                    com.google.firebase.auth.AuthCredential credential =
-                            EmailAuthProvider.getCredential(email, oldPassword);
-
+                    AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
                     firebaseUser.reauthenticate(credential)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    // Aggiorna password Firebase
                                     firebaseUser.updatePassword(newPassword)
                                             .addOnCompleteListener(updateTask -> {
                                                 if (updateTask.isSuccessful()) {
-                                                    postToMain(() -> callback.onSuccess(PASSWORD_OK));
+                                                    Log.d("UserRepo", "Password aggiornata anche su Firebase");
                                                 } else {
-                                                    postToMain(() -> callback.onFailure("Errore Firebase durante aggiornamento password"));
+                                                    Log.e("UserRepo", "Errore Firebase durante aggiornamento password", updateTask.getException());
                                                 }
                                             });
                                 } else {
-                                    postToMain(() -> callback.onFailure("Autenticazione Firebase fallita"));
+                                    Log.e("UserRepo", "Autenticazione Firebase fallita", task.getException());
                                 }
                             });
-
-                } else {
-                    // Utente non loggato su Firebase → locale aggiornata
-                    postToMain(() -> callback.onSuccess(PASSWORD_OK));
                 }
 
             } catch (Exception e) {
@@ -203,6 +223,7 @@ public class UserRepository {
             }
         });
     }
+
 
     // ---------------------------------------------------------------------------------------------
     // CALLBACKS

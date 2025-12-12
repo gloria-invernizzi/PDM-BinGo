@@ -88,7 +88,7 @@
     <string name="delete_notification">Delete notification</string>
 
     <string name="cambia_password">Change password</string>
-    <string name="consensi_app">App consents</string>
+    <string name="cambia_email"> Change Email</string >
     <string name="preferenze_app">App preferences</string>
     <string name="tema">Theme</string>
     <string name="lingua">Linguage</string>

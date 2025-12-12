@@ -47,13 +47,14 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("ChangePasswordFragment", "onViewCreated chiamato");
 
         // -------------------------------
         // Recupero dei campi dal layout
         // -------------------------------
         vecchiaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.vecchia_password)).getEditText();
-        nuovaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.nuova_password)).getEditText();
-        confermaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.conferma_password)).getEditText();
+        nuovaPasswordEditText = (TextInputEditText)((TextInputLayout) view.findViewById(R.id.nuova_password)).getEditText();
+        confermaPasswordEditText = (TextInputEditText)((TextInputLayout) view.findViewById(R.id.conferma_password)).getEditText();
 
         btnChangePassword = view.findViewById(R.id.btn_change_password);
 
@@ -92,15 +93,14 @@ public class ChangePasswordFragment extends Fragment {
         // Osserva i messaggi dal ViewModel
         // -------------------------------
         changePasswordViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), message -> {
-
             // Mostra toast con esito
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 
             // Se password cambiata correttamente → reset campi
             if (message.equals("Password aggiornata con successo")) {
-                vecchiaPasswordEditText.setText("");
-                nuovaPasswordEditText.setText("");
-                confermaPasswordEditText.setText("");
+                if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
+                if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
+                if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
             }
         });
 
@@ -110,9 +110,12 @@ public class ChangePasswordFragment extends Fragment {
         btnChangePassword.setOnClickListener(v -> {
             Log.d("ChangePasswordFragment", "Pulsante cliccato!");
 
-            String oldPass = vecchiaPasswordEditText.getText() != null ? vecchiaPasswordEditText.getText().toString().trim() : "";
-            String newPass = nuovaPasswordEditText.getText() != null ? nuovaPasswordEditText.getText().toString().trim() : "";
-            String confirmPass = confermaPasswordEditText.getText() != null ? confermaPasswordEditText.getText().toString().trim() : "";
+            String oldPass = vecchiaPasswordEditText != null && vecchiaPasswordEditText.getText() != null
+                    ? vecchiaPasswordEditText.getText().toString().trim() : "";
+            String newPass = nuovaPasswordEditText != null && nuovaPasswordEditText.getText() != null
+                    ? nuovaPasswordEditText.getText().toString().trim() : "";
+            String confirmPass = confermaPasswordEditText != null && confermaPasswordEditText.getText() != null
+                    ? confermaPasswordEditText.getText().toString().trim() : "";
 
             // -------------------------------
             // Verifica se l’utente ha effettivamente compilato vecchia password, nuova password e conferma password
@@ -134,4 +137,3 @@ public class ChangePasswordFragment extends Fragment {
         });
     }
 }
-
