@@ -3,12 +3,17 @@ package com.application.bingo.repository;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
+import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
 import com.application.bingo.database.User;
 import com.application.bingo.database.UserDao;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.EmailAuthProvider;
+
+import java.util.concurrent.Executors;
 
 /**
  * UserRepository:
@@ -18,20 +23,21 @@ import com.google.firebase.auth.FirebaseUser;
  *
  * RESPONSABILITÀ:
  *   recupero dell’utente dal database
- *    aggiornamento dell’utente
- *    NON si preoccupa di come è fatto il DB
- *    NON decide quale DAO chiamare (lo fa internamente)
- *    NON gestisce UI
+ *   aggiornamento dell’utente
+ *   NON si preoccupa di come è fatto il DB
+ *   NON decide quale DAO chiamare (lo fa internamente)
+ *   NON gestisce UI
  */
 public class UserRepository {
 
-    // Codice di successo UNIVERSALE → il ViewModel capisce quando tutto è andato bene
     public static final String PASSWORD_OK = "PASSWORD_OK";
 
     private final UserDao userDao;
     private final FirebaseAuth mAuth;
+    private final Context context;
 
     public UserRepository(Context context) {
+        this.context = context.getApplicationContext(); // salva il context
         userDao = AppDatabase.getInstance(context).userDao();
         mAuth = FirebaseAuth.getInstance();
     }
@@ -41,31 +47,71 @@ public class UserRepository {
     // ---------------------------------------------------------------------------------------------
     public void getUser(String email, UserCallback callback) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
+            PrefsManager prefs = new PrefsManager(context);
+
+            // 1) Provo a leggere da Room
             User u = userDao.findByEmail(email);
 
             if (u != null) {
-                postToMain(() -> callback.onUserLoaded(u));
-            } else {
-                // fallback su Firebase: NON salvare subito in Room
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                if (firebaseUser != null && email.equals(firebaseUser.getEmail())) {
-                    User fUser = new User(
-                            firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "",
-                            "", email, ""
-                    );
-
-                    // Non salvare ancora in Room per evitare record vuoti
-                    postToMain(() -> callback.onUserLoaded(fUser));
-                } else {
-                    postToMain(() -> callback.onUserLoaded(null));
+                // merge dati Prefs se presenti
+                if (u.getName() == null || u.getName().isEmpty()) {
+                    String name = prefs.getSavedName();
+                    if (!name.isEmpty()) u.setName(name);
                 }
+                if (u.getAddress() == null || u.getAddress().isEmpty()) {
+                    String address = prefs.getSavedAddress();
+                    if (!address.isEmpty()) u.setAddress(address);
+                }
+                if (u.getPhotoUri() == null || u.getPhotoUri().isEmpty()) {
+                    u.setPhotoUri(prefs.getSavedPhotoUri());
+                }
+                Log.d("UserRepo", "User trovato in Room (merge Prefs/Firebase): " + u);
+                postToMain(() -> callback.onUserLoaded(u));
+                return;
+            }
+
+            // 2) PrefsManager
+            String nameFromPrefs = prefs.getSavedName();
+            String addressFromPrefs = prefs.getSavedAddress();
+            String photoUri = prefs.getSavedPhotoUri();
+
+            if (!nameFromPrefs.isEmpty() || !addressFromPrefs.isEmpty() || !photoUri.isEmpty()) {
+                User prefsUser = new User(nameFromPrefs, addressFromPrefs, email, "");
+                prefsUser.setPhotoUri(photoUri);
+                Log.d("UserRepo", "User creato da Prefs: " + prefsUser);
+                postToMain(() -> callback.onUserLoaded(prefsUser));
+                return;
+            }
+
+            // 3) Fallback su FirebaseUser
+            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+            if (firebaseUser != null && email.equals(firebaseUser.getEmail())) {
+                User firebaseFallback = new User(
+                        firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "",
+                        "",  // address non disponibile in Firebase
+                        email,
+                        ""
+                );
+                firebaseFallback.setPhotoUri(""); // inizializza photoUri
+                Log.d("UserRepo", "User creato da FirebaseUser: " + firebaseFallback);
+                postToMain(() -> callback.onUserLoaded(firebaseFallback));
+            } else {
+                postToMain(() -> callback.onUserLoaded(null));
             }
         });
     }
 
-    /** Callback risultato caricamento utente */
-    public interface UserCallback {
-        void onUserLoaded(User user);
+    // ---------------------------------------------------------------------------------------------
+    // SALVA SU PREFS
+    // ---------------------------------------------------------------------------------------------
+    public void saveToPrefs(User u) {
+        PrefsManager prefs = new PrefsManager(context);
+        prefs.saveUser(u.getName(), u.getAddress(), u.getEmail(), u.getPassword());
+    }
+
+    public void savePhotoToPrefs(String email, String uri) {
+        PrefsManager prefs = new PrefsManager(context);
+        prefs.savePhotoUri(email, uri);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -73,6 +119,7 @@ public class UserRepository {
     // ---------------------------------------------------------------------------------------------
     public void updateUser(User user) {
         AppDatabase.databaseWriteExecutor.execute(() -> userDao.update(user));
+        Log.d("UserRepo", "User aggiornato in Room: " + user);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -80,6 +127,7 @@ public class UserRepository {
     // ---------------------------------------------------------------------------------------------
     public void updatePhotoUri(String email, String uri) {
         AppDatabase.databaseWriteExecutor.execute(() -> userDao.updatePhotoUri(email, uri));
+        Log.d("UserRepo", "Foto aggiornata per " + email + ": " + uri);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -107,13 +155,11 @@ public class UserRepository {
                 User localUser = userDao.findByEmail(email);
 
                 if (localUser != null) {
-
                     // Controllo vecchia password nel database locale
                     if (!localUser.getPassword().equals(oldPassword)) {
                         postToMain(() -> callback.onFailure("Vecchia password errata"));
                         return;
                     }
-
                     // Aggiorna password locale
                     localUser.setPassword(newPassword);
                     userDao.update(localUser);
@@ -126,34 +172,29 @@ public class UserRepository {
 
                 if (firebaseUser != null && email.equals(firebaseUser.getEmail())) {
 
-                    // Prima serve la ri-autenticazione
+                    // Ri-autenticazione necessaria
                     com.google.firebase.auth.AuthCredential credential =
-                            com.google.firebase.auth.EmailAuthProvider.getCredential(email, oldPassword);
+                            EmailAuthProvider.getCredential(email, oldPassword);
 
                     firebaseUser.reauthenticate(credential)
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-
-                                    // Ora Firebase permette l'update password
+                                    // Aggiorna password Firebase
                                     firebaseUser.updatePassword(newPassword)
                                             .addOnCompleteListener(updateTask -> {
                                                 if (updateTask.isSuccessful()) {
-
-                                                    // SUCCESSO TOTALE (locale + Firebase)
                                                     postToMain(() -> callback.onSuccess(PASSWORD_OK));
-
                                                 } else {
-                                                    postToMain(() -> callback.onFailure("Errore Firebase durante l'aggiornamento password"));
+                                                    postToMain(() -> callback.onFailure("Errore Firebase durante aggiornamento password"));
                                                 }
                                             });
-
                                 } else {
                                     postToMain(() -> callback.onFailure("Autenticazione Firebase fallita"));
                                 }
                             });
 
                 } else {
-                    // Utente NON loggato su Firebase → ma locale aggiornata
+                    // Utente non loggato su Firebase → locale aggiornata
                     postToMain(() -> callback.onSuccess(PASSWORD_OK));
                 }
 
@@ -163,7 +204,13 @@ public class UserRepository {
         });
     }
 
-    // Callback generica usata dal ViewModel
+    // ---------------------------------------------------------------------------------------------
+    // CALLBACKS
+    // ---------------------------------------------------------------------------------------------
+    public interface UserCallback {
+        void onUserLoaded(User user);
+    }
+
     public interface Callback {
         void onSuccess(String msg);
         void onFailure(String msg);

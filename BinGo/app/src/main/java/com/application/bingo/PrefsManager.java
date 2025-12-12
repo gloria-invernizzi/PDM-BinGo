@@ -10,6 +10,7 @@ public class PrefsManager {
     private static final String KEY_EMAIL = "user_email";
     private static final String KEY_ADDRESS = "user_address";
     private static final String KEY_PASS = "user_pass";
+    private static final String KEY_PHOTO_URI = "user_photo_uri"; // nuovo
     private static final String KEY_REMEMBER = "remember";
 
     private final SharedPreferences prefs;
@@ -54,9 +55,27 @@ public class PrefsManager {
     public String getSavedPassword() {
         return prefs.getString(KEY_PASS, "");
     }
+
     public String getSavedEmail() {
         return prefs.getString(KEY_EMAIL, "");
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // FOTO PROFILO
+    // ---------------------------------------------------------------------------------------------
+    public void savePhotoUri(String email, String uri) {
+        prefs.edit()
+                .putString(KEY_PHOTO_URI, uri)
+                .apply();
+    }
+
+    public String getSavedPhotoUri() {
+        return prefs.getString(KEY_PHOTO_URI, "");
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // REMEMBER FLAG
+    // ---------------------------------------------------------------------------------------------
     public void setRemember(boolean remember) {
         prefs.edit().putBoolean(KEY_REMEMBER, remember).apply();
         if (!remember) {

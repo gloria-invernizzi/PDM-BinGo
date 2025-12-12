@@ -2,6 +2,7 @@
 package com.application.bingo.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +90,9 @@ public class RegisterFragment extends Fragment {
                         bg.execute(() -> {
                             User existing = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
                             if (existing == null) {
+                                // Usa costruttore a 4 parametri e imposta foto vuota
                                 User user = new User(name, address, email, pass);
+                                user.setPhotoUri(""); // foto vuota iniziale
                                 long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
 
                                 if (id > 0) {
@@ -124,6 +127,8 @@ public class RegisterFragment extends Fragment {
                         }
                     }
                 });
+
+
     }
 
     private String getText(TextInputEditText et) {

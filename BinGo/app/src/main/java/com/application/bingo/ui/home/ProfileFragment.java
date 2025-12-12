@@ -52,12 +52,15 @@ public class ProfileFragment extends Fragment {
     private boolean isEditing = false;
 
     private ProfileViewModel vm;
+    private PrefsManager prefs;
 
     public ProfileFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prefs = new PrefsManager(requireContext());
 
         // -----------------------------------------------------------------------------------------
         // LANCIO GALLERIA
@@ -67,9 +70,11 @@ public class ProfileFragment extends Fragment {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri img = result.getData().getData();
-
                         String email = inputEmail.getText().toString().trim();
+
+                        // Salva foto nel repository e nei prefs
                         vm.savePhotoUri(email, img.toString());
+                        prefs.savePhotoUri(email, img.toString());
 
                         profileImage.setImageURI(img);
                     }
@@ -85,6 +90,8 @@ public class ProfileFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         String email = inputEmail.getText().toString().trim();
                         vm.savePhotoUri(email, cameraImageUri.toString());
+                        prefs.savePhotoUri(email, cameraImageUri.toString());
+
                         profileImage.setImageURI(cameraImageUri);
                     }
                 }
@@ -109,7 +116,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        Log.d("ProfileFragment", "onViewCreated called"); // <- LOG DI TEST
         setupViews(view);
         setupViewModel();
         setupObservers();
@@ -137,6 +144,11 @@ public class ProfileFragment extends Fragment {
     private void setupObservers() {
         vm.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
+                Log.d("ProfileFragment", "User osservato: name=" + user.getName() +
+                        ", email=" + user.getEmail() +
+                        ", address=" + user.getAddress() +
+                        ", photoUri=" + user.getPhotoUri());
+
                 inputName.setText(user.getName());
                 inputEmail.setText(user.getEmail());
                 inputAddress.setText(user.getAddress());
@@ -152,10 +164,32 @@ public class ProfileFragment extends Fragment {
     // CARICA UTENTE DAI PREFS
     // ---------------------------------------------------------------------------------------------
     private void loadUserFromPrefs() {
-        PrefsManager prefs = new PrefsManager(requireContext());
         String savedEmail = prefs.getSavedEmail();
+        String savedName = prefs.getSavedName();
+        String savedAddress = prefs.getSavedAddress();
+        String savedPhoto = prefs.getSavedPhotoUri();
 
-        if (!savedEmail.isEmpty()) vm.loadUser(savedEmail);
+        if (!savedEmail.isEmpty()) {
+            Log.d("ProfileFragment", "Email salvata dai prefs: " + savedEmail);
+
+            // Aggiorna UI subito da prefs (se disponibili)
+            if (!savedName.isEmpty()) inputName.setText(savedName);
+            if (!savedAddress.isEmpty()) inputAddress.setText(savedAddress);
+            if (!savedPhoto.isEmpty()) profileImage.setImageURI(Uri.parse(savedPhoto));
+
+            // Carica anche l'utente dal repository (Room/Firebase) per LiveData
+            vm.loadUser(savedEmail);
+        } else {
+            Log.d("ProfileFragment", "Prefs vuoto, provo a usare FirebaseUser corrente");
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (firebaseUser != null && firebaseUser.getEmail() != null) {
+                String firebaseEmail = firebaseUser.getEmail();
+                Log.d("ProfileFragment", "Email da FirebaseUser: " + firebaseEmail);
+                vm.loadUser(firebaseEmail);
+            } else {
+                Log.d("ProfileFragment", "Nessun utente loggato in Firebase");
+            }
+        }
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -200,6 +234,10 @@ public class ProfileFragment extends Fragment {
 
         vm.updateProfile(name, address);
 
+        // Salva anche nei prefs per persistenza dopo logout/login
+        String email = inputEmail.getText().toString().trim();
+        prefs.saveUser(name, address, email, prefs.getSavedPassword());
+
         Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
         btnEditSave.setText("Modifica");
     }
@@ -217,7 +255,7 @@ public class ProfileFragment extends Fragment {
         } else {
             Log.d("LOGOUT", "Logout FALLITO: utente ancora loggato -> " + user.getEmail());
         }
-        PrefsManager prefs = new PrefsManager(requireContext());
+
         prefs.clearSavedUser();
         prefs.setRemember(false);
 
@@ -282,4 +320,3 @@ public class ProfileFragment extends Fragment {
         inputEmail.setEnabled(false);
     }
 }
-

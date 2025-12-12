@@ -25,6 +25,7 @@ public class User {
         this.address = address;
         this.email = email;
         this.password = password;
+        this.photoUri = ""; // inizializza sempre
 
     }
 

@@ -1,5 +1,7 @@
 package com.application.bingo.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -35,26 +37,11 @@ public class ProfileViewModel extends ViewModel {
     // CARICA UTENTE DAL REPOSITORY
     // ---------------------------------------------------------------------------------------------
     public void loadUser(String email) {
+        Log.d("ProfileViewModel", "loadUser called con email: " + email);
         userRepo.getUser(email, u -> {
+            Log.d("ProfileViewModel", "Utente ricevuto dal repository: " + u);
             if (u != null) {
-                // trovato in Room → aggiorna LiveData
                 user.setValue(u);
-            } else {
-                // fallback Firebase: usa solo email, senza creare record vuoto in Room
-                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (firebaseUser != null && email.equals(firebaseUser.getEmail())) {
-                    User fUser = new User(
-                            "",       // name vuoto (Firebase displayName spesso nullo)
-                            "",       // address vuoto
-                            email,    // email corretta
-                            ""        // photoUri vuoto
-                    );
-                    // NON salvare in Room ancora, aggiorna solo LiveData
-                    user.setValue(fUser);
-                } else {
-                    // nessun utente trovato
-                    user.setValue(null);
-                }
             }
         });
     }
@@ -63,25 +50,21 @@ public class ProfileViewModel extends ViewModel {
     // SALVA MODIFICHE NOME/INDIRIZZO
     // ---------------------------------------------------------------------------------------------
     public void updateProfile(String name, String address) {
-
         User u = user.getValue();
         if (u == null) return;
-
         u.setName(name);
         u.setAddress(address);
-
-        userRepo.updateUser(u);   // update nel database
-        user.setValue(u);         // aggiorna la LiveData
+        userRepo.updateUser(u);   // Room
+        userRepo.saveToPrefs(u);  // PrefsManager
+        user.setValue(u);         // LiveData
     }
 
     // ---------------------------------------------------------------------------------------------
     // SALVA FOTO PROFILO
     // ---------------------------------------------------------------------------------------------
     public void savePhotoUri(String email, String uri) {
-
-        userRepo.updatePhotoUri(email, uri);
-
-        // aggiorno subito LiveData
+        userRepo.updatePhotoUri(email, uri); // Room
+        userRepo.savePhotoToPrefs(email, uri); // PrefsManager
         User u = user.getValue();
         if (u != null) {
             u.setPhotoUri(uri);
