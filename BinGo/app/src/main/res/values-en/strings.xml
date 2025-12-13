@@ -7,20 +7,17 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="login">Login</string>
-    <string name="register">Register</string>
     <string name="remember_me">Remember me</string>
     <string name="hint_email">Email</string>
     <string name="hint_address">Address</string>
     <string name="edit_profile">Edit profile</string>
     <string name="edit_address">Edit address</string>
-    <string name="notify_settings">Notify settings</string>
     <string name="change_password">Change password</string>
     <string name="did_you_forget_your_password">Did you forget your password?</string>
     <string name="login_with_google">Login with google</string>
     <string name="welcome">WELCOME!</string>
     <string name="create_account">Create account</string>
     <string name="product_image">Product image</string>
-    <string name="tips">Tips for recycling...</string>
     <string name="result">Result</string>
     <string name="barcode">Barcode %1$s</string>
     <string name="confirm">Confirm</string>
@@ -40,10 +37,8 @@
     <string name="request_error">Request error</string>
     <string name="product_name">Product name</string>
 
-    <string name="change_password_title">Change Password</string>
     <string name="old_password_hint">Old Password</string>
     <string name="new_password_hint">New Password</string>
-    <string name="confirm_password_hint">Confirm Password</string>
     <string name="update_password_button">Update Password</string>
 
     <!-- Materials -->
@@ -63,7 +58,6 @@
     <string name="shape_tray">Tray</string>
     <string name="shape_box">Box</string>
     <string name="shape">Shape</string>
-    <string name="no_packaging_info">No information available on the packaging</string>
     <string name="notifications">Notifications</string>
     <string name="profile_picture">Profile photo</string>
     <string name="edit_photo">Edit photo</string>
@@ -80,20 +74,47 @@
     <string name="where_to_throw">Where it goes</string>
     <string name="favorite">Favorite</string>
     <string name="save_changes">Save changes</string>
-    <string name="notification_preferences">Notifications preferences</string>
     <string name="home">Home</string>
-    <string name="packagings_title">where do I throw it?</string>
     <string name="no_packaging_details">No information provided regarding product packaging</string>
+    <string name="sound">Sound</string>
+    <string name="vibration">Vibration</string>
     <string name="add_notification">Create notification</string>
     <string name="delete_notification">Delete notification</string>
+    <string name="delete_notification_dialog">Do you want to delete just this notification or all repetitions?</string>
 
-    <string name="cambia_password">Change password</string>
-    <string name="cambia_email"> Change Email</string >
-    <string name="preferenze_app">App preferences</string>
-    <string name="tema">Theme</string>
-    <string name="lingua">Linguage</string>
-    <string name="notifiche">Notifications</string>
-    <string name="suono">Sound</string>
-    <string name="vibrazione">Vibration</string>
+
+    <string name="preferences">App preferences</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+    <string name="change_email">Change email</string>
+    <string name="choose_theme">Choose theme</string>
+    <string name="theme_light">Light</string>
+    <string name="choose_language">Choose language</string>
+    <string name="theme_dark">Dark</string>
+    <string name="back_to_login">Back to login</string>
+    <string name="send_email">Send recovery email</string>
+    <string name="recover_info">Enter the email address associated with your account to receive recovery instructions.</string>
+    <string name="recover_password">Recover password</string>
+    <string name="search_product">Search for a product…</string>
+    <string name="one_week">1 week</string>
+    <string name="two_weeks">2 weeks</string>
+    <string name="three_weeks">3 weeks</string>
+    <string name="four_weeks">4 weeks</string>
+    <string name="notifications_disabled">Notifications disabled in settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="repeat_every">Repeats every</string>
+    <string name="account_management">Account management</string>
+    <string name="italian">Italian</string>
+    <string name="english">English</string>
+    <string name="spanish">Spanish</string>
+    <string name="solo_questa">Just this one</string>
+    <string name="all_repetitions">All repetitions</string>
+    <plurals name="repeat_weeks">
+        <item quantity="one">Every week</item>
+        <item quantity="other">Every %d weeks</item>
+    </plurals>
+    <string name="prepare_bin">Prepare bin</string>
+    <string name="notification_text">Tomorrow they collect %1$s</string>
 
 </resources>

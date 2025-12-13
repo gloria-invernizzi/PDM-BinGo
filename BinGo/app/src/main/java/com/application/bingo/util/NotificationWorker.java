@@ -71,8 +71,8 @@ public class NotificationWorker extends Worker {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "waste_channel")
-                .setContentTitle("Preparare il bidone")
-                .setContentText("Domani ritirano " + waste)
+                .setContentTitle(getApplicationContext().getString(R.string.prepare_bin))
+                .setContentText(getApplicationContext().getString(R.string.notification_text, waste.toLowerCase()))
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 

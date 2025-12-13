@@ -1,4 +1,4 @@
-package com.application.bingo.viewmodel;
+package com.application.bingo.ui.viewmodel;
 
 import android.util.Log;
 

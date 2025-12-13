@@ -10,7 +10,7 @@
         android:id="@+id/inputSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Cerca un rifiuto..." />
+        android:hint="@string/search_product" />
 
     <Spinner
         android:id="@+id/spinnerContainers"
@@ -18,12 +18,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small" />
 
-    <ListView
-        android:id="@+id/listResults"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerWaste"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        android:layout_marginTop="@dimen/margin_medium"/>
+        android:padding="8dp" />
 </LinearLayout>

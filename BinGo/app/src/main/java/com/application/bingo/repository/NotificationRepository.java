@@ -29,32 +29,31 @@ public class NotificationRepository {
     // --- SALVATAGGIO ---
     public void saveNotification(Notification notification) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            long notificationTime = notification.getNotificationTime();
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(notification.getNotificationTime());
             long repeatWeeks = notification.getRepeatWeeks();
-            while (notificationTime <= getEndOfYear()) {
-                notification.setNotificationTime(notificationTime);
-                dao.insert(notification);
-                scheduleNotification(notificationTime, notification.getWasteType());
-                notificationTime = notificationTime + repeatWeeks * 7 * 24 * 60 * 60 * 1000;
+
+            while (cal.getTimeInMillis() <= getEndOfYear()) {
+                Notification n = new Notification(cal.getTimeInMillis(), notification.getWasteType(), notification.getRepeatWeeks());
+                dao.insert(n);
+                scheduleNotification(n);
+                cal.add(Calendar.WEEK_OF_YEAR, (int) repeatWeeks);
             }
         });
     }
 
     // --- WORKMANAGER ---
-    private void scheduleNotification(long notificationTime, String wasteType) {
-
-        long now = System.currentTimeMillis();
-        long delay = notificationTime - now;
+    private void scheduleNotification(Notification notification) {
+        long delay = notification.getNotificationTime() - System.currentTimeMillis();
 
         Data data = new Data.Builder()
-                .putString("wasteType", wasteType)
+                .putString("wasteType", notification.getWasteType())
                 .build();
 
-        OneTimeWorkRequest request =
-                new OneTimeWorkRequest.Builder(NotificationWorker.class)
-                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                        .setInputData(data)
-                        .build();
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .setInputData(data)
+                .build();
 
         WorkManager.getInstance(context).enqueue(request);
     }
@@ -113,12 +112,6 @@ public class NotificationRepository {
         endOfYear.set(Calendar.SECOND, 59);
         endOfYear.set(Calendar.MILLISECOND, 999);
         return endOfYear.getTimeInMillis();
-    }
-
-    public static long convertToMillis(int year, int month, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day, 0, 0, 0);
-        return cal.getTimeInMillis();
     }
 
 }

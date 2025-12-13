@@ -1,4 +1,4 @@
-package com.application.bingo.viewmodel;
+package com.application.bingo.ui.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,8 +16,8 @@ public class ChangePasswordViewModel extends ViewModel {
     private final UserRepository userRepository;
     private final MutableLiveData<String> messageLiveData = new MutableLiveData<>();
 
-    public ChangePasswordViewModel(UserRepository repository) {
-        this.userRepository = repository;
+    public ChangePasswordViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public LiveData<String> getMessageLiveData() {

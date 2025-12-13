@@ -1,42 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_notification"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_medium"/>
+
     <RadioGroup
         android:id="@+id/groupBins"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioButton
-            android:id="@+id/binIndifferenziata"
-            android:text="Indifferenziata"
+        <RadioButton android:id="@+id/binIndifferenziata"
+            android:text="@string/residual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <RadioButton
-            android:id="@+id/binPlastica"
-            android:text="Plastica"
+        <RadioButton android:id="@+id/binPlastica"
+            android:text="@string/plastic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <RadioButton
-            android:id="@+id/binCarta"
-            android:text="Carta"
+        <RadioButton android:id="@+id/binCarta"
+            android:text="@string/paper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <RadioButton
-            android:id="@+id/binVetro"
-            android:text="Vetro"
+        <RadioButton android:id="@+id/binVetro"
+            android:text="@string/glass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <RadioButton
-            android:id="@+id/binOrganico"
-            android:text="Organico"
+        <RadioButton android:id="@+id/binOrganico"
+            android:text="@string/organic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RadioGroup>
@@ -47,17 +51,18 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/margin_medium"
         android:gravity="center_vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ripeti ogni:"
-            android:paddingEnd="8dp"/>
+            android:text="@string/repeat_every" />
 
         <Spinner
             android:id="@+id/spinnerRepeat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:entries="@array/weeks_array"/>
     </LinearLayout>
 
     <TimePicker
@@ -66,4 +71,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"/>
 
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/buttonCancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/buttonSave"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:layout_marginStart="@dimen/margin_small"/>
+    </LinearLayout>
 </LinearLayout>

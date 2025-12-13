@@ -13,13 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
-import com.application.bingo.repository.SettingsRepository;
-import com.application.bingo.viewmodel.SettingsViewModel;
+import com.application.bingo.ui.viewmodel.SettingsViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.application.bingo.util.calendar.NotificationProcessor;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -31,8 +30,7 @@ import java.util.Locale;
  */
 public class SettingsFragment extends Fragment {
 
-    private LinearLayout layoutTema, layoutLingua, layoutNotifiche,
-            layoutSuono, layoutVibrazione, layoutCambiaPassword;
+    private LinearLayout layoutTema, layoutLingua, layoutCambiaPassword;
 
     private Switch switchNotifiche, switchSuono, switchVibrazione;
 
@@ -48,25 +46,15 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Creo repository e ViewModel
-        SettingsRepository settingsRepo = new SettingsRepository(requireContext());
-        settingsVM = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                if (modelClass.isAssignableFrom(SettingsViewModel.class)) {
-                    return (T) new SettingsViewModel(settingsRepo);
-                }
-                throw new IllegalArgumentException("Unknown ViewModel class");
-            }
-        }).get(SettingsViewModel.class);
+        // Creo ViewModel
+        ViewModelFactory factory =
+                new ViewModelFactory(requireActivity().getApplication());
+
+        settingsVM = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
 
         // Trovo le view
         layoutTema = view.findViewById(R.id.layout_tema);
         layoutLingua = view.findViewById(R.id.layout_lingua);
-        layoutNotifiche = view.findViewById(R.id.layout_notifiche);
-        layoutSuono = view.findViewById(R.id.layout_suono);
-        layoutVibrazione = view.findViewById(R.id.layout_vibrazione);
         layoutCambiaPassword = view.findViewById(R.id.layout_cambia_password);
 
         switchNotifiche = view.findViewById(R.id.switch_notifiche);
@@ -111,11 +99,11 @@ public class SettingsFragment extends Fragment {
 
     // Dialog per scegliere tema
     private void showThemeDialog() {
-        String[] temi = {"Chiaro", "Scuro"};
+        String[] temi = getResources().getStringArray(R.array.themes);
         int checkedItem = settingsVM.isDarkTheme() ? 1 : 0;
 
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Scegli tema")
+                .setTitle(R.string.choose_theme)
                 .setSingleChoiceItems(temi, checkedItem, (dialog, which) -> {
                     if (which == 0) {
                         settingsVM.setThemeLight();
@@ -132,7 +120,7 @@ public class SettingsFragment extends Fragment {
 
     // Dialog per scegliere lingua
     private void showLanguageDialog() {
-        String[] lingueLabel = {"italiano", "inglese", "spagnolo"};
+        String[] lingueLabel = getResources().getStringArray(R.array.languages);
         String[] lingueCode = {"it", "en", "es"};
 
         String savedLang = settingsVM.getLanguage();
@@ -152,7 +140,7 @@ public class SettingsFragment extends Fragment {
         }
 
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Scegli lingua")
+                .setTitle(R.string.choose_language)
                 .setSingleChoiceItems(lingueLabel, checkedItem, (dialog, which) -> {
                     String selectedCode = lingueCode[which];
                     settingsVM.setLanguage(selectedCode);

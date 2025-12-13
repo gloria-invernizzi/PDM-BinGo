@@ -81,7 +81,7 @@
             android:id="@+id/recycling_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/packagings_title"
+            android:text="@string/where_to_throw"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="@dimen/margin_medium"

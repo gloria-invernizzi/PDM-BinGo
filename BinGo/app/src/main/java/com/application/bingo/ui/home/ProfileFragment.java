@@ -28,8 +28,9 @@ import android.widget.Toast;
 
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.repository.UserRepository;
-import com.application.bingo.viewmodel.ProfileViewModel;
+import com.application.bingo.ui.viewmodel.NotificationViewModel;
+import com.application.bingo.ui.viewmodel.ProfileViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -128,14 +129,10 @@ public class ProfileFragment extends Fragment {
     // INIZIALIZZAZIONE VIEWMODEL
     // ---------------------------------------------------------------------------------------------
     private void setupViewModel() {
-        vm = new ViewModelProvider(this, new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                UserRepository repo = new UserRepository(requireContext());
-                return (T) new ProfileViewModel(repo);
-            }
-        }).get(ProfileViewModel.class);
+        ViewModelFactory factory =
+                new ViewModelFactory(requireActivity().getApplication());
+
+        vm = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
     }
 
     // ---------------------------------------------------------------------------------------------

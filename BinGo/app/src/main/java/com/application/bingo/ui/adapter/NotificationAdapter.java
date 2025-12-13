@@ -8,21 +8,27 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
 import com.application.bingo.model.Notification;
+import com.application.bingo.ui.viewmodel.NotificationViewModel;
+import com.application.bingo.ui.viewmodel.ProfileViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private List<Notification> notifications;
+
+    private NotificationViewModel viewModel;
     private OnItemDeleteListener deleteListener;
 
-    public NotificationAdapter(List<Notification> notifications) {
+    public NotificationAdapter(List<Notification> notifications, NotificationViewModel viewModel) {
         this.notifications = notifications;
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -38,15 +44,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         Notification notification = notifications.get(position);
 
         holder.tvWasteType.setText(notification.getWasteType());
-
-        Calendar cal = java.util.Calendar.getInstance();
-        cal.setTimeInMillis(notification.getNotificationTime());
-        holder.tvTime.setText(String.format("Ore %02d:%02d",
-                cal.get(java.util.Calendar.HOUR_OF_DAY),
-                cal.get(java.util.Calendar.MINUTE)));
-
-        int weeks = notification.getRepeatWeeks();
-        holder.tvRepeat.setText("Ogni " + weeks + (weeks > 1 ? " settimane" : " settimana"));
+        holder.tvTime.setText(viewModel.formatDateTime(notification, holder.itemView.getContext()));
+        holder.tvRepeat.setText(viewModel.formatRepeat(notification, holder.itemView.getContext()));
     }
 
     @Override
@@ -70,26 +69,26 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tvRepeat = itemView.findViewById(R.id.tvRepeat);
             btnDelete = itemView.findViewById(R.id.btnDelete);
 
-            // click sul bottone delete
+            // Click sul bottone delete
             btnDelete.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
                     Notification toDelete = notifications.get(pos);
 
                     new AlertDialog.Builder(v.getContext())
-                            .setTitle("Cancella notifica")
-                            .setMessage("Vuoi cancellare solo questa notifica o tutte le ripetizioni?")
-                            .setPositiveButton("Solo questa", (dialog, which) -> {
+                            .setTitle(R.string.delete_notification)
+                            .setMessage(R.string.delete_notification_dialog)
+                            .setPositiveButton(R.string.solo_questa, (dialog, which) -> {
                                 if (deleteListener != null) {
                                     deleteListener.onItemDelete(toDelete);
                                 }
                             })
-                            .setNegativeButton("Tutte le ripetizioni", (dialog, which) -> {
+                            .setNegativeButton(R.string.all_repetitions, (dialog, which) -> {
                                 if (deleteListener != null) {
                                     deleteListener.onItemDeleteRepeating(toDelete);
                                 }
                             })
-                            .setNeutralButton("Annulla", null)
+                            .setNeutralButton(R.string.cancel, null)
                             .show();
                 }
             });

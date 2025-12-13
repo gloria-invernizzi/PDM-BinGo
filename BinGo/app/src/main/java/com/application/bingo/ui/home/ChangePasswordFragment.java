@@ -11,13 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.repository.UserRepository;
-import com.application.bingo.viewmodel.ChangePasswordViewModel;
+import com.application.bingo.ui.viewmodel.ChangePasswordViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -71,23 +69,9 @@ public class ChangePasswordFragment extends Fragment {
         }
 
         // -------------------------------
-        // Creazione Repository + ViewModel
+        // Creazione ViewModel
         // -------------------------------
-        UserRepository repository = new UserRepository(requireContext());
-
-        changePasswordViewModel = new ViewModelProvider(
-                this,
-                new ViewModelProvider.Factory() {
-                    @NonNull
-                    @Override
-                    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                        if (modelClass.isAssignableFrom(ChangePasswordViewModel.class)) {
-                            return (T) new ChangePasswordViewModel(repository);
-                        }
-                        throw new IllegalArgumentException("Unknown ViewModel class");
-                    }
-                }
-        ).get(ChangePasswordViewModel.class);
+        changePasswordViewModel = new ViewModelProvider(this).get(ChangePasswordViewModel.class);
 
         // -------------------------------
         // Osserva i messaggi dal ViewModel
