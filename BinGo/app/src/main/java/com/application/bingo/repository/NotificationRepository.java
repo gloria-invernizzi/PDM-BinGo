@@ -50,12 +50,14 @@ public class NotificationRepository {
                 .putString("wasteType", notification.getWasteType())
                 .build();
 
-        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                .setInputData(data)
-                .build();
+        if (delay > 0){
+            OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                    .setInputData(data)
+                    .build();
 
-        WorkManager.getInstance(context).enqueue(request);
+            WorkManager.getInstance(context).enqueue(request);
+        }
     }
 
     // --- ELIMINAZIONE DI UNA NOTIFICA ---

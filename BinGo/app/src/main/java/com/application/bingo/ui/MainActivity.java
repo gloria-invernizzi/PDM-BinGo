@@ -62,9 +62,27 @@ public class MainActivity extends AppCompatActivity {
         // Bottom Navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
-        // Nascondi Bottom Navigation nel login
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int id = destination.getId();
+
+            // Nascondi toolbar in alto nel WelcomeFragment
+            if (id == R.id.welcomeFragment)
+                toolbar.setVisibility(View.GONE);
+            else
+                toolbar.setVisibility(View.VISIBLE);
+
+            // Toolbar in alto del ProfileFragment
+            if (id == R.id.profileFragment){
+                toolbar.inflateMenu(R.menu.profile_top_menu);
+                toolbar.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.action_settings){
+                        navController.navigate(R.id.settingsFragment);
+                        return true;
+                    }
+                    return  false;
+                });
+            }else
+                toolbar.getMenu().clear();
 
             //Elenco fragment che non devono avere Bottom Navigation
             if (id == R.id.welcomeFragment ||

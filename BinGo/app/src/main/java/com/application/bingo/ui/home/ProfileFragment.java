@@ -16,7 +16,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -40,7 +41,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileFragment extends Fragment {
 
-    private MaterialToolbar topAppBar;
     private ImageView profileImage, btnEditPhoto;
     private TextInputEditText inputName, inputEmail, inputAddress;
     private MaterialButton btnEditSave, btnLogout;
@@ -199,15 +199,6 @@ public class ProfileFragment extends Fragment {
         btnEditSave.setOnClickListener(v -> handleEditSave());
 
         btnLogout.setOnClickListener(v -> performLogout());
-
-        topAppBar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_settings) {
-                NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_profileFragment_to_settingsFragment);
-                return true;
-            }
-            return false;
-        });
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -256,8 +247,8 @@ public class ProfileFragment extends Fragment {
         prefs.clearSavedUser();
         prefs.setRemember(false);
 
-        NavHostFragment.findNavController(this)
-                .navigate(R.id.action_profileFragment_to_welcomeFragment2);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView);
+        navController.navigate(R.id.welcomeFragment);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -305,7 +296,6 @@ public class ProfileFragment extends Fragment {
     // SETUP VIEW
     // ---------------------------------------------------------------------------------------------
     private void setupViews(View view) {
-        topAppBar = view.findViewById(R.id.topAppBar);
         profileImage = view.findViewById(R.id.profile_image);
         btnEditPhoto = view.findViewById(R.id.btn_change_photo);
         inputName = view.findViewById(R.id.input_name);

@@ -8,7 +8,8 @@
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.application.bingo.ui.WelcomeFragment"
-        android:label="Welcome">
+        android:label="@string/welcome"
+        tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -41,13 +42,13 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.application.bingo.ui.RegisterFragment"
-        android:label="Register"
+        android:label="@string/create_account"
         tools:layout="@layout/fragment_register" />
 
     <fragment
         android:id="@+id/recoverPasswordFragment"
         android:name="com.application.bingo.ui.RecoverPasswordFragment"
-        android:label="Recupera Password"
+        android:label="@string/recover_password"
         tools:layout="@layout/fragment_recover_password" />
 
 </navigation>

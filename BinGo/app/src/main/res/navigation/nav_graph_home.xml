@@ -75,16 +75,13 @@
         <action
             android:id="@+id/action_profileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_welcomeFragment2"
-            app:destination="@id/welcomeFragment2" />
     </fragment>
 
     <!-- Settings Fragment -->
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.application.bingo.ui.home.SettingsFragment"
-        android:label="Impostazioni"
+        android:label="@string/settings"
         tools:layout="@layout/fragment_settings" >
         <action
             android:id="@+id/action_settingsFragment_to_changePasswordFragment"
@@ -95,25 +92,21 @@
     <fragment
         android:id="@+id/whereToThrowFragment"
         android:name="com.application.bingo.ui.home.WhereToThrowFragment"
-        android:label="Dove lo butto?"
+        android:label="@string/where_to_throw"
         tools:layout="@layout/fragment_where_to_throw"/>
 
     <!-- ChangePassword Fragment -->
     <fragment
         android:id="@+id/changePasswordFragment"
         android:name="com.application.bingo.ui.home.ChangePasswordFragment"
-        android:label="ChangePasswordFragment"
+        android:label="@string/change_password"
         tools:layout="@layout/fragment_change_password"/>
 
     <!-- Favorite Fragment -->
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.application.bingo.ui.FavoriteFragment"
-        android:label="Preferiti"
+        android:label="@string/favorite"
         tools:layout="@layout/fragment_favorite" />
-    <fragment
-        android:id="@+id/welcomeFragment2"
-        android:name="com.application.bingo.ui.WelcomeFragment"
-        android:label="WelcomeFragment" />
 
 </navigation>

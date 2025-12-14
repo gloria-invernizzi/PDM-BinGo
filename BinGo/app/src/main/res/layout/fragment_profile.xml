@@ -5,16 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- TOOLBAR IN ALTO -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorSurface"
-        app:title="@string/profile_title"
-        app:menu="@menu/profile_top_menu"
-        app:navigationIcon="@drawable/ic_arrow_back" />
-
     <!-- CONTENUTO SCROLLABILE -->
     <ScrollView
         android:layout_width="match_parent"
