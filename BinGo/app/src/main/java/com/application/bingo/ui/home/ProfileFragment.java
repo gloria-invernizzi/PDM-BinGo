@@ -2,11 +2,16 @@ package com.application.bingo.ui.home;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,18 +23,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.application.bingo.R;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.database.User;
-import com.application.bingo.repository.UserRepository;
 import com.application.bingo.ui.viewmodel.ProfileViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.button.MaterialButton;
@@ -44,15 +40,15 @@ public class ProfileFragment extends Fragment {
     private TextInputEditText inputName, inputEmail, inputAddress;
     private MaterialButton btnEditSave, btnLogout;
 
+    private ProfileViewModel vm;
+    private PrefsManager prefs;
+    private PhotoHandler photoHandler;
+
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<String> cameraPermissionLauncher;
-    private Uri cameraImageUri;
 
     private boolean isEditing = false;
-
-    private ProfileViewModel vm;
-    private PrefsManager prefs;
 
     public ProfileFragment() {}
 
@@ -69,11 +65,7 @@ public class ProfileFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        Uri img = result.getData().getData();
-                        String email = inputEmail.getText().toString().trim();
-
-                        vm.savePhotoUri(email, img.toString()); // aggiorna Room + prefs
-                        profileImage.setImageURI(img);
+                        photoHandler.handleGalleryResult(result.getData());
                     }
                 }
         );
@@ -85,9 +77,7 @@ public class ProfileFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        String email = inputEmail.getText().toString().trim();
-                        vm.savePhotoUri(email, cameraImageUri.toString()); // aggiorna Room + prefs
-                        profileImage.setImageURI(cameraImageUri);
+                        photoHandler.handleCameraResult();
                     }
                 }
         );
@@ -97,21 +87,29 @@ public class ProfileFragment extends Fragment {
         // -----------------------------------------------------------------------------------------
         cameraPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
-                    if (granted) takePhotoInternal();
+                    if (granted) photoHandler.takePhoto();
                     else Toast.makeText(getContext(), "Permesso negato", Toast.LENGTH_SHORT).show();
                 });
+
+        // -----------------------------------------------------------------------------------------
+        // PHOTO HANDLER
+        // -----------------------------------------------------------------------------------------
+        photoHandler = new PhotoHandler(requireContext(), galleryLauncher, cameraLauncher, uri -> {
+            String email = inputEmail.getText().toString().trim();
+            vm.savePhotoUri(email, uri.toString());
+            profileImage.setImageURI(uri);
+        });
     }
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("ProfileFragment", "onViewCreated called"); // <- LOG DI TEST
         setupViews(view);
         setupViewModel();
         setupObservers();
@@ -148,15 +146,11 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void loadUserFromPrefs() {
         String savedEmail = prefs.getSavedEmail();
-
         if (!savedEmail.isEmpty()) {
-            // Aggiorna UI subito da prefs (se disponibili)
             inputName.setText(prefs.getSavedName());
             inputAddress.setText(prefs.getSavedAddress());
             String photo = prefs.getSavedPhotoUri();
             if (!photo.isEmpty()) profileImage.setImageURI(Uri.parse(photo));
-
-            // Carica anche l'utente dal repository (Room/Firebase) per LiveData
             vm.loadUser(savedEmail);
         } else {
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -195,7 +189,7 @@ public class ProfileFragment extends Fragment {
         String address = inputAddress.getText().toString().trim();
         String email = inputEmail.getText().toString().trim();
 
-        vm.updateProfile(name, address); // aggiorna Room + prefs
+        vm.updateProfile(name, address);
         Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
         btnEditSave.setText("Modifica");
     }
@@ -205,52 +199,35 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void performLogout() {
         FirebaseAuth.getInstance().signOut();
-        prefs.clearSavedUser();
-        prefs.setRemember(false);
 
-        NavController navController = Navigation.findNavController(requireActivity(), R.id.fragmentContainerView);
+        // NON cancello tutto
+        prefs.clearLoginOnly();
+
+        NavController navController = Navigation.findNavController(requireActivity(),
+                R.id.fragmentContainerView);
         navController.navigate(R.id.welcomeFragment);
     }
 
     // ---------------------------------------------------------------------------------------------
-    // FOTO PROFILO
+    // DIALOG FOTO PROFILO
     // ---------------------------------------------------------------------------------------------
     private void showPhotoDialog() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Cambia foto")
                 .setItems(new String[]{"Galleria", "Fotocamera"}, (dialog, which) -> {
-                    if (which == 0) pickFromGallery();
-                    else takePhoto();
+                    if (which == 0) photoHandler.pickFromGallery();
+                    else takePhotoWithPermission();
                 })
                 .show();
     }
 
-    private void pickFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        galleryLauncher.launch(intent);
-    }
-
-    private void takePhoto() {
+    private void takePhotoWithPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
         } else {
-            takePhotoInternal();
+            photoHandler.takePhoto();
         }
-    }
-
-    private void takePhotoInternal() {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "ProfilePhoto");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Foto profilo");
-
-        cameraImageUri = requireActivity().getContentResolver()
-                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
-        cameraLauncher.launch(intent);
     }
 
     // ---------------------------------------------------------------------------------------------

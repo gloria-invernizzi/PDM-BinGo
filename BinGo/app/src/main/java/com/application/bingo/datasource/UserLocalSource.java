@@ -75,7 +75,7 @@ public class UserLocalSource {
     // Aggiorna solo la foto
     public void updatePhotoUri(String email, String uri) {
         executor.execute(() -> {
-            userDao.updatePhotoUri(email, uri);
+            userDao.updatePhotoUri(email, uri);// aggiorna Room
             prefs.savePhotoUri(email, uri);
             Log.d("UserLocalSource", "Foto aggiornata in Room e Prefs per " + email);
         });

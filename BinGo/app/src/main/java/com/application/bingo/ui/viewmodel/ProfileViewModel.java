@@ -1,7 +1,5 @@
 package com.application.bingo.ui.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -22,6 +20,7 @@ public class ProfileViewModel extends ViewModel {
 
     // LiveData osservata dal Fragment
     private final MutableLiveData<User> user = new MutableLiveData<>();
+    private final MutableLiveData<String> error = new MutableLiveData<>();
 
     public ProfileViewModel(UserRepository userRepo) {
         this.userRepo = userRepo;
@@ -31,15 +30,19 @@ public class ProfileViewModel extends ViewModel {
         return user;
     }
 
+    public LiveData<String> getError() {
+        return error;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // CARICA UTENTE DAL REPOSITORY
     // ---------------------------------------------------------------------------------------------
     public void loadUser(String email) {
-        Log.d("ProfileViewModel", "loadUser called con email: " + email);
         userRepo.getUser(email, u -> {
-            Log.d("ProfileViewModel", "Utente ricevuto dal repository: " + u);
             if (u != null) {
-                user.setValue(u);
+                user.postValue(u);
+            } else {
+                error.postValue("Utente non trovato");
             }
         });
     }
@@ -49,11 +52,14 @@ public class ProfileViewModel extends ViewModel {
     // ---------------------------------------------------------------------------------------------
     public void updateProfile(String name, String address) {
         User u = user.getValue();
-        if (u == null) return;
+        if (u == null) {
+            error.postValue("Utente non caricato");
+            return;
+        }
         u.setName(name);
         u.setAddress(address);
         userRepo.updateUser(u);   // aggiorna Room + prefs tramite UserLocalSource
-        user.setValue(u);         // LiveData
+        user.postValue(u);        // aggiorna LiveData
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -61,11 +67,14 @@ public class ProfileViewModel extends ViewModel {
     // ---------------------------------------------------------------------------------------------
     public void savePhotoUri(String email, String uri) {
         User u = user.getValue();
-        if (u != null) {
-            u.setPhotoUri(uri);
-            userRepo.updatePhotoUri(email, uri); // aggiorna Room + prefs
-            user.setValue(u);
+        if (u == null) {
+            error.postValue("Utente non caricato");
+            return;
         }
+        u.setPhotoUri(uri);
+        userRepo.updatePhotoUri(email, uri); // aggiorna Room + prefs
+        user.postValue(u);
     }
 }
+
 

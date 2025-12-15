@@ -86,4 +86,12 @@ public class PrefsManager {
     public boolean isRemember() {
         return prefs.getBoolean(KEY_REMEMBER, false);
     }
+    public void clearLoginOnly() {
+        prefs.edit()
+                .remove(KEY_PASS)
+                .remove(KEY_REMEMBER)
+                .apply();
+    }
+
 }
+

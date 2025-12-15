@@ -15,8 +15,10 @@ public class UserRemoteSource {
 
     private final FirebaseAuth mAuth;
 
+
     public UserRemoteSource() {
         mAuth = FirebaseAuth.getInstance();
+
     }
 
     // Recupera l'utente Firebase corrente
@@ -46,4 +48,5 @@ public class UserRemoteSource {
                     });
         }
     }
+
 }
