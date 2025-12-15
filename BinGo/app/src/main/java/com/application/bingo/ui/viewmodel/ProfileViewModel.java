@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.application.bingo.database.User;
 import com.application.bingo.repository.UserRepository;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * ProfileViewModel:
@@ -54,8 +52,7 @@ public class ProfileViewModel extends ViewModel {
         if (u == null) return;
         u.setName(name);
         u.setAddress(address);
-        userRepo.updateUser(u);   // Room
-        userRepo.saveToPrefs(u);  // PrefsManager
+        userRepo.updateUser(u);   // aggiorna Room + prefs tramite UserLocalSource
         user.setValue(u);         // LiveData
     }
 
@@ -63,12 +60,12 @@ public class ProfileViewModel extends ViewModel {
     // SALVA FOTO PROFILO
     // ---------------------------------------------------------------------------------------------
     public void savePhotoUri(String email, String uri) {
-        userRepo.updatePhotoUri(email, uri); // Room
-        userRepo.savePhotoToPrefs(email, uri); // PrefsManager
         User u = user.getValue();
         if (u != null) {
             u.setPhotoUri(uri);
+            userRepo.updatePhotoUri(email, uri); // aggiorna Room + prefs
             user.setValue(u);
         }
     }
 }
+

@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -27,12 +26,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.ui.viewmodel.NotificationViewModel;
+import com.application.bingo.PrefsManager;
+import com.application.bingo.database.User;
+import com.application.bingo.repository.UserRepository;
 import com.application.bingo.ui.viewmodel.ProfileViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -73,10 +72,7 @@ public class ProfileFragment extends Fragment {
                         Uri img = result.getData().getData();
                         String email = inputEmail.getText().toString().trim();
 
-                        // Salva foto nel repository e nei prefs
-                        vm.savePhotoUri(email, img.toString());
-                        prefs.savePhotoUri(email, img.toString());
-
+                        vm.savePhotoUri(email, img.toString()); // aggiorna Room + prefs
                         profileImage.setImageURI(img);
                     }
                 }
@@ -90,9 +86,7 @@ public class ProfileFragment extends Fragment {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         String email = inputEmail.getText().toString().trim();
-                        vm.savePhotoUri(email, cameraImageUri.toString());
-                        prefs.savePhotoUri(email, cameraImageUri.toString());
-
+                        vm.savePhotoUri(email, cameraImageUri.toString()); // aggiorna Room + prefs
                         profileImage.setImageURI(cameraImageUri);
                     }
                 }
@@ -129,9 +123,7 @@ public class ProfileFragment extends Fragment {
     // INIZIALIZZAZIONE VIEWMODEL
     // ---------------------------------------------------------------------------------------------
     private void setupViewModel() {
-        ViewModelFactory factory =
-                new ViewModelFactory(requireActivity().getApplication());
-
+        ViewModelFactory factory = new ViewModelFactory(requireActivity().getApplication());
         vm = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
     }
 
@@ -141,15 +133,9 @@ public class ProfileFragment extends Fragment {
     private void setupObservers() {
         vm.getUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                Log.d("ProfileFragment", "User osservato: name=" + user.getName() +
-                        ", email=" + user.getEmail() +
-                        ", address=" + user.getAddress() +
-                        ", photoUri=" + user.getPhotoUri());
-
                 inputName.setText(user.getName());
                 inputEmail.setText(user.getEmail());
                 inputAddress.setText(user.getAddress());
-
                 if (user.getPhotoUri() != null && !user.getPhotoUri().isEmpty()) {
                     profileImage.setImageURI(Uri.parse(user.getPhotoUri()));
                 }
@@ -162,29 +148,20 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void loadUserFromPrefs() {
         String savedEmail = prefs.getSavedEmail();
-        String savedName = prefs.getSavedName();
-        String savedAddress = prefs.getSavedAddress();
-        String savedPhoto = prefs.getSavedPhotoUri();
 
         if (!savedEmail.isEmpty()) {
-            Log.d("ProfileFragment", "Email salvata dai prefs: " + savedEmail);
-
             // Aggiorna UI subito da prefs (se disponibili)
-            if (!savedName.isEmpty()) inputName.setText(savedName);
-            if (!savedAddress.isEmpty()) inputAddress.setText(savedAddress);
-            if (!savedPhoto.isEmpty()) profileImage.setImageURI(Uri.parse(savedPhoto));
+            inputName.setText(prefs.getSavedName());
+            inputAddress.setText(prefs.getSavedAddress());
+            String photo = prefs.getSavedPhotoUri();
+            if (!photo.isEmpty()) profileImage.setImageURI(Uri.parse(photo));
 
             // Carica anche l'utente dal repository (Room/Firebase) per LiveData
             vm.loadUser(savedEmail);
         } else {
-            Log.d("ProfileFragment", "Prefs vuoto, provo a usare FirebaseUser corrente");
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             if (firebaseUser != null && firebaseUser.getEmail() != null) {
-                String firebaseEmail = firebaseUser.getEmail();
-                Log.d("ProfileFragment", "Email da FirebaseUser: " + firebaseEmail);
-                vm.loadUser(firebaseEmail);
-            } else {
-                Log.d("ProfileFragment", "Nessun utente loggato in Firebase");
+                vm.loadUser(firebaseUser.getEmail());
             }
         }
     }
@@ -193,11 +170,8 @@ public class ProfileFragment extends Fragment {
     // BOTTONI
     // ---------------------------------------------------------------------------------------------
     private void setupButtons() {
-
         btnEditPhoto.setOnClickListener(v -> showPhotoDialog());
-
         btnEditSave.setOnClickListener(v -> handleEditSave());
-
         btnLogout.setOnClickListener(v -> performLogout());
     }
 
@@ -219,13 +193,9 @@ public class ProfileFragment extends Fragment {
 
         String name = inputName.getText().toString().trim();
         String address = inputAddress.getText().toString().trim();
-
-        vm.updateProfile(name, address);
-
-        // Salva anche nei prefs per persistenza dopo logout/login
         String email = inputEmail.getText().toString().trim();
-        prefs.saveUser(name, address, email, prefs.getSavedPassword());
 
+        vm.updateProfile(name, address); // aggiorna Room + prefs
         Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
         btnEditSave.setText("Modifica");
     }
@@ -235,15 +205,6 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void performLogout() {
         FirebaseAuth.getInstance().signOut();
-
-        // 2. Verifica se l'utente è disconnesso
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            Log.d("LOGOUT", "Logout riuscito: nessun utente loggato");
-        } else {
-            Log.d("LOGOUT", "Logout FALLITO: utente ancora loggato -> " + user.getEmail());
-        }
-
         prefs.clearSavedUser();
         prefs.setRemember(false);
 
