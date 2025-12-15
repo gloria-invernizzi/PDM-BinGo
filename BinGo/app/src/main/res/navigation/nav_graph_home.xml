@@ -86,7 +86,16 @@
         <action
             android:id="@+id/action_settingsFragment_to_changePasswordFragment"
             app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_changeEmailFragment"
+            app:destination="@id/changeEmailFragment" />
     </fragment>
+    <!-- ChangeEmail Fragment -->
+    <fragment
+        android:id="@+id/changeEmailFragment"
+        android:name="com.application.bingo.ui.home.ChangeEmailFragment"
+        android:label="@string/change_email"
+        tools:layout="@layout/fragment_change_email" />
 
     <!-- WhereToThrow Fragment -->
     <fragment

@@ -3,6 +3,8 @@ package com.application.bingo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+
 public class PrefsManager {
     // Shared Preferences file name and keys
     private static final String PREFS_NAME = "bingo_prefs";
@@ -92,6 +94,9 @@ public class PrefsManager {
                 .remove(KEY_REMEMBER)
                 .apply();
     }
+
+
+
 
 }
 

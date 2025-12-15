@@ -2,6 +2,7 @@ package com.application.bingo.datasource;
 
 import android.util.Log;
 
+import com.application.bingo.repository.UserRepository;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,5 +49,25 @@ public class UserRemoteSource {
                     });
         }
     }
+
+    public void updateEmail(String newEmail, UserRepository.Callback callback) {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            callback.onFailure("Utente non loggato su Firebase");
+            return;
+        }
+
+        firebaseUser.updateEmail(newEmail)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("UserRemoteSource", "Email aggiornata su Firebase: " + newEmail);
+                        callback.onSuccess("Email aggiornata su Firebase");
+                    } else {
+                        Log.e("UserRemoteSource", "Errore aggiornamento email Firebase", task.getException());
+                        callback.onFailure("Errore Firebase: " + task.getException().getMessage());
+                    }
+                });
+    }
+
 
 }

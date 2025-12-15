@@ -52,6 +52,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     new WasteRepository(application)
             );
         }
+        if (modelClass.isAssignableFrom(ChangeEmailViewModel.class)) {
+            return (T) new ChangeEmailViewModel(
+                    new UserRepository(application)
+            );
+        }
+
 
 
         throw new IllegalArgumentException("Unknown ViewModel class");

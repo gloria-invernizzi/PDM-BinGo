@@ -30,7 +30,7 @@ import java.util.Locale;
  */
 public class SettingsFragment extends Fragment {
 
-    private LinearLayout layoutTema, layoutLingua, layoutCambiaPassword;
+    private LinearLayout layoutTema, layoutLingua, layoutCambiaPassword, layoutCambiaEmail;
 
     private Switch switchNotifiche, switchSuono, switchVibrazione;
 
@@ -66,99 +66,180 @@ public class SettingsFragment extends Fragment {
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.changePasswordFragment));
 
+
+        //Cambio email
+        layoutCambiaEmail = view.findViewById(R.id.layout_cambia_email);
+        layoutCambiaEmail.setOnClickListener(v ->
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.changeEmailFragment));
+
         // ---------------- Notifiche ----------------
         settingsVM.loadNotificationsState();
         settingsVM.getNotificationsLiveData().observe(getViewLifecycleOwner(), enabled -> {
-            switchNotifiche.setChecked(enabled);
+            if (switchNotifiche != null) switchNotifiche.setChecked(enabled);
         });
 
-        switchNotifiche.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            settingsVM.setNotificationsEnabled(isChecked);
-        });
+        if (switchNotifiche != null) {
+            switchNotifiche.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                try {
+                    settingsVM.setNotificationsEnabled(isChecked);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (getContext() != null) {
+                        android.widget.Toast.makeText(getContext(),
+                                "Errore nel salvare impostazioni notifiche",
+                                android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
         // ---------------- Suono e Vibrazione ----------------
-        switchSuono.setChecked(settingsVM.isSoundEnabled());
-        switchVibrazione.setChecked(settingsVM.isVibrationEnabled());
+        if (switchSuono != null) switchSuono.setChecked(settingsVM.isSoundEnabled());
+        if (switchVibrazione != null) switchVibrazione.setChecked(settingsVM.isVibrationEnabled());
 
-        // Listener suono: salva e aggiorna canale notifiche
-        switchSuono.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            settingsVM.setSoundEnabled(isChecked);
-            NotificationProcessor.updateNotificationChannel(requireContext());
-        });
-
+        if (switchSuono != null) {
+            switchSuono.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                try {
+                    settingsVM.setSoundEnabled(isChecked);
+                    if (getContext() != null) NotificationProcessor.updateNotificationChannel(getContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (getContext() != null) {
+                        android.widget.Toast.makeText(getContext(),
+                                "Errore nel salvare impostazioni suono",
+                                android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
         // Listener vibrazione: salva e aggiorna canale notifiche
-        switchVibrazione.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            settingsVM.setVibrationEnabled(isChecked);
-            NotificationProcessor.updateNotificationChannel(requireContext());
-        });
+        if (switchVibrazione != null) {
+            switchVibrazione.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                try {
+                    settingsVM.setVibrationEnabled(isChecked);
+                    if (getContext() != null) NotificationProcessor.updateNotificationChannel(getContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (getContext() != null) {
+                        android.widget.Toast.makeText(getContext(),
+                                "Errore nel salvare impostazioni vibrazione",
+                                android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
         // ---------------- Tema e Lingua ----------------
-        layoutTema.setOnClickListener(v -> showThemeDialog());
-        layoutLingua.setOnClickListener(v -> showLanguageDialog());
+        try {
+            layoutTema.setOnClickListener(v -> showThemeDialog());
+            layoutLingua.setOnClickListener(v -> showLanguageDialog());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (getContext() != null) {
+                android.widget.Toast.makeText(getContext(),
+                        "Errore nel caricare le impostazioni",
+                        android.widget.Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     // Dialog per scegliere tema
     private void showThemeDialog() {
-        String[] temi = getResources().getStringArray(R.array.themes);
-        int checkedItem = settingsVM.isDarkTheme() ? 1 : 0;
+        try {
+            String[] temi = getResources().getStringArray(R.array.themes);
+            int checkedItem = settingsVM.isDarkTheme() ? 1 : 0;
 
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.choose_theme)
-                .setSingleChoiceItems(temi, checkedItem, (dialog, which) -> {
-                    if (which == 0) {
-                        settingsVM.setThemeLight();
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    } else {
-                        settingsVM.setThemeDark();
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    }
-                    dialog.dismiss();
-                    requireActivity().recreate();
-                })
-                .show();
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.choose_theme)
+                    .setSingleChoiceItems(temi, checkedItem, (dialog, which) -> {
+                        try {
+                            if (which == 0) {
+                                settingsVM.setThemeLight();
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                            } else {
+                                settingsVM.setThemeDark();
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                            }
+                            dialog.dismiss();
+                            if (isAdded()) requireActivity().recreate();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (getContext() != null)
+                                android.widget.Toast.makeText(getContext(), "Errore nel salvare tema",
+                                        android.widget.Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (getContext() != null)
+                android.widget.Toast.makeText(getContext(), "Errore nel caricare temi",
+                        android.widget.Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Dialog per scegliere lingua
     private void showLanguageDialog() {
-        String[] lingueLabel = getResources().getStringArray(R.array.languages);
-        String[] lingueCode = {"it", "en", "es"};
+        try {
+            String[] lingueLabel = getResources().getStringArray(R.array.languages);
+            String[] lingueCode = {"it", "en", "es"};
 
-        String savedLang = settingsVM.getLanguage();
-        if (savedLang == null || savedLang.isEmpty()) {
-            savedLang = getResources().getConfiguration()
-                    .getLocales()
-                    .get(0)
-                    .getLanguage();
-        }
-
-        int checkedItem = 0;
-        for (int i = 0; i < lingueCode.length; i++) {
-            if (lingueCode[i].equalsIgnoreCase(savedLang)) {
-                checkedItem = i;
-                break;
+            String savedLang = settingsVM.getLanguage();
+            if (savedLang == null || savedLang.isEmpty()) {
+                savedLang = getResources().getConfiguration()
+                        .getLocales()
+                        .get(0)
+                        .getLanguage();
             }
+
+            int checkedItem = 0;
+            for (int i = 0; i < lingueCode.length; i++) {
+                if (lingueCode[i].equalsIgnoreCase(savedLang)) {
+                    checkedItem = i;
+                    break;
+                }
+            }
+
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.choose_language)
+                    .setSingleChoiceItems(lingueLabel, checkedItem, (dialog, which) -> {
+                        try {
+                            String selectedCode = lingueCode[which];
+                            settingsVM.setLanguage(selectedCode);
+                            updateLocale(selectedCode);
+                            dialog.dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (getContext() != null)
+                                android.widget.Toast.makeText(getContext(), "Errore nel salvare lingua",
+                                        android.widget.Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (getContext() != null)
+                android.widget.Toast.makeText(getContext(), "Errore nel caricare lingue",
+                        android.widget.Toast.LENGTH_SHORT).show();
         }
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.choose_language)
-                .setSingleChoiceItems(lingueLabel, checkedItem, (dialog, which) -> {
-                    String selectedCode = lingueCode[which];
-                    settingsVM.setLanguage(selectedCode);
-                    updateLocale(selectedCode);
-                    dialog.dismiss();
-                })
-                .show();
     }
-
     private void updateLocale(String langCode) {
-        Locale locale = new Locale(langCode);
-        Locale.setDefault(locale);
+        try {
+            Locale locale = new Locale(langCode);
+            Locale.setDefault(locale);
 
-        Resources res = requireActivity().getResources();
-        Configuration config = new Configuration(res.getConfiguration());
-        config.setLocale(locale);
-        res.updateConfiguration(config, res.getDisplayMetrics());
+            Resources res = requireActivity().getResources();
+            Configuration config = new Configuration(res.getConfiguration());
+            config.setLocale(locale);
+            res.updateConfiguration(config, res.getDisplayMetrics());
 
-        requireActivity().recreate();
+            if (isAdded()) requireActivity().recreate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (getContext() != null)
+                android.widget.Toast.makeText(getContext(), "Errore nell'aggiornare la lingua",
+                        android.widget.Toast.LENGTH_SHORT).show();
+        }
     }
 }

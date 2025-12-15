@@ -121,4 +121,31 @@ public class UserLocalSource {
             }
         });
     }
+    // In UserLocalSource
+    public void updateEmail(String oldEmail, String newEmail, UserRepository.Callback callback) {
+        executor.execute(() -> {
+            try {
+                User localUser = userDao.findByEmail(oldEmail);
+                if (localUser != null) {
+                    localUser.setEmail(newEmail);
+                    userDao.update(localUser);
+
+                    // Aggiorna SharedPreferences con la nuova email
+                    prefs.saveUser(
+                            localUser.getName(),
+                            localUser.getAddress(),
+                            newEmail,// nuova email
+                            localUser.getPassword()
+                    );
+
+                    callback.onSuccess(UserRepository.PASSWORD_OK);
+                } else {
+                    callback.onFailure("Utente locale non trovato");
+                }
+            } catch (Exception e) {
+                callback.onFailure("Errore: " + e.getMessage());
+            }
+        });
+    }
 }
+

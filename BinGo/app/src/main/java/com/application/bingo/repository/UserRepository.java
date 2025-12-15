@@ -97,4 +97,36 @@ public class UserRepository {
     private void postToMain(Runnable runnable) {
         mainHandler.post(runnable);
     }
+
+    public void changeEmail(String oldEmail, String newEmail, Callback callback) {
+        // Aggiornamento locale
+        local.updateEmail(oldEmail, newEmail, new Callback() {
+            @Override
+            public void onSuccess(String msgLocal) {
+                // Aggiornamento remoto
+                remote.updateEmail(newEmail, new Callback() {
+                    @Override
+                    public void onSuccess(String msgRemote) {
+                        // Successo completo
+                        postToMain(() -> callback.onSuccess("Email aggiornata con successo"));
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        postToMain(() -> callback.onFailure("Errore remoto: " + msg));
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                postToMain(() -> callback.onFailure("Errore locale: " + msg));
+            }
+        });
+    }
+
+
+
+
+
 }
