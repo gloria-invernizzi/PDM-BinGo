@@ -50,7 +50,6 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     DB_NAME)
                             .addMigrations(MIGRATION_1_2) // utilizza la migration invece di distruggere il DB
-                            // .addMigrations(MIGRATION_2_3)
                             .build();
                 }
             }
@@ -66,56 +65,4 @@ public abstract class AppDatabase extends RoomDatabase {
             database.execSQL("ALTER TABLE users ADD COLUMN photo_uri TEXT");
         }
     };
-
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-
-            database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `product` (" +
-                            "`barcode` TEXT PRIMARY KEY NOT NULL, " +
-                            "`image_url` TEXT, " +
-                            "`name` TEXT, " +
-                            "`brand` TEXT, " +
-                            "`non_recyclable_and_non_biodegradable` INTEGER NOT NULL, " +
-                            "`is_favorite` INTEGER NOT NULL" +
-                            ")"
-            );
-
-            database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `packaging` (" +
-                            "`material` TEXT PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                            "`shape` TEXT, " +
-                            "`material_name` TEXT, " +
-                            "`material_description` TEXT, " +
-                            "`environmental_score_material_score` INTEGER NOT NULL, " +
-                            "`product_barcode` TEXT NOT NULL, " +
-                            "FOREIGN KEY(`product_barcode`) REFERENCES `product`(`barcode`) ON DELETE CASCADE" +
-                            ")"
-            );
-
-            database.execSQL(
-                    "CREATE INDEX IF NOT EXISTS `product_barcode` " +
-                            "ON `packaging` (`product_barcode`)"
-            );
-
-            database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `material` (" +
-                            "`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                            "`name` TEXT, " +
-                            "`description` TEXT, " +
-                            "`language` TEXT, " +
-                            "`empty` INTEGER NOT NULL, " +
-                            "`packaging_id` INTEGER NOT NULL, " +
-                            "FOREIGN KEY(`packaging_material`) REFERENCES `packaging`(`material`) ON DELETE CASCADE" +
-                            ")"
-            );
-
-            database.execSQL(
-                    "CREATE INDEX IF NOT EXISTS `index_material_packaging_id` " +
-                            "ON `material` (`packaging_material`)"
-            );
-        }
-    };
-
 }
