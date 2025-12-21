@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.application.bingo.database.AppDatabase;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
-import com.application.bingo.database.User;
+import com.application.bingo.model.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;

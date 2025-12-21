@@ -12,18 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
-import com.application.bingo.model.ProductApiResponse;
+import com.application.bingo.model.Product;
 
 import java.util.List;
 
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     public interface OnItemClickListener {
-        void onProductClick(ProductApiResponse product);
+        void onProductClick(Product product);
         void onFavoriteButtonPressed(int position);
     }
 
-    private List<ProductApiResponse> productList;
+    private List<Product> productList;
     private boolean heartVisible;
     private Context context;
     private final OnItemClickListener onItemClickListener;
@@ -71,7 +71,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     }
 
-    public ProductAdapter(List<ProductApiResponse> productList, boolean heartVisible, OnItemClickListener onItemClickListener) {
+    public ProductAdapter(List<Product> productList, boolean heartVisible, OnItemClickListener onItemClickListener) {
         this.productList = productList;
         this.heartVisible = heartVisible;
         this.onItemClickListener = onItemClickListener;

@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
-import com.application.bingo.database.User;
+import com.application.bingo.model.User;
 import com.application.bingo.database.UserDao;
 import com.application.bingo.repository.UserRepository;
 

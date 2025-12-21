@@ -3,9 +3,8 @@ package com.application.bingo.repository;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
-import com.application.bingo.database.User;
+import com.application.bingo.model.User;
 import com.application.bingo.datasource.UserLocalSource;
 import com.application.bingo.datasource.UserRemoteSource;
 
@@ -124,9 +123,4 @@ public class UserRepository {
             }
         });
     }
-
-
-
-
-
 }

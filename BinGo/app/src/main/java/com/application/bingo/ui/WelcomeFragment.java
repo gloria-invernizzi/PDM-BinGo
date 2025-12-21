@@ -1,6 +1,7 @@
 package com.application.bingo.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
+import com.application.bingo.model.ProductAPIResponse;
+import com.application.bingo.service.ServiceLocator;
+
+import java.io.IOException;
 
 public class WelcomeFragment extends Fragment {
 

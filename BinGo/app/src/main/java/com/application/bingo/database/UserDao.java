@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.application.bingo.model.User;
+
 //Queries for retrieving and inserting User data in the database
 @Dao
 public interface UserDao {

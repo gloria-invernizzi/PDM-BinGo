@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
-import com.application.bingo.model.PackagingDto;
+import com.application.bingo.constants.Language;
+import com.application.bingo.model.dto.MaterialDto;
+import com.application.bingo.model.dto.PackagingDto;
 
 import java.util.List;
 
@@ -50,8 +52,18 @@ public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecy
 
         PackagingDto packaging = packagings.get(position);
 
-        holder.name.setText(packaging.getMaterialName());
-        holder.description.setText(packaging.getMaterialDescription());
+        MaterialDto translation = packaging.getTranslations().stream()
+                .filter(trans -> trans.getLanguage() == Language.ITA)
+                .findFirst()
+                .orElse(null);
+
+        if (null != translation) {
+            holder.name.setText(translation.getName());
+            holder.description.setText(translation.getDescription());
+        } else {
+            holder.name.setText('1');
+            holder.description.setText('2');
+        }
     }
 
     @Override

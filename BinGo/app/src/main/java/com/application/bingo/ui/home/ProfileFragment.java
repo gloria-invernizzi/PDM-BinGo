@@ -25,7 +25,6 @@ import androidx.navigation.Navigation;
 
 import com.application.bingo.R;
 import com.application.bingo.PrefsManager;
-import com.application.bingo.database.User;
 import com.application.bingo.ui.viewmodel.ProfileViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.button.MaterialButton;

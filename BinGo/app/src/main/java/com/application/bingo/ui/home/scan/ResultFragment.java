@@ -24,23 +24,35 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.bingo.R;
+import com.application.bingo.model.ProductWithPackagings;
+import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.repository.product.IProductRepository;
+import com.application.bingo.repository.product.ProductApiRepository;
+import com.application.bingo.repository.product.ProductMockRepository;
+import com.application.bingo.service.ServiceLocator;
 import com.application.bingo.ui.adapter.PackagingRecyclerAdapter;
-import com.application.bingo.model.ProductApiResponse;
+import com.application.bingo.model.Product;
 import com.application.bingo.util.MaterialParserUtils;
+import com.application.bingo.util.ResponseCallback;
 import com.application.bingo.util.normalizer.ProductDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
-public class ResultFragment extends Fragment {
+import java.util.ArrayList;
 
-    TextView productName, productBrand, productBarcode, textResult, recyclingTitle;
-    ImageView productImage;
-    String barcode;
-    RecyclerView packagingRecyclerView;
-    ProgressBar loadingSpinner;
+public class ResultFragment extends Fragment implements ResponseCallback {
 
-    CheckBox favoriteCheckbox;
+    private TextView productName, productBrand, productBarcode, textResult, recyclingTitle;
+    private ImageView productImage;
+    private String barcode;
+    private RecyclerView packagingRecyclerView;
+    private ProgressBar loadingSpinner;
+
+    private CheckBox favoriteCheckbox;
+
+    private IProductRepository productRepository;
+    private Product product;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +82,20 @@ public class ResultFragment extends Fragment {
         loadingSpinner = view.findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
+        /*
+            DEBUG MODE NOT YET DEFINED, we'll use the API mode only
+
+        if (requireActivity().getResources().getBoolean(R.bool.debug)) {
+            productRepository = new ProductMockRepository(requireActivity().getApplication(), this);
+        } else {
+            productRepository = new ProductApiRepository(requireActivity().getApplication(), this);
+        }
+        */
+
+        productRepository = new ProductApiRepository(requireActivity().getApplication(), this);
+        productRepository.fetchProduct(barcode, "all");
+
+        /*
         String apiUrl = "https://world.openfoodfacts.org/api/v2/product/" + barcode + ".json";
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -82,11 +108,11 @@ public class ResultFragment extends Fragment {
                     try {
                        String jsonString = response.toString();
                        Gson gson = new GsonBuilder()
-                               .registerTypeAdapter(ProductApiResponse.class, new ProductDeserializer())
+                               .registerTypeAdapter(Product.class, new ProductDeserializer())
                                .create()
                        ;
 
-                        ProductApiResponse product = gson.fromJson(jsonString, ProductApiResponse.class);
+                        Product product = gson.fromJson(jsonString, Product.class);
 
                         MaterialParserUtils materialParser = new MaterialParserUtils(getContext(), product);
                         materialParser.hydratePackagings();
@@ -96,7 +122,7 @@ public class ResultFragment extends Fragment {
 
                         loadingSpinner.setVisibility(View.GONE);
 
-                        packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(product.getPackagings()));
+                        packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(new ArrayList<>())); // TODO: FIX
 
                         if (!product.getImageUrl().isEmpty()) {
                             Picasso.get().load(product.getImageUrl()).into(productImage);
@@ -139,6 +165,48 @@ public class ResultFragment extends Fragment {
         );
 
         queue.add(request);
+         */
     }
 
+    @Override
+    public void onSuccess(ProductDto product, long lastUpdate) {
+        productName.setText(product.getName());
+        productBrand.setText(getString(R.string.brand,product.getBrand()));
+
+        favoriteCheckbox.setChecked(product.isFavorite());
+
+        loadingSpinner.setVisibility(View.GONE);
+
+        packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(product.getPackagings()));
+
+        if (!product.getImageUrl().isEmpty()) {
+            Picasso.get().load(product.getImageUrl()).into(productImage);
+        }
+
+        favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    productRepository.updateProduct(product);
+                } else {
+                    // cuore deselezionato
+                    Log.e("FAVORITE", "deselezionato");
+                }
+            }
+        });
+
+        Toast.makeText(requireContext(), R.string.result_success, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onFailure(String error) {
+        Toast.makeText(requireContext(), R.string.request_error + error, Toast.LENGTH_LONG).show();
+
+        textResult.setText(R.string.result_failed);
+        recyclingTitle.setText(" ");
+
+        loadingSpinner.setVisibility(View.GONE);
+
+        Picasso.get().load(R.drawable.product_not_found).into(productImage);
+    }
 }

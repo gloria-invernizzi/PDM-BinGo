@@ -12,7 +12,7 @@ import com.application.bingo.R;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.bingo.model.ProductApiResponse;
+import com.application.bingo.model.Product;
 import com.application.bingo.ui.adapter.ProductAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class FavoriteFragment extends Fragment {
 
-    private List<ProductApiResponse> productList;
+    private List<Product> productList;
     private ProductAdapter adapter;
     private RecyclerView recyclerView;
 
@@ -43,7 +43,7 @@ public class FavoriteFragment extends Fragment {
                 new ProductAdapter(productList, false,
                         new ProductAdapter.OnItemClickListener() {
                             @Override
-                            public void onProductClick(ProductApiResponse product) {
+                            public void onProductClick(Product product) {
 
                             }
 

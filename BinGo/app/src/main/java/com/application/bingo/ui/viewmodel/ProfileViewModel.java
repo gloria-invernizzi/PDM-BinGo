@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.application.bingo.database.User;
+import com.application.bingo.model.User;
 import com.application.bingo.repository.UserRepository;
 
 /**
