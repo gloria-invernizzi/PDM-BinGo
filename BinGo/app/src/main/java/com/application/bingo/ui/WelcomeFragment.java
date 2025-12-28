@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
-import com.application.bingo.model.ProductAPIResponse;
+import com.application.bingo.model.ProductApiResponse;
 import com.application.bingo.service.ServiceLocator;
 
 import java.io.IOException;

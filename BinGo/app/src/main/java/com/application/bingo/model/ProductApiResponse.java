@@ -1,6 +1,6 @@
 package com.application.bingo.model;
 
-public class ProductAPIResponse {
+public class ProductApiResponse {
     public int status;
 
     public ProductWithPackagings product;

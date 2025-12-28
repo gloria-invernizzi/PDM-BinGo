@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gestione Famiglia"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <!-- Sezione NO FAMILY -->
+    <LinearLayout
+        android:id="@+id/layout_no_family"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Non fai parte di nessuna famiglia. Crea un nuovo gruppo o unisciti a uno esistente per condividere il calendario."
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textAlignment="center"
+            android:layout_marginBottom="24dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_create_family"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crea Nuova Famiglia"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Codice Famiglia">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_family_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_join_family"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Unisciti alla Famiglia"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Sezione HAS FAMILY -->
+    <LinearLayout
+        android:id="@+id/layout_has_family"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Codice Famiglia:"
+            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
+
+        <TextView
+            android:id="@+id/text_family_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CODE1234"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginBottom="8dp"/>
+            
+         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Condividi questo codice con i tuoi familiari per aggiungerli al gruppo."
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Membri:"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_family_members"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_leave_family"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lascia Famiglia"
+            android:textColor="?attr/colorError"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+    </LinearLayout>
+
+</LinearLayout>

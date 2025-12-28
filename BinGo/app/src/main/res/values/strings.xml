@@ -16,6 +16,7 @@
     <string name="hint_name">Nome e Cognome</string>
     <string name="hint_email">Email</string>
     <string name="hint_address">Residenza</string>
+    <string name="family">Famiglia</string>
 
     <string name="product_image">Immagine del prodotto</string>
     <string name="result">Risultato</string>
@@ -154,4 +155,10 @@
     <string name="prepare_bin">Preparare il bidone</string>
     <string name="notification_text">Domani ritirano %1$s</string>
 
+        <string name="settings_title">Impostazioni</string>
+        <string name="account_section">Account</string>
+        <string name="preferences_section">Preferenze</string>
+        <string name="dark_theme">Tema scuro</string>
+        <string name="notifications_section">Notifiche</string>
+        <string name="enable_notifications">Attiva notifiche</string>
 </resources>

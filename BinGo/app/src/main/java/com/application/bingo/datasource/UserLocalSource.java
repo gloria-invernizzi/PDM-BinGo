@@ -10,6 +10,7 @@ import com.application.bingo.database.UserDao;
 import com.application.bingo.repository.UserRepository;
 
 import java.util.concurrent.ExecutorService;
+import java.util.List;
 
 /**
  * UserLocalSource:
@@ -147,5 +148,28 @@ public class UserLocalSource {
             }
         });
     }
-}
 
+    // In UserLocalSource
+    public void updateFamilyId(String email, String familyId, UserRepository.Callback callback) {
+        executor.execute(() -> {
+            try {
+                userDao.updateFamilyId(email, familyId);
+                callback.onSuccess("Famiglia aggiornata con successo");
+            } catch (Exception e) {
+                callback.onFailure("Errore nell'aggiornamento della famiglia: " + e.getMessage());
+            }
+        });
+    }
+
+    public void getUsersByFamilyId(String familyId, UserRepository.FamilyMembersCallback callback) {
+        executor.execute(() -> {
+            try {
+                List<User> members = userDao.findByFamilyId(familyId);
+                callback.onMembersLoaded(members);
+            } catch (Exception e) {
+                // Gestione errore o lista vuota
+                callback.onMembersLoaded(null);
+            }
+        });
+    }
+}

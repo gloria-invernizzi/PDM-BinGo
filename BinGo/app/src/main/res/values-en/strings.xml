@@ -10,6 +10,7 @@
     <string name="remember_me">Remember me</string>
     <string name="hint_email">Email</string>
     <string name="hint_address">Address</string>
+    <string name="family">Family</string>
     <string name="edit_profile">Edit profile</string>
     <string name="edit_address">Edit address</string>
     <string name="change_password">Change password</string>
@@ -116,5 +117,12 @@
     </plurals>
     <string name="prepare_bin">Prepare bin</string>
     <string name="notification_text">Tomorrow they collect %1$s</string>
+
+        <string name="settings_title">Settings</string>
+        <string name="account_section">Account</string>
+        <string name="preferences_section">Preferences</string>
+        <string name="dark_theme">Dark Theme</string>
+        <string name="notifications_section">Notifications</string>
+        <string name="enable_notifications">Enable Notifications</string>
 
 </resources>

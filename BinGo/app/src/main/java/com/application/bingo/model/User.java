@@ -19,6 +19,10 @@ public class User {
     @ColumnInfo(name = "photo_uri")
     private String photoUri;
 
+    // Nuovo campo per il gruppo famiglia
+    @ColumnInfo(name = "family_id")
+    private String familyId;
+
     // User constructor
     public User(String name, String address, String email, String password) {
         this.name = name;
@@ -26,6 +30,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.photoUri = ""; // inizializza sempre
+        this.familyId = null;
 
     }
 
@@ -42,4 +47,7 @@ public class User {
     // Getter e setter per la foto
     public String getPhotoUri() { return photoUri; }
     public void setPhotoUri(String photoUri) { this.photoUri = photoUri; }
+    // Getter e setter per la famiglia
+    public String getFamilyId() { return familyId; }
+    public void setFamilyId(String familyId) { this.familyId = familyId; }
 }

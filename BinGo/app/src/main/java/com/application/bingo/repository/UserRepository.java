@@ -8,6 +8,8 @@ import com.application.bingo.model.User;
 import com.application.bingo.datasource.UserLocalSource;
 import com.application.bingo.datasource.UserRemoteSource;
 
+import java.util.List;
+
 /**
  * UserRepository:
  * Espone gli stessi metodi del repository originale,
@@ -93,6 +95,10 @@ public class UserRepository {
         void onFailure(String msg);
     }
 
+    public interface FamilyMembersCallback {
+        void onMembersLoaded(List<User> members);
+    }
+
     private void postToMain(Runnable runnable) {
         mainHandler.post(runnable);
     }
@@ -122,5 +128,23 @@ public class UserRepository {
                 postToMain(() -> callback.onFailure("Errore locale: " + msg));
             }
         });
+    }
+
+    public void updateFamilyId(String email, String familyId, Callback callback) {
+        local.updateFamilyId(email, familyId, new Callback() {
+            @Override
+            public void onSuccess(String msg) {
+                postToMain(() -> callback.onSuccess(msg));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                postToMain(() -> callback.onFailure(msg));
+            }
+        });
+    }
+
+    public void getUsersByFamilyId(String familyId, FamilyMembersCallback callback) {
+        local.getUsersByFamilyId(familyId, members -> postToMain(() -> callback.onMembersLoaded(members)));
     }
 }

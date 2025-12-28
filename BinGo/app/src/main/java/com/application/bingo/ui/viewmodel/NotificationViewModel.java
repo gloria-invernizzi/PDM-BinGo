@@ -19,14 +19,26 @@ import java.util.Locale;
 public class NotificationViewModel extends ViewModel {
     private final NotificationRepository repository;
     private final MutableLiveData<Long> selectedDate = new MutableLiveData<>();
+    private final MutableLiveData<String> familyId = new MutableLiveData<>();
 
     public NotificationViewModel(NotificationRepository notificationRepo) {
         this.repository = notificationRepo;
+        // Inizializza familyId a null di default
+        familyId.setValue(null);
+    }
+    
+    // Imposta la famiglia corrente (chiamato dal Fragment/Activity)
+    public void setFamilyId(String id) {
+        familyId.setValue(id);
     }
 
-    // LiveData che cambia automaticamente quando cambia la data selezionata
+    // LiveData combinato: reagisce sia al cambio data che al cambio famiglia
     public LiveData<List<Notification>> getNotificationsForSelectedDay() {
-        return Transformations.switchMap(selectedDate, repository::getNotificationsForDay);
+        return Transformations.switchMap(selectedDate, date -> 
+            Transformations.switchMap(familyId, fId -> 
+                repository.getNotificationsForDay(date, fId)
+            )
+        );
     }
 
     public void setSelectedDate(long millis) {
@@ -34,6 +46,8 @@ public class NotificationViewModel extends ViewModel {
     }
 
     public void saveNotification(Notification notification) {
+        // Assicura che la notifica abbia il familyId corrente
+        notification.setFamilyId(familyId.getValue());
         repository.saveNotification(notification);
     }
 
@@ -66,6 +80,4 @@ public class NotificationViewModel extends ViewModel {
                 weeks
         );
     }
-
-
 }

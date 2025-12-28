@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,12 +53,13 @@ public class SettingsFragment extends Fragment {
 
         settingsVM = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
 
-        // Trovo le view
-        layoutTema = view.findViewById(R.id.layout_tema);
-        layoutLingua = view.findViewById(R.id.layout_lingua);
-        layoutCambiaPassword = view.findViewById(R.id.layout_cambia_password);
+        // Find the view
+        layoutTema = view.findViewById(R.id.layout_theme);
+        layoutLingua = view.findViewById(R.id.layout_language);
+        layoutCambiaPassword = view.findViewById(R.id.btn_change_password);
+        layoutCambiaEmail = view.findViewById(R.id.btn_change_email);
 
-        switchNotifiche = view.findViewById(R.id.switch_notifiche);
+        switchNotifiche = view.findViewById(R.id.switch_notifications);
         switchSuono = view.findViewById(R.id.switch_suono);
         switchVibrazione = view.findViewById(R.id.switch_vibrazione);
 
@@ -68,7 +70,7 @@ public class SettingsFragment extends Fragment {
 
 
         //Cambio email
-        layoutCambiaEmail = view.findViewById(R.id.layout_cambia_email);
+        layoutCambiaEmail = view.findViewById(R.id.btn_change_email);
         layoutCambiaEmail.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.changeEmailFragment));
@@ -86,9 +88,9 @@ public class SettingsFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (getContext() != null) {
-                        android.widget.Toast.makeText(getContext(),
+                        Toast.makeText(getContext(),
                                 "Errore nel salvare impostazioni notifiche",
-                                android.widget.Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -106,9 +108,9 @@ public class SettingsFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (getContext() != null) {
-                        android.widget.Toast.makeText(getContext(),
+                        Toast.makeText(getContext(),
                                 "Errore nel salvare impostazioni suono",
-                                android.widget.Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -122,9 +124,9 @@ public class SettingsFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (getContext() != null) {
-                        android.widget.Toast.makeText(getContext(),
+                        Toast.makeText(getContext(),
                                 "Errore nel salvare impostazioni vibrazione",
-                                android.widget.Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -137,9 +139,9 @@ public class SettingsFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
             if (getContext() != null) {
-                android.widget.Toast.makeText(getContext(),
+                Toast.makeText(getContext(),
                         "Errore nel caricare le impostazioni",
-                        android.widget.Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_homeFragment_to_favoriteFragment"
             app:destination="@id/favoriteFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_familyFragment"
+            app:destination="@id/familyFragment" />
     </fragment>
 
     <!-- Scan Fragment -->
@@ -117,5 +120,12 @@
         android:name="com.application.bingo.ui.FavoriteFragment"
         android:label="@string/favorite"
         tools:layout="@layout/fragment_favorite" />
+
+    <!-- Family Fragment -->
+    <fragment
+        android:id="@+id/familyFragment"
+        android:name="com.application.bingo.ui.FamilyFragment"
+        android:label="Family"
+        tools:layout="@layout/fragment_family" />
 
 </navigation>

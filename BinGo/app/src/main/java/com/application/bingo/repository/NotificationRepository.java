@@ -35,6 +35,7 @@ public class NotificationRepository {
 
             while (cal.getTimeInMillis() <= getEndOfYear()) {
                 Notification n = new Notification(cal.getTimeInMillis(), notification.getWasteType(), notification.getRepeatWeeks());
+                n.setFamilyId(notification.getFamilyId()); // Copia familyId
                 dao.insert(n);
                 scheduleNotification(n);
                 cal.add(Calendar.WEEK_OF_YEAR, (int) repeatWeeks);
@@ -79,10 +80,10 @@ public class NotificationRepository {
     }
 
     // --- CARICAMENTO ---
-    public LiveData<List<Notification>> getNotificationsForDay(long selectedDateMillis) {
+    public LiveData<List<Notification>> getNotificationsForDay(long selectedDateMillis, String familyId) {
         long startOfDay = getStartOfDay(selectedDateMillis);
         long endOfDay = getEndOfDay(selectedDateMillis);
-        return dao.getNotificationsForDay(startOfDay, endOfDay);
+        return dao.getNotificationsForDay(startOfDay, endOfDay, familyId);
     }
 
     private long getStartOfDay(long millis) {

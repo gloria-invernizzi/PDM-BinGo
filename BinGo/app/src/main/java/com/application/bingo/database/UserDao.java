@@ -9,6 +9,8 @@ import androidx.room.Update;
 
 import com.application.bingo.model.User;
 
+import java.util.List;
+
 //Queries for retrieving and inserting User data in the database
 @Dao
 public interface UserDao {
@@ -33,5 +35,11 @@ public interface UserDao {
     @Query("UPDATE users SET photo_uri = :uri WHERE email = :email")
     void updatePhotoUri(String email, String uri);
 
-}
+    // Nuovo metodo per trovare utenti della stessa famiglia
+    @Query("SELECT * FROM users WHERE family_id = :familyId")
+    List<User> findByFamilyId(String familyId);
 
+    // Aggiorna il family_id di un utente
+    @Query("UPDATE users SET family_id = :familyId WHERE email = :email")
+    void updateFamilyId(String email, String familyId);
+}

@@ -8,7 +8,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
-import androidx.sqlite.SQLite;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.application.bingo.model.Material;
@@ -20,7 +19,7 @@ import com.application.bingo.model.User;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Notification.class, Product.class, Packaging.class, Material.class}, version = 3, exportSchema = false)
+@Database(entities = {User.class, Notification.class, Product.class, Packaging.class, Material.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "app-db";
 
@@ -49,7 +48,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     ctx.getApplicationContext(),
                                     AppDatabase.class,
                                     DB_NAME)
-                            .addMigrations(MIGRATION_1_2) // utilizza la migration invece di distruggere il DB
+                            .addMigrations(MIGRATION_1_2, MIGRATION_3_4, MIGRATION_4_5) // utilizza la migration invece di distruggere il DB
                             .build();
                 }
             }
@@ -63,6 +62,24 @@ public abstract class AppDatabase extends RoomDatabase {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             // Aggiunge la colonna photo_uri di tipo TEXT
             database.execSQL("ALTER TABLE users ADD COLUMN photo_uri TEXT");
+        }
+    };
+
+    // Migration dalla versione 3 alla 4: aggiunge la colonna family_id alla tabella users
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Aggiunge la colonna family_id di tipo TEXT
+            database.execSQL("ALTER TABLE users ADD COLUMN family_id TEXT");
+        }
+    };
+
+    // Migration dalla versione 4 alla 5: aggiunge la colonna family_id alla tabella Notification
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Aggiunge la colonna family_id di tipo TEXT
+            database.execSQL("ALTER TABLE Notification ADD COLUMN family_id TEXT");
         }
     };
 }
