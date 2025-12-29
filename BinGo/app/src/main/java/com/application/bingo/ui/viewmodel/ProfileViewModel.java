@@ -58,8 +58,9 @@ public class ProfileViewModel extends ViewModel {
         }
         u.setName(name);
         u.setAddress(address);
-        userRepo.updateUser(u);   // aggiorna Room + prefs tramite UserLocalSource
-        user.postValue(u);        // aggiorna LiveData
+        userRepo.updateUser(u);   // Room / remoto
+        userRepo.saveToPrefs(u);  // aggiorna anche PrefsManager
+        user.postValue(u);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -72,7 +73,8 @@ public class ProfileViewModel extends ViewModel {
             return;
         }
         u.setPhotoUri(uri);
-        userRepo.updatePhotoUri(email, uri); // aggiorna Room + prefs
+        userRepo.updatePhotoUri(email, uri);
+        userRepo.saveToPrefs(u);  // aggiorna PrefsManager
         user.postValue(u);
     }
 }

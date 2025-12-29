@@ -83,9 +83,12 @@ public class UserLocalSource {
     }
 
     // Salva utente nei Prefs
-    public void saveToPrefs(User u) {
-        prefs.saveUser(u.getName(), u.getAddress(), u.getEmail(), u.getPassword());
-    }
+        public void saveToPrefs(User u) {
+            prefs.saveUser(u.getName(), u.getAddress(), u.getEmail(), prefs.getSavedPassword());
+            if (u.getPhotoUri() != null) {
+                prefs.savePhotoUri(u.getEmail(), u.getPhotoUri());
+            }
+        }
 
     // Cambio password locale
     public void changePassword(String email, String oldPassword, String newPassword,

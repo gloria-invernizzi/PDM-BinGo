@@ -54,17 +54,24 @@ public class UserRepository {
         });
     }
 
+    // In UserRepository.updateUser()
     public void updateUser(User user) {
-        local.updateUser(user);
+        local.updateUser(user);    // aggiorna Room
+        local.saveToPrefs(user);   // aggiorna SharedPreferences tramite PrefsManager
     }
 
     public void updatePhotoUri(String email, String uri) {
-        local.updatePhotoUri(email, uri);
-    }
 
+        local.updatePhotoUri(email, uri);
+
+    }
+    // In UserRepository
     public void saveToPrefs(User u) {
         local.saveToPrefs(u);
     }
+
+
+
 
     // Cambio password locale + remoto
     public void changePassword(String email, String oldPassword, String newPassword,

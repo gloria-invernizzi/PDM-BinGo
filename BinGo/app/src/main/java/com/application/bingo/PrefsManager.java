@@ -38,9 +38,10 @@ public class PrefsManager {
                 .putString(KEY_ADDRESS, address)
                 .putString(KEY_EMAIL, email)
                 .putString(KEY_PASS, pass)
-                .putBoolean(KEY_REMEMBER, true)
                 .apply();
     }
+
+
 
     public void clearSavedUser() {
         prefs.edit().clear().apply();

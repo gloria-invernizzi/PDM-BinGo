@@ -145,19 +145,48 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void loadUserFromPrefs() {
         String savedEmail = prefs.getSavedEmail();
-        if (!savedEmail.isEmpty()) {
+
+        if (savedEmail != null && !savedEmail.isEmpty()) {
+            // Carica dati dai prefs solo per UI immediata del nome/indirizzo
             inputName.setText(prefs.getSavedName());
             inputAddress.setText(prefs.getSavedAddress());
-            String photo = prefs.getSavedPhotoUri();
-            if (!photo.isEmpty()) profileImage.setImageURI(Uri.parse(photo));
+
+            // NON caricare la foto dai prefs qui
+            // lascia che la LiveData del VM gestisca la foto
             vm.loadUser(savedEmail);
+
         } else {
+            // Nessun utente salvato, controlla Firebase
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             if (firebaseUser != null && firebaseUser.getEmail() != null) {
                 vm.loadUser(firebaseUser.getEmail());
+            } else {
+                NavController navController = Navigation.findNavController(
+                        requireActivity(), R.id.fragmentContainerView);
+                navController.navigate(R.id.welcomeFragment);
+                return;
             }
         }
+
+        // Osserva LiveData per aggiornare la UI (compresi nome, email, address, foto)
+        vm.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                inputName.setText(user.getName());
+                inputEmail.setText(user.getEmail());
+                inputAddress.setText(user.getAddress());
+                if (user.getPhotoUri() != null && !user.getPhotoUri().isEmpty()) {
+                    try {
+                        profileImage.setImageURI(Uri.parse(user.getPhotoUri()));
+                    } catch (Exception e) {
+                        profileImage.setImageResource(R.drawable.ic_profile_placeholder); // fallback
+                    }
+                } else {
+                    profileImage.setImageResource(R.drawable.ic_profile_placeholder);
+                }
+            }
+        });
     }
+
 
     // ---------------------------------------------------------------------------------------------
     // BOTTONI
@@ -183,12 +212,12 @@ public class ProfileFragment extends Fragment {
         isEditing = false;
         inputName.setEnabled(false);
         inputAddress.setEnabled(false);
+        // Passa tutto al ViewModel
+        vm.updateProfile(
+                inputName.getText().toString().trim(),
+                inputAddress.getText().toString().trim()
+        );
 
-        String name = inputName.getText().toString().trim();
-        String address = inputAddress.getText().toString().trim();
-        String email = inputEmail.getText().toString().trim();
-
-        vm.updateProfile(name, address);
         Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
         btnEditSave.setText("Modifica");
     }
