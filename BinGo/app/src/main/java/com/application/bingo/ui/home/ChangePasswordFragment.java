@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
@@ -85,6 +86,8 @@ public class ChangePasswordFragment extends Fragment {
                 if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
                 if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
                 if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
+                // Torna al fragment precedente (SettingsFragment)
+                NavHostFragment.findNavController(ChangePasswordFragment.this).popBackStack();
             }
         });
 
