@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,7 +33,7 @@ public class SettingsFragment extends Fragment {
 
     private LinearLayout layoutTema, layoutLingua, layoutCambiaPassword, layoutCambiaEmail;
 
-    private Switch switchNotifiche, switchSuono, switchVibrazione;
+    private SwitchMaterial switchNotifiche, switchSuono, switchVibrazione;
 
     private SettingsViewModel settingsVM;
 
@@ -70,7 +70,6 @@ public class SettingsFragment extends Fragment {
 
 
         //Cambio email
-        layoutCambiaEmail = view.findViewById(R.id.btn_change_email);
         layoutCambiaEmail.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.changeEmailFragment));

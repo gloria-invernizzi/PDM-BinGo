@@ -164,28 +164,29 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="8dp">
+            android:clickable="true"
+        android:focusable="true"
+        android:paddingVertical="8dp"
+        android:background="?attr/selectableItemBackground">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_dark_mode"
-                app:tint="?attr/colorOnSurfaceVariant"/>
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_dark_mode"
+            app:tint="?attr/colorOnSurfaceVariant"/>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dark_theme"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_marginStart="16dp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/theme"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:layout_marginStart="16dp"/>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_theme"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
 
+    </LinearLayout>
+
+        <!-- LINGUA -->
         <!-- LINGUA -->
         <LinearLayout
             android:id="@+id/layout_language"
@@ -193,29 +194,25 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="8dp">
+            android:clickable="true"
+        android:focusable="true"
+        android:paddingVertical="8dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_language"
-                app:tint="?attr/colorOnSurfaceVariant"/>
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_language"
+            app:tint="?attr/colorOnSurfaceVariant"/>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/language"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_marginStart="16dp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/language"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:layout_marginStart="16dp"/>
 
-            <Spinner
-                android:id="@+id/spinner_language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="120dp"
-                android:spinnerMode="dropdown"/>
-        </LinearLayout>
+    </LinearLayout>
 
         <!-- SEZIONE: NOTIFICHE -->
         <TextView

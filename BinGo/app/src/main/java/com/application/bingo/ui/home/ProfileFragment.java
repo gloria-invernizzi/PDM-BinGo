@@ -174,17 +174,22 @@ public class ProfileFragment extends Fragment {
                 inputName.setText(user.getName());
                 inputEmail.setText(user.getEmail());
                 inputAddress.setText(user.getAddress());
-                if (user.getPhotoUri() != null && !user.getPhotoUri().isEmpty()) {
+
+                String photoUriStr = user.getPhotoUri();
+                if (photoUriStr != null && !photoUriStr.isEmpty()) {
                     try {
-                        profileImage.setImageURI(Uri.parse(user.getPhotoUri()));
+                        Uri photoUri = Uri.parse(photoUriStr);
+                        profileImage.setImageURI(photoUri);
                     } catch (Exception e) {
-                        profileImage.setImageResource(R.drawable.ic_profile_placeholder); // fallback
+                        // URI non valido → fallback immagine di default
+                        profileImage.setImageResource(R.drawable.ic_profile_placeholder);
                     }
                 } else {
                     profileImage.setImageResource(R.drawable.ic_profile_placeholder);
                 }
             }
         });
+
     }
 
 
