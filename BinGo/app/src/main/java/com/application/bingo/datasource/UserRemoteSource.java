@@ -10,64 +10,82 @@ import com.google.firebase.auth.FirebaseUser;
 
 /**
  * UserRemoteSource:
- * Gestisce tutto ciò che è remoto: FirebaseAuth
+ * Gestisce le chiamate Firebase
  */
 public class UserRemoteSource {
 
-    private final FirebaseAuth mAuth;
-
+    private static final String TAG = "UserRemoteSource";
+    private final FirebaseAuth auth;
 
     public UserRemoteSource() {
-        mAuth = FirebaseAuth.getInstance();
-
+        auth = FirebaseAuth.getInstance();
     }
 
-    // Recupera l'utente Firebase corrente
     public FirebaseUser getFirebaseUser() {
-        return mAuth.getCurrentUser();
+        return auth.getCurrentUser();
     }
 
-    // Aggiorna password su Firebase
-    public void updatePassword(String email, String oldPassword, String newPassword) {
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if (firebaseUser != null && email.equals(firebaseUser.getEmail())) {
-            AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
-            firebaseUser.reauthenticate(credential)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            firebaseUser.updatePassword(newPassword)
-                                    .addOnCompleteListener(updateTask -> {
-                                        if (updateTask.isSuccessful()) {
-                                            Log.d("UserRemoteSource", "Password aggiornata anche su Firebase");
-                                        } else {
-                                            Log.e("UserRemoteSource", "Errore Firebase update password", updateTask.getException());
-                                        }
-                                    });
-                        } else {
-                            Log.e("UserRemoteSource", "Autenticazione Firebase fallita", task.getException());
-                        }
-                    });
-        }
-    }
+    /**
+     * Aggiorna l'email in Firebase con re-auth
+     */
+    public void updateEmail(String newEmail, String password, UserRepository.Callback callback) {
+        FirebaseUser user = auth.getCurrentUser();
 
-    public void updateEmail(String newEmail, UserRepository.Callback callback) {
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if (firebaseUser == null) {
-            callback.onFailure("Utente non loggato su Firebase");
+        if (user == null || user.getEmail() == null) {
+            callback.onFailure("Utente non autenticato");
             return;
         }
 
-        firebaseUser.updateEmail(newEmail)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("UserRemoteSource", "Email aggiornata su Firebase: " + newEmail);
-                        callback.onSuccess("Email aggiornata su Firebase");
-                    } else {
-                        Log.e("UserRemoteSource", "Errore aggiornamento email Firebase", task.getException());
-                        callback.onFailure("Errore Firebase: " + task.getException().getMessage());
-                    }
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
+
+        user.reauthenticate(credential)
+                .addOnSuccessListener(v -> user.updateEmail(newEmail)
+                        .addOnSuccessListener(unused -> {
+                            Log.d(TAG, "Email aggiornata su Firebase: " + newEmail);
+                            callback.onSuccess("Email aggiornata con successo");
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, "Errore Firebase updateEmail", e);
+                            callback.onFailure("Firebase error: " + e.getMessage());
+                        }))
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Re-authentication fallita", e);
+                    callback.onFailure("Re-auth fallita: " + e.getMessage());
                 });
     }
 
+    /**
+     * Aggiorna la password in Firebase con re-auth
+     */
+    public void updatePassword(String email, String oldPassword, String newPassword) {
+        updatePassword(email, oldPassword, newPassword, null);
+    }
 
+    /**
+     * Aggiorna la password con callback opzionale
+     */
+    public void updatePassword(String email, String oldPassword, String newPassword, UserRepository.Callback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            if (callback != null) callback.onFailure("Utente non autenticato");
+            return;
+        }
+
+        AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
+
+        user.reauthenticate(credential)
+                .addOnSuccessListener(unused -> user.updatePassword(newPassword)
+                        .addOnSuccessListener(v -> {
+                            Log.d(TAG, "Password aggiornata su Firebase");
+                            if (callback != null) callback.onSuccess("Password aggiornata su Firebase");
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, "Errore update password", e);
+                            if (callback != null) callback.onFailure("Errore update password: " + e.getMessage());
+                        }))
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Re-auth fallita", e);
+                    if (callback != null) callback.onFailure("Re-auth fallita: " + e.getMessage());
+                });
+    }
 }

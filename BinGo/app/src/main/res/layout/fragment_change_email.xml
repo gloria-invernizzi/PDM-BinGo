@@ -1,40 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scroll_change_email"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:background="?attr/colorSurface"
-    tools:context=".ui.home.ChangeEmailFragment">
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <!-- Email Vecchia -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/vecchia_email"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <!-- Info email attuale -->
+        <TextView
+            android:id="@+id/current_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email Vecchia"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:layout_marginTop="16dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:padding="12dp"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:text="Email attuale: example@email.com"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:layout_marginBottom="24dp"/>
 
         <!-- Nuova Email -->
         <com.google.android.material.textfield.TextInputLayout
@@ -42,53 +26,36 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nuova Email"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:layout_marginTop="16dp">
+            android:hint="Nuova email">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:padding="12dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Conferma Nuova Email -->
+        <!-- Conferma Email -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/conferma_email"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Conferma Nuova Email"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:hint="Conferma nuova email">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:padding="12dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Bottone Cambia Email -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_change_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cambia Email"
-            android:textColor="?attr/colorOnPrimary"
-            app:backgroundTint="?attr/colorPrimary"
-            app:cornerRadius="16dp"
-            android:layout_marginTop="32dp"
-            android:elevation="4dp"
-            android:padding="12dp"/>
+            android:text="Continua"
+            android:layout_marginTop="32dp"/>
+
     </LinearLayout>
 </ScrollView>
+

@@ -1,15 +1,13 @@
 package com.application.bingo.datasource;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
-import com.application.bingo.model.User;
 import com.application.bingo.database.UserDao;
+import com.application.bingo.model.User;
 import com.application.bingo.repository.UserRepository;
 
-import java.util.concurrent.ExecutorService;
 import java.util.List;
 
 /**
@@ -20,44 +18,26 @@ public class UserLocalSource {
 
     private final UserDao userDao;
     private final PrefsManager prefs;
-    private final ExecutorService executor;
 
     public UserLocalSource(Context context) {
         userDao = AppDatabase.getInstance(context).userDao();
         prefs = new PrefsManager(context);
-        executor = AppDatabase.databaseWriteExecutor;
     }
 
-    // Recupera utente da Room e Prefs
     public void getUser(String email, UserRepository.UserCallback callback) {
-        executor.execute(() -> {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             User u = userDao.findByEmail(email);
-
             if (u != null) {
-                if (u.getName() == null || u.getName().isEmpty()) {
-                    String name = prefs.getSavedName();
-                    if (!name.isEmpty()) u.setName(name);
-                }
-                if (u.getAddress() == null || u.getAddress().isEmpty()) {
-                    String address = prefs.getSavedAddress();
-                    if (!address.isEmpty()) u.setAddress(address);
-                }
-                if (u.getPhotoUri() == null || u.getPhotoUri().isEmpty()) {
-                    u.setPhotoUri(prefs.getSavedPhotoUri());
-                }
-                Log.d("UserLocalSource", "User trovato in Room (merge Prefs): " + u);
                 callback.onUserLoaded(u);
                 return;
             }
-
-            // fallback da Prefs
-            String nameFromPrefs = prefs.getSavedName();
-            String addressFromPrefs = prefs.getSavedAddress();
+            // fallback Prefs
+            String name = prefs.getSavedName();
+            String address = prefs.getSavedAddress();
             String photoUri = prefs.getSavedPhotoUri();
-            if (!nameFromPrefs.isEmpty() || !addressFromPrefs.isEmpty() || !photoUri.isEmpty()) {
-                User prefsUser = new User(nameFromPrefs, addressFromPrefs, email, "");
+            if (!name.isEmpty() || !address.isEmpty() || !photoUri.isEmpty()) {
+                User prefsUser = new User(name, address, email, prefs.getSavedPassword());
                 prefsUser.setPhotoUri(photoUri);
-                Log.d("UserLocalSource", "User creato da Prefs: " + prefsUser);
                 callback.onUserLoaded(prefsUser);
             } else {
                 callback.onUserLoaded(null);
@@ -65,47 +45,35 @@ public class UserLocalSource {
         });
     }
 
-    // Aggiorna utente in Room
     public void updateUser(User user) {
-        executor.execute(() -> {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             userDao.update(user);
-            Log.d("UserLocalSource", "User aggiornato in Room: " + user);
+            saveToPrefs(user);
         });
     }
 
-    // Aggiorna solo la foto
     public void updatePhotoUri(String email, String uri) {
-        executor.execute(() -> {
-            userDao.updatePhotoUri(email, uri);// aggiorna Room
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            userDao.updatePhotoUri(email, uri);
             prefs.savePhotoUri(email, uri);
-            Log.d("UserLocalSource", "Foto aggiornata in Room e Prefs per " + email);
         });
     }
 
-    // Salva utente nei Prefs
-        public void saveToPrefs(User u) {
-            prefs.saveUser(u.getName(), u.getAddress(), u.getEmail(), prefs.getSavedPassword());
-            if (u.getPhotoUri() != null) {
-                prefs.savePhotoUri(u.getEmail(), u.getPhotoUri());
-            }
-        }
+    public void saveToPrefs(User u) {
+        prefs.saveUser(u.getName(), u.getAddress(), u.getEmail(), prefs.getSavedPassword());
+        if (u.getPhotoUri() != null) prefs.savePhotoUri(u.getEmail(), u.getPhotoUri());
+    }
 
-    // Cambio password locale
     public void changePassword(String email, String oldPassword, String newPassword,
                                String confirmPassword, UserRepository.Callback callback) {
-        executor.execute(() -> {
-            try {
-                if (!newPassword.equals(confirmPassword)) {
-                    callback.onFailure("Le password non corrispondono");
-                    return;
-                }
 
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            try {
                 User localUser = userDao.findByEmail(email);
                 if (localUser == null) {
                     localUser = new User(prefs.getSavedName(), prefs.getSavedAddress(),
                             email, prefs.getSavedPassword());
                     userDao.insert(localUser);
-                    Log.d("UserLocalSource", "User creato in Room da Prefs: " + localUser);
                 }
 
                 if (!localUser.getPassword().equals(oldPassword)) {
@@ -115,8 +83,7 @@ public class UserLocalSource {
 
                 localUser.setPassword(newPassword);
                 userDao.update(localUser);
-                prefs.saveUser(localUser.getName(), localUser.getAddress(), email, newPassword);
-                Log.d("UserLocalSource", "Password aggiornata in Room per " + email);
+                prefs.saveUser(localUser.getEmail(), newPassword);
 
                 callback.onSuccess(UserRepository.PASSWORD_OK);
 
@@ -125,36 +92,29 @@ public class UserLocalSource {
             }
         });
     }
-    // In UserLocalSource
+
     public void updateEmail(String oldEmail, String newEmail, UserRepository.Callback callback) {
-        executor.execute(() -> {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
                 User localUser = userDao.findByEmail(oldEmail);
-                if (localUser != null) {
-                    localUser.setEmail(newEmail);
-                    userDao.update(localUser);
-
-                    // Aggiorna SharedPreferences con la nuova email
-                    prefs.saveUser(
-                            localUser.getName(),
-                            localUser.getAddress(),
-                            newEmail,// nuova email
-                            localUser.getPassword()
-                    );
-
-                    callback.onSuccess(UserRepository.PASSWORD_OK);
-                } else {
-                    callback.onFailure("Utente locale non trovato");
+                if (localUser == null) {
+                    localUser = new User(prefs.getSavedName(), prefs.getSavedAddress(),
+                            oldEmail, prefs.getSavedPassword());
+                    userDao.insert(localUser);
                 }
+                localUser.setEmail(newEmail);
+                userDao.update(localUser);
+                prefs.updateEmailOnly(newEmail); // solo email, non cancella altri dati
+
+                callback.onSuccess("Email aggiornata localmente");
             } catch (Exception e) {
-                callback.onFailure("Errore: " + e.getMessage());
+                callback.onFailure("Errore locale: " + e.getMessage());
             }
         });
     }
 
-    // In UserLocalSource
     public void updateFamilyId(String email, String familyId, UserRepository.Callback callback) {
-        executor.execute(() -> {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
                 userDao.updateFamilyId(email, familyId);
                 callback.onSuccess("Famiglia aggiornata con successo");
@@ -165,12 +125,11 @@ public class UserLocalSource {
     }
 
     public void getUsersByFamilyId(String familyId, UserRepository.FamilyMembersCallback callback) {
-        executor.execute(() -> {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
                 List<User> members = userDao.findByFamilyId(familyId);
                 callback.onMembersLoaded(members);
             } catch (Exception e) {
-                // Gestione errore o lista vuota
                 callback.onMembersLoaded(null);
             }
         });

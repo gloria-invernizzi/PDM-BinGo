@@ -82,7 +82,7 @@ public class PrefsManager {
     public void setRemember(boolean remember) {
         prefs.edit().putBoolean(KEY_REMEMBER, remember).apply();
         if (!remember) {
-            clearSavedUser();
+            clearLoginOnly(); // pulisce solo login/password;
         }
     }
 
@@ -96,6 +96,10 @@ public class PrefsManager {
                 .apply();
     }
 
+    //  salvare solo email senza cancellare altri dati
+    public void updateEmailOnly(String newEmail) {
+        prefs.edit().putString(KEY_EMAIL, newEmail).apply();
+    }
 
 
 

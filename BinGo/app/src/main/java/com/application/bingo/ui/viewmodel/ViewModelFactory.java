@@ -34,7 +34,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(ChangePasswordViewModel.class)) {
             return (T) new ChangePasswordViewModel(userRepository);
         } else if (modelClass.isAssignableFrom(ChangeEmailViewModel.class)) {
-            return (T) new ChangeEmailViewModel(userRepository);
+            return (T) new ChangeEmailViewModel(application);
         } else if (modelClass.isAssignableFrom(NotificationViewModel.class)) {
             return (T) new NotificationViewModel(notificationRepository);
         } else if (modelClass.isAssignableFrom(FamilyViewModel.class)) {
