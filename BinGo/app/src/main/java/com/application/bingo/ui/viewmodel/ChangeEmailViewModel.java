@@ -1,12 +1,15 @@
 package com.application.bingo.ui.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.application.bingo.repository.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * ChangeEmailViewModel:
@@ -14,7 +17,7 @@ import com.application.bingo.repository.UserRepository;
  * - Controlli input
  * - Chiama UserRepository per aggiornamento locale + remoto
  * - Posta messaggi al fragment tramite LiveData
- * - MVVM puro: la VM non chiama Firebase direttamente
+ * - MVVM  la VM non chiama Firebase direttamente
  */
 public class ChangeEmailViewModel extends AndroidViewModel {
 
@@ -27,12 +30,17 @@ public class ChangeEmailViewModel extends AndroidViewModel {
         userRepository = new UserRepository(application.getApplicationContext());
     }
 
-    public LiveData<String> getMessageLiveData() { return messageLiveData; }
-    public LiveData<Boolean> getLogoutLiveData() { return logoutLiveData; }
+    public LiveData<String> getMessageLiveData() {
+        return messageLiveData;
+    }
+
+    public LiveData<Boolean> getLogoutLiveData() {
+        return logoutLiveData;
+    }
 
     /**
      * Cambia l'email: flusso corretto
-     * - online-first
+     * - solo online
      * - locale solo se remoto ok
      * - logout forzato dopo successo
      */
@@ -46,12 +54,12 @@ public class ChangeEmailViewModel extends AndroidViewModel {
                 new UserRepository.Callback() {
                     @Override
                     public void onSuccess(String msg) {
-                        messageLiveData.postValue("Email aggiornata con successo");
+                        messageLiveData.postValue(msg);
                     }
 
                     @Override
                     public void onFailure(String msg) {
-                        messageLiveData.postValue("Aggiornamento fallito: " + msg);
+                        messageLiveData.postValue(msg);
                     }
                 },
                 new UserRepository.LogoutCallback() {
@@ -61,5 +69,30 @@ public class ChangeEmailViewModel extends AndroidViewModel {
                     }
                 });
     }
+
+    public void refreshFirebaseUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("ChangeEmailVM", "refreshFirebaseUser chiamato. currentUser = " + user);
+
+        if (user != null) {
+            user.reload().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    boolean verified = user.isEmailVerified();
+                    Log.d("ChangeEmailVM", "Reload completato. Email verificata = " + verified);
+                    messageLiveData.postValue(verified ?
+                            "Email verificata, puoi cambiare email" :
+                            "Email non ancora verificata");
+                } else {
+                    Log.e("ChangeEmailVM", "Errore reload utente", task.getException());
+                    messageLiveData.postValue("Errore reload utente: " + task.getException().getMessage());
+                }
+            });
+        } else {
+            Log.e("ChangeEmailVM", "refreshFirebaseUser: utente non loggato");
+            messageLiveData.postValue("Utente non loggato");
+        }
+    }
+
+
 }
 

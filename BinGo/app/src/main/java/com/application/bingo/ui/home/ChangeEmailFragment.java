@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
 import com.application.bingo.ui.ConfirmPasswordDialogFragment;
 import com.application.bingo.ui.viewmodel.ChangeEmailViewModel;
@@ -21,6 +20,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ChangeEmailFragment extends Fragment {
 
@@ -28,24 +28,23 @@ public class ChangeEmailFragment extends Fragment {
     private TextInputEditText confermaEmailEditText;
     private MaterialButton btnChangeEmail;
 
-    private ChangeEmailViewModel changeEmailViewModel;
-    private String currentEmail;
+    private ChangeEmailViewModel viewModel;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
         return inflater.inflate(R.layout.fragment_change_email, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view,
-                              @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(
+            @NonNull View view,
+            @Nullable Bundle savedInstanceState
+    ) {
         super.onViewCreated(view, savedInstanceState);
-
-        // --- Recupero email corrente da PrefsManager ---
-        PrefsManager prefsManager = new PrefsManager(requireContext());
-        currentEmail = prefsManager.getSavedEmail();
 
         btnChangeEmail = view.findViewById(R.id.btn_change_email);
 
@@ -55,42 +54,47 @@ public class ChangeEmailFragment extends Fragment {
         nuovaEmailEditText = (TextInputEditText) nuovaEmailLayout.getEditText();
         confermaEmailEditText = (TextInputEditText) confermaEmailLayout.getEditText();
 
-        // --- ViewModel setup ---
-        changeEmailViewModel = new ViewModelProvider(
+        // ViewModel
+        viewModel = new ViewModelProvider(
                 this,
                 new ViewModelFactory(requireActivity().getApplication())
         ).get(ChangeEmailViewModel.class);
 
-        // --- Observer messaggi ---
-        changeEmailViewModel.getMessageLiveData()
-                .observe(getViewLifecycleOwner(), message -> {
-                    btnChangeEmail.setEnabled(true);
-                    if (message != null) {
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-                        // Se il messaggio indica successo, puoi opzionalmente tornare indietro
-                        if (message.toLowerCase().contains("successo")) {
-                            // Pop back stack o navigazione
-                            // NavHostFragment.findNavController(this).popBackStack();
-                        }
-                    }
-                });
+        // Messaggi
+        viewModel.getMessageLiveData().observe(getViewLifecycleOwner(), msg -> {
+            btnChangeEmail.setEnabled(true);
+            if (msg != null) {
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show();
+            }
+        });
 
-        // --- Observer logout dopo cambio email ---
-        changeEmailViewModel.getLogoutLiveData()
-                .observe(getViewLifecycleOwner(), logout -> {
-                    if (logout != null && logout) {
-                        // --- Logout forzato ---
-                        FirebaseAuth.getInstance().signOut();
+        // Logout forzato
+        viewModel.getLogoutLiveData().observe(getViewLifecycleOwner(), logout -> {
+            if (Boolean.TRUE.equals(logout)) {
+                FirebaseAuth.getInstance().signOut();
+                NavHostFragment.findNavController(this)
+                        .popBackStack(R.id.welcomeFragment, false);
+            }
+        });
 
-                        // Torna al welcomeFragment del login graph
-                        NavHostFragment.findNavController(this)
-                                .popBackStack(R.id.welcomeFragment, false);
-                    }
-                });
-
-        // --- Bottone cambio email ---
+        // Bottone
         btnChangeEmail.setOnClickListener(v -> {
 
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (firebaseUser == null) {
+                Toast.makeText(
+                        requireContext(),
+                        "Sessione scaduta. Effettua di nuovo il login.",
+                        Toast.LENGTH_LONG
+                ).show();
+
+                NavHostFragment.findNavController(this)
+                        .popBackStack(R.id.welcomeFragment, false);
+                return;
+            }
+
+            String oldEmail = firebaseUser.getEmail();
             String newEmail = nuovaEmailEditText.getText().toString().trim();
             String confirmEmail = confermaEmailEditText.getText().toString().trim();
 
@@ -104,20 +108,22 @@ public class ChangeEmailFragment extends Fragment {
                 return;
             }
 
-            // --- Dialog password obbligatoria ---
             ConfirmPasswordDialogFragment dialog =
                     new ConfirmPasswordDialogFragment(password -> {
+
                         if (password == null || password.isEmpty()) {
-                            Toast.makeText(requireContext(),
-                                    "Inserisci la password", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                    requireContext(),
+                                    "Inserisci la password",
+                                    Toast.LENGTH_SHORT
+                            ).show();
                             return;
                         }
 
                         btnChangeEmail.setEnabled(false);
 
-                        // --- Chiamata al ViewModel ---
-                        changeEmailViewModel.changeEmail(
-                                currentEmail,
+                        viewModel.changeEmail(
+                                oldEmail,
                                 password,
                                 newEmail
                         );
@@ -125,5 +131,11 @@ public class ChangeEmailFragment extends Fragment {
 
             dialog.show(getParentFragmentManager(), "ConfirmPasswordDialog");
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.refreshFirebaseUser();
     }
 }

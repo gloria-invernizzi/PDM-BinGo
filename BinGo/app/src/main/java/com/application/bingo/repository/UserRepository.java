@@ -47,17 +47,16 @@ public class UserRepository {
             return;
         }
 
-        // --- Aggiornamento remoto Firebase ---
         remote.updateEmail(newEmail, oldPassword, new Callback() {
             @Override
             public void onSuccess(String msgRemote) {
-                // Aggiornamento locale SOLO se Firebase ha aggiornato correttamente
+                // Aggiorna locale SOLO se remoto OK
                 local.updateEmail(oldEmail, newEmail, new Callback() {
                     @Override
                     public void onSuccess(String msgLocal) {
                         postToMain(() -> {
                             callback.onSuccess(msgRemote);
-                            logoutCallback.onLogoutRequired(); // trigger logout soft
+                            logoutCallback.onLogoutRequired();
                         });
                     }
 
@@ -75,6 +74,8 @@ public class UserRepository {
         });
     }
 
+
+
     // ---------------------------------------------------------------------------------------------
     // PASSWORD
     // ---------------------------------------------------------------------------------------------
@@ -89,11 +90,11 @@ public class UserRepository {
             return;
         }
 
-        // 1️⃣ Aggiorno remoto prima
+        //  Aggiorno remoto prima
         remote.updatePassword(email, oldPassword, newPassword, new Callback() {
             @Override
             public void onSuccess(String msgRemote) {
-                // 2️⃣ Aggiorno locale solo se remoto ok
+                //  Aggiorno locale solo se remoto ok
                 local.changePassword(email, oldPassword, newPassword, confirmPassword, new Callback() {
                     @Override
                     public void onSuccess(String msgLocal) {
