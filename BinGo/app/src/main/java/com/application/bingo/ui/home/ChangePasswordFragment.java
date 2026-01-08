@@ -17,24 +17,28 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
 import com.application.bingo.ui.viewmodel.ChangePasswordViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * Fragment per modificare la password utente.
- * Gestisce l'interazione UI:
- * - Recupero campi
- * - Validazione base
+ * Gestisce:
+ * - Recupero campi dalla UI
+ * - Validazione base (non vuoti, conferma password)
  * - Invio richiesta al ViewModel
  * - Visualizzazione notifiche
+ * - Reset campi e navigazione se successo
  */
 public class ChangePasswordFragment extends Fragment {
 
-    private TextInputEditText vecchiaPasswordEditText, nuovaPasswordEditText, confermaPasswordEditText;
+    private TextInputEditText vecchiaPasswordEditText;
+    private TextInputEditText nuovaPasswordEditText;
+    private TextInputEditText confermaPasswordEditText;
     private MaterialButton btnChangePassword;
-    private ChangePasswordViewModel changePasswordViewModel;
 
+    private ChangePasswordViewModel changePasswordViewModel;
     private String userEmail;
 
     @Override
@@ -51,9 +55,24 @@ public class ChangePasswordFragment extends Fragment {
         // -------------------------------
         // Recupero dei campi dal layout
         // -------------------------------
-        vecchiaPasswordEditText = (TextInputEditText) ((TextInputLayout) view.findViewById(R.id.vecchia_password)).getEditText();
-        nuovaPasswordEditText = (TextInputEditText)((TextInputLayout) view.findViewById(R.id.nuova_password)).getEditText();
-        confermaPasswordEditText = (TextInputEditText)((TextInputLayout) view.findViewById(R.id.conferma_password)).getEditText();
+        vecchiaPasswordEditText = null;
+        nuovaPasswordEditText = null;
+        confermaPasswordEditText = null;
+
+        TextInputLayout vecchiaLayout = view.findViewById(R.id.vecchia_password);
+        if (vecchiaLayout != null) {
+            vecchiaPasswordEditText = (TextInputEditText) vecchiaLayout.getEditText();
+        }
+
+        TextInputLayout nuovaLayout = view.findViewById(R.id.nuova_password);
+        if (nuovaLayout != null) {
+            nuovaPasswordEditText = (TextInputEditText) nuovaLayout.getEditText();
+        }
+
+        TextInputLayout confermaLayout = view.findViewById(R.id.conferma_password);
+        if (confermaLayout != null) {
+            confermaPasswordEditText = (TextInputEditText) confermaLayout.getEditText();
+        }
 
         btnChangePassword = view.findViewById(R.id.btn_change_password);
 
@@ -70,23 +89,23 @@ public class ChangePasswordFragment extends Fragment {
         }
 
         // -------------------------------
-        // Creazione ViewModel
+        // Creazione ViewModel con Factory
         // -------------------------------
-        changePasswordViewModel = new ViewModelProvider(this).get(ChangePasswordViewModel.class);
+        ViewModelFactory factory = new ViewModelFactory(requireActivity().getApplication());
+        changePasswordViewModel = new ViewModelProvider(this, factory).get(ChangePasswordViewModel.class);
 
         // -------------------------------
         // Osserva i messaggi dal ViewModel
         // -------------------------------
         changePasswordViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), message -> {
-            // Mostra toast con esito
+            Log.d("ChangePasswordFragment", "Message LiveData: " + message);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 
-            // Se password cambiata correttamente → reset campi
-            if (message.equals("Password aggiornata con successo")) {
+            // Se password cambiata correttamente → reset campi e torna indietro
+            if ("Password aggiornata con successo".equals(message)) {
                 if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
                 if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
                 if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
-                // Torna al fragment precedente (SettingsFragment)
                 NavHostFragment.findNavController(ChangePasswordFragment.this).popBackStack();
             }
         });
@@ -97,30 +116,47 @@ public class ChangePasswordFragment extends Fragment {
         btnChangePassword.setOnClickListener(v -> {
             Log.d("ChangePasswordFragment", "Pulsante cliccato!");
 
-            String oldPass = vecchiaPasswordEditText != null && vecchiaPasswordEditText.getText() != null
-                    ? vecchiaPasswordEditText.getText().toString().trim() : "";
-            String newPass = nuovaPasswordEditText != null && nuovaPasswordEditText.getText() != null
-                    ? nuovaPasswordEditText.getText().toString().trim() : "";
-            String confirmPass = confermaPasswordEditText != null && confermaPasswordEditText.getText() != null
-                    ? confermaPasswordEditText.getText().toString().trim() : "";
+            // Recupero testo dai campi con if/else invece di ?:
+            String oldPass;
+            if (vecchiaPasswordEditText != null && vecchiaPasswordEditText.getText() != null) {
+                oldPass = vecchiaPasswordEditText.getText().toString().trim();
+            } else {
+                oldPass = "";
+            }
+
+            String newPass;
+            if (nuovaPasswordEditText != null && nuovaPasswordEditText.getText() != null) {
+                newPass = nuovaPasswordEditText.getText().toString().trim();
+            } else {
+                newPass = "";
+            }
+
+            String confirmPass;
+            if (confermaPasswordEditText != null && confermaPasswordEditText.getText() != null) {
+                confirmPass = confermaPasswordEditText.getText().toString().trim();
+            } else {
+                confirmPass = "";
+            }
 
             // -------------------------------
-            // Verifica se l’utente ha effettivamente compilato vecchia password, nuova password e conferma password
+            // Verifica campi compilati
             // -------------------------------
             if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmPass)) {
                 Toast.makeText(requireContext(), "Compila tutti i campi", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Verifica corrispondenza nuova password e conferma
             if (!newPass.equals(confirmPass)) {
                 Toast.makeText(requireContext(), "Le password non corrispondono", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // -------------------------------
-            // Richiesta di modifica al ViewModel
+            // Invio richiesta cambio password al ViewModel
             // -------------------------------
             changePasswordViewModel.changePassword(userEmail, oldPass, newPass, confirmPass);
         });
     }
 }
+
