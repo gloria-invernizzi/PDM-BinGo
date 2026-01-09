@@ -17,10 +17,13 @@ import java.util.List;
  * Gestisce tutto il flusso di dati utenti
  * - Offline-first per tutti i dati eccetto email/password
  * - Cambio email online-first + logout
+ * - Cambio password solo online
+ * - Controllo account Google
  */
 public class UserRepository {
 
     public static final String PASSWORD_OK = "PASSWORD_OK";
+
     private final Context context;
     private final UserLocalSource local;
     private final UserRemoteSource remote;
@@ -34,14 +37,10 @@ public class UserRepository {
     }
 
     // ---------------------------------------------------------------------------------------------
-    // EMAIL (aggiornamento robusto: locale solo DOPO successo remoto)
+    // EMAIL
     // ---------------------------------------------------------------------------------------------
-    public void changeEmail(String oldEmail,
-                            String oldPassword,
-                            String newEmail,
-                            Callback callback,
-                            LogoutCallback logoutCallback) {
-
+    public void changeEmail(String oldEmail, String oldPassword, String newEmail,
+                            Callback callback, LogoutCallback logoutCallback) {
         if (!isConnectedToInternet()) {
             postToMain(() -> callback.onFailure("Per cambiare email devi essere connesso a Internet"));
             return;
@@ -50,7 +49,6 @@ public class UserRepository {
         remote.updateEmail(newEmail, oldPassword, new Callback() {
             @Override
             public void onSuccess(String msgRemote) {
-                // Aggiorna locale SOLO se remoto OK
                 local.updateEmail(oldEmail, newEmail, new Callback() {
                     @Override
                     public void onSuccess(String msgLocal) {
@@ -61,8 +59,8 @@ public class UserRepository {
                     }
 
                     @Override
-                    public void onFailure(String msg) {
-                        postToMain(() -> callback.onFailure("Aggiornamento locale fallito: " + msg));
+                    public void onFailure(String msgLocal) {
+                        postToMain(() -> callback.onFailure("Aggiornamento locale fallito: " + msgLocal));
                     }
                 });
             }
@@ -74,49 +72,48 @@ public class UserRepository {
         });
     }
 
-
-
     // ---------------------------------------------------------------------------------------------
-    // PASSWORD
+    // PASSWORD (solo online)
     // ---------------------------------------------------------------------------------------------
-    public void changePassword(String email,
-                               String oldPassword,
-                               String newPassword,
-                               String confirmPassword,
+    public void changePassword(String email, String oldPassword,
+                               String newPassword, String confirmPassword,
                                Callback callback) {
+
+        if (!isConnectedToInternet()) {
+            postToMain(() -> callback.onFailure("Per cambiare password devi essere connesso a Internet"));
+            return;
+        }
 
         if (!newPassword.equals(confirmPassword)) {
             postToMain(() -> callback.onFailure("Le password non corrispondono"));
             return;
         }
 
-        //  Aggiorno remoto prima
         remote.updatePassword(email, oldPassword, newPassword, new Callback() {
             @Override
             public void onSuccess(String msgRemote) {
-                //  Aggiorno locale solo se remoto ok
-                local.changePassword(email, oldPassword, newPassword, confirmPassword, new Callback() {
+                local.changePassword(email, newPassword, new Callback() {
                     @Override
                     public void onSuccess(String msgLocal) {
-                        postToMain(() -> callback.onSuccess("Password aggiornata correttamente"));
+                        postToMain(() -> callback.onSuccess("Password aggiornata con successo"));
                     }
 
                     @Override
                     public void onFailure(String msgLocal) {
-                        postToMain(() -> callback.onFailure("Errore locale: " + msgLocal));
+                        postToMain(() -> callback.onFailure("Password aggiornata ma errore locale"));
                     }
                 });
             }
 
             @Override
             public void onFailure(String msgRemote) {
-                postToMain(() -> callback.onFailure("Errore remoto: " + msgRemote));
+                postToMain(() -> callback.onFailure(msgRemote));
             }
         });
     }
 
     // ---------------------------------------------------------------------------------------------
-    // UTENTI
+    // UTENTE
     // ---------------------------------------------------------------------------------------------
     public void getUser(String email, UserCallback callback) {
         local.getUser(email, user -> postToMain(() -> callback.onUserLoaded(user)));
@@ -153,12 +150,27 @@ public class UserRepository {
     }
 
     // ---------------------------------------------------------------------------------------------
+    // UTENTE GOOGLE?
+    // ---------------------------------------------------------------------------------------------
+    public void isGoogleUser(String email, GoogleCheckCallback callback) {
+        getUser(email, user -> {
+            if (user == null) {
+                postToMain(() -> callback.onFailure("Utente non trovato"));
+            } else {
+                boolean google = user.getPassword() == null || user.getPassword().isEmpty();
+                postToMain(() -> callback.onResult(google));
+            }
+        });
+    }
+
+    // ---------------------------------------------------------------------------------------------
     // CALLBACKS
     // ---------------------------------------------------------------------------------------------
     public interface UserCallback { void onUserLoaded(User user); }
     public interface Callback { void onSuccess(String msg); void onFailure(String msg); }
     public interface LogoutCallback { void onLogoutRequired(); }
     public interface FamilyMembersCallback { void onMembersLoaded(List<User> members); }
+    public interface GoogleCheckCallback { void onResult(boolean isGoogleUser); void onFailure(String msg); }
 
     // ---------------------------------------------------------------------------------------------
     // UTILS

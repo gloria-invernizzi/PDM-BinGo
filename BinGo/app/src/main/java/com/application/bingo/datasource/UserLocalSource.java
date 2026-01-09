@@ -64,31 +64,34 @@ public class UserLocalSource {
         if (u.getPhotoUri() != null) prefs.savePhotoUri(u.getEmail(), u.getPhotoUri());
     }
 
-    public void changePassword(String email, String oldPassword, String newPassword,
-                               String confirmPassword, UserRepository.Callback callback) {
+    public void changePassword(String email,
+                               String newPassword,
+                               UserRepository.Callback callback) {
 
         AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
                 User localUser = userDao.findByEmail(email);
+
                 if (localUser == null) {
-                    localUser = new User(prefs.getSavedName(), prefs.getSavedAddress(),
-                            email, prefs.getSavedPassword());
+                    localUser = new User(
+                            prefs.getSavedName(),
+                            prefs.getSavedAddress(),
+                            email,
+                            newPassword
+                    );
                     userDao.insert(localUser);
+                } else {
+                    localUser.setPassword(newPassword);
+                    userDao.update(localUser);
                 }
 
-                if (!localUser.getPassword().equals(oldPassword)) {
-                    callback.onFailure("Vecchia password errata");
-                    return;
-                }
-
-                localUser.setPassword(newPassword);
-                userDao.update(localUser);
-                prefs.saveUser(localUser.getEmail(), newPassword);
+                // salva solo email + password
+                prefs.saveUser(email, newPassword);
 
                 callback.onSuccess(UserRepository.PASSWORD_OK);
 
             } catch (Exception e) {
-                callback.onFailure("Errore: " + e.getMessage());
+                callback.onFailure("Errore locale: " + e.getMessage());
             }
         });
     }
