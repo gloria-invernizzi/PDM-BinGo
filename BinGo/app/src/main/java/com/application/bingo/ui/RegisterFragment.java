@@ -29,7 +29,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class RegisterFragment extends Fragment {
-    private TextInputEditText etName, etAddress, etEmail, etPassword, etConfirm;
+    private TextInputEditText etName, etSurname, etAddress, etEmail, etPassword, etConfirm;
     private CheckBox cbRemember;
     private PrefsManager prefs;
     private final Executor bg = Executors.newSingleThreadExecutor();
@@ -49,6 +49,7 @@ public class RegisterFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         prefs = new PrefsManager(requireContext());
         etName = view.findViewById(R.id.etName);
+        etSurname = view.findViewById(R.id.etSurname);
         etAddress = view.findViewById(R.id.etAddress);
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
@@ -61,13 +62,14 @@ public class RegisterFragment extends Fragment {
 
     private void attemptRegister() {
         final String name = getText(etName);
+        final String surname = getText(etSurname);
         final String address = getText(etAddress);
         final String email = getText(etEmail);
         final String pass = getText(etPassword);
         final String confirm = getText(etConfirm);
         final boolean remember = cbRemember != null && cbRemember.isChecked();
 
-        if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
+        if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
             Toast.makeText(requireContext(), "Campi mancanti", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -90,18 +92,19 @@ public class RegisterFragment extends Fragment {
                         bg.execute(() -> {
                             User existing = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
                             if (existing == null) {
-                                // Usa costruttore a 4 parametri e imposta foto vuota
-                                User user = new User(name, address, email, pass);
+                                // Usa costruttore a 5 parametri
+                                User user = new User(name, surname, address, email, pass);
                                 user.setPhotoUri(""); // foto vuota iniziale
                                 long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
 
                                 if (id > 0) {
                                     if (remember) {
-                                        // salva nome, address, email, password e flag remember
-                                        prefs.saveUser(name, address, email, pass);
+                                        // salva nome, surname, address, email, password e flag remember
+                                        prefs.saveUser(name, surname, address, email, pass);
                                         prefs.setRemember(true);
                                     } else {
                                         prefs.setRemember(false);
+                                        prefs.clearSavedUser();
                                     }
                                     requireActivity().runOnUiThread(() -> {
                                         Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();

@@ -112,13 +112,22 @@ public class FamilyViewModel extends ViewModel {
     }
     
     public void checkUserFamily(String email) {
-        userRepository.getUser(email, user -> {
-             if (user != null && user.getFamilyId() != null) {
-                 familyId.postValue(user.getFamilyId());
-                 loadFamilyMembers(user.getFamilyId());
-             } else {
-                 familyId.postValue(null);
-             }
+        userRepository.getUser(email, new UserRepository.UserCallback() {
+            @Override
+            public void onUserLoaded(User user) {
+                if (user != null && user.getFamilyId() != null) {
+                    familyId.postValue(user.getFamilyId());
+                    loadFamilyMembers(user.getFamilyId());
+                } else {
+                    familyId.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {
+                familyId.postValue(null);
+                error.postValue(errorMsg);
+            }
         });
     }
 }

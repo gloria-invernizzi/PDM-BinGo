@@ -37,12 +37,23 @@ public class ProfileViewModel extends ViewModel {
     // ---------------------------------------------------------------------------------------------
     // CARICA UTENTE DAL REPOSITORY
     // ---------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+    // CARICA UTENTE DAL REPOSITORY
+    // ---------------------------------------------------------------------------------------------
     public void loadUser(String email) {
-        userRepo.getUser(email, u -> {
-            if (u != null) {
-                user.postValue(u);
-            } else {
-                error.postValue("Utente non trovato");
+        userRepo.getUser(email, new UserRepository.UserCallback() {
+            @Override
+            public void onUserLoaded(User u) {
+                if (u != null) {
+                    user.postValue(u);
+                } else {
+                    error.postValue("Utente non trovato");
+                }
+            }
+
+            public void onFailure(String msg) {
+                // Questo è il metodo che mancava e causava l'errore!
+                error.postValue(msg);
             }
         });
     }

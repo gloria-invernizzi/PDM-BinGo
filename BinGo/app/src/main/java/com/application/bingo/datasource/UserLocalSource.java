@@ -33,10 +33,11 @@ public class UserLocalSource {
             }
             // fallback Prefs
             String name = prefs.getSavedName();
+            String surname = prefs.getSavedSurname();
             String address = prefs.getSavedAddress();
             String photoUri = prefs.getSavedPhotoUri();
             if (!name.isEmpty() || !address.isEmpty() || !photoUri.isEmpty()) {
-                User prefsUser = new User(name, address, email, prefs.getSavedPassword());
+                User prefsUser = new User(name, surname, address, email, prefs.getSavedPassword());
                 prefsUser.setPhotoUri(photoUri);
                 callback.onUserLoaded(prefsUser);
             } else {
@@ -60,7 +61,7 @@ public class UserLocalSource {
     }
 
     public void saveToPrefs(User u) {
-        prefs.saveUser(u.getName(), u.getAddress(), u.getEmail(), prefs.getSavedPassword());
+        prefs.saveUser(u.getName(), u.getSurname(), u.getAddress(), u.getEmail(), prefs.getSavedPassword());
         if (u.getPhotoUri() != null) prefs.savePhotoUri(u.getEmail(), u.getPhotoUri());
     }
 
@@ -75,6 +76,7 @@ public class UserLocalSource {
                 if (localUser == null) {
                     localUser = new User(
                             prefs.getSavedName(),
+                            prefs.getSavedSurname(),
                             prefs.getSavedAddress(),
                             email,
                             newPassword
@@ -101,7 +103,7 @@ public class UserLocalSource {
             try {
                 User localUser = userDao.findByEmail(oldEmail);
                 if (localUser == null) {
-                    localUser = new User(prefs.getSavedName(), prefs.getSavedAddress(),
+                    localUser = new User(prefs.getSavedName(), prefs.getSavedSurname(), prefs.getSavedAddress(),
                             oldEmail, prefs.getSavedPassword());
                     userDao.insert(localUser);
                 }

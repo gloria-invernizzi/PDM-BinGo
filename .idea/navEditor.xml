@@ -273,8 +273,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-116" />
-                            <option name="y" value="40" />
+                            <option name="x" value="-300" />
+                            <option name="y" value="-56" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -328,6 +328,11 @@
                         <option name="myPositions">
                           <map>
                             <entry key="action_homeFragment_to_calendarFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_homeFragment_to_familyFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

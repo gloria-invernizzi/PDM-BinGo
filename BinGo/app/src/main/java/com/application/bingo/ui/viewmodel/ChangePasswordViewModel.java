@@ -86,7 +86,6 @@ public class ChangePasswordViewModel extends ViewModel {
                 });
             }
 
-            @Override
             public void onFailure(String msg) {
                 messageLiveData.postValue(msg);
             }

@@ -9,6 +9,7 @@
     <string name="remember_me">Ricordami</string>
     <string name="login_with_google">Accedi con google</string>
     <string name="create_account">Crea account</string>
+    <string name="or_separator">oppure</string>
 
     <string name="name">Nome</string>
     <string name="surname">Cognome</string>
@@ -47,6 +48,10 @@
     <string name="search_product">Cerca un prodotto…</string>
     <string name="notifications_disabled">Notifiche disattivate nelle impostazioni</string>
 
+    <string name="error_missing_fields">Campi mancanti</string>
+    <string name="login_successful">Login effettuato</string>
+    <string name="error_google_sign_in">Accesso con Google fallito</string>
+    <string name="error_firebase_auth">Autenticazione fallita</string>
 
     <string name="old_password_hint">Vecchia Password</string>
     <string name="new_password_hint">Nuova Password</string>
