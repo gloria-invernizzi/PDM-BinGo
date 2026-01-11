@@ -38,6 +38,11 @@ public class PrefsManager {
                 .apply();
     }
 
+    // Salva SOLO l'email per la sessione corrente (senza password)
+    public void saveSessionEmail(String email) {
+        prefs.edit().putString(KEY_EMAIL, email).apply();
+    }
+
     public void clearSavedUser() {
         prefs.edit()
                 .remove(KEY_NAME)

@@ -1,4 +1,4 @@
-package com.application.bingo.viewmodel;
+package com.application.bingo.ui.viewmodel;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -23,21 +23,26 @@ public class LoginViewModel extends AndroidViewModel {
     public void login(String email, String password) {
         _loginState.setValue(new LoginState.Loading());
 
-        repository.findLocalUser(email, password, localUser -> {
-            if (localUser != null) {
-                _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
-            } else {
-                repository.firebaseSignIn(email, password).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser fbUser = task.getResult().getUser();
-                        String name = fbUser != null && fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "";
-                        User newUser = new User(name, "", "", email, password);
-                        repository.saveLocalUser(newUser, () -> 
-                            _loginState.postValue(new LoginState.Success(name, "", "", email, password))
-                        );
+        // Cerchiamo l'utente locale ma eseguiamo SEMPRE il sign-in su Firebase per validare la sessione
+        repository.firebaseSignIn(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                repository.findLocalUser(email, password, localUser -> {
+                    if (localUser != null) {
+                        _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
                     } else {
-                        String error = task.getException() != null ? task.getException().getMessage() : "Errore autenticazione";
-                        _loginState.postValue(new LoginState.Error(error));
+                        // Se è su Firebase ma non locale (es. cambio dispositivo)
+                        FirebaseUser fbUser = task.getResult().getUser();
+                        String name = fbUser != null ? fbUser.getDisplayName() : "";
+                        _loginState.postValue(new LoginState.Success(name, "", "", email, password));
+                    }
+                });
+            } else {
+                // Se fallisce Firebase, proviamo solo locale (modalità offline)
+                repository.findLocalUser(email, password, localUser -> {
+                    if (localUser != null) {
+                        _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
+                    } else {
+                        _loginState.postValue(new LoginState.Error("Credenziali errate"));
                     }
                 });
             }

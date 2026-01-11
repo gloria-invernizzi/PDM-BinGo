@@ -145,51 +145,34 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void loadUserFromPrefs() {
         String savedEmail = prefs.getSavedEmail();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        String emailToLoad = null;
 
         if (savedEmail != null && !savedEmail.isEmpty()) {
-            // Carica dati dai prefs solo per UI immediata del nome/indirizzo
+            emailToLoad = savedEmail;
+            // Popolamento rapido per migliorare la UX
             inputName.setText(prefs.getSavedName());
             inputAddress.setText(prefs.getSavedAddress());
-
-            // NON caricare la foto dai prefs qui
-            // lascia che la LiveData del VM gestisca la foto
-            vm.loadUser(savedEmail);
-
-        } else {
-            // Nessun utente salvato, controlla Firebase
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            if (firebaseUser != null && firebaseUser.getEmail() != null) {
-                vm.loadUser(firebaseUser.getEmail());
-            } else {
-                NavController navController = Navigation.findNavController(
-                        requireActivity(), R.id.fragmentContainerView);
-                navController.navigate(R.id.welcomeFragment);
-                return;
-            }
+        } else if (firebaseUser != null && firebaseUser.getEmail() != null) {
+            emailToLoad = firebaseUser.getEmail();
         }
 
-        // Osserva LiveData per aggiornare la UI (compresi nome, email, address, foto)
-        vm.getUser().observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                inputName.setText(user.getName());
-                inputEmail.setText(user.getEmail());
-                inputAddress.setText(user.getAddress());
-
-                String photoUriStr = user.getPhotoUri();
-                if (photoUriStr != null && !photoUriStr.isEmpty()) {
-                    try {
-                        Uri photoUri = Uri.parse(photoUriStr);
-                        profileImage.setImageURI(photoUri);
-                    } catch (Exception e) {
-                        // URI non valido → fallback immagine di default
-                        profileImage.setImageResource(R.drawable.ic_profile_placeholder);
-                    }
-                } else {
-                    profileImage.setImageResource(R.drawable.ic_profile_placeholder);
-                }
+        if (emailToLoad != null) {
+            // Usiamo la tua VM per caricare i dati reali dal DB/Network
+            vm.loadUser(emailToLoad);
+        } else {
+            // Solo se non c'è NESSUNA traccia dell'utente torniamo alla Welcome
+            Log.d("ProfileFragment", "Utente non identificato, ritorno a Welcome");
+            try {
+                NavController navController = Navigation.findNavController(requireView());
+                navController.navigate(R.id.welcomeFragment);
+            } catch (Exception e) {
+                // Se non trovi il NavController o la destinazione, usa il back
+                if (isAdded()) requireActivity().onBackPressed();
             }
-        });
-
+        }
+        // L'aggiornamento della UI avverrà tramite l'osservatore già definito in setupObservers().
     }
 
 
