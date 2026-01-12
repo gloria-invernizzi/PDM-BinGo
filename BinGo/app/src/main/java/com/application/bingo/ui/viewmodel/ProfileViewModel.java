@@ -1,5 +1,7 @@
 package com.application.bingo.ui.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -41,10 +43,12 @@ public class ProfileViewModel extends ViewModel {
     // CARICA UTENTE DAL REPOSITORY
     // ---------------------------------------------------------------------------------------------
     public void loadUser(String email) {
+        Log.d("ProfileViewModel", "loadUser chiamato con email = " + email);
         userRepo.getUser(email, new UserRepository.UserCallback() {
             @Override
             public void onUserLoaded(User u) {
                 if (u != null) {
+                    Log.d("ProfileViewModel", "User ricevuto da UserLocalSource: " + user);
                     user.postValue(u);
                 } else {
                     error.postValue("Utente non trovato");

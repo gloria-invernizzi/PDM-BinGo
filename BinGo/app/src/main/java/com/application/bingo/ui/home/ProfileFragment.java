@@ -128,14 +128,19 @@ public class ProfileFragment extends Fragment {
     // OSSERVA LIVE DATA UTENTE
     // ---------------------------------------------------------------------------------------------
     private void setupObservers() {
+
         vm.getUser().observe(getViewLifecycleOwner(), user -> {
+            Log.d("ProfileFragment", "Observer ProfileViewModel: user=" + user);
             if (user != null) {
+                Log.d("ProfileFragment", "Imposto UI: " + user.getName() + ", " + user.getEmail() + ", " + user.getAddress());
                 inputName.setText(user.getName());
                 inputEmail.setText(user.getEmail());
                 inputAddress.setText(user.getAddress());
                 if (user.getPhotoUri() != null && !user.getPhotoUri().isEmpty()) {
                     profileImage.setImageURI(Uri.parse(user.getPhotoUri()));
                 }
+            } else {
+                Log.d("ProfileFragment", "VM non ha restituito nessun utente");
             }
         });
     }
@@ -146,20 +151,28 @@ public class ProfileFragment extends Fragment {
     private void loadUserFromPrefs() {
         String savedEmail = prefs.getSavedEmail();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("ProfileFragment", "loadUserFromPrefs chiamato");
+        Log.d("ProfileFragment", "prefs savedEmail = " + savedEmail);
+        Log.d("ProfileFragment", "firebaseUser = " + (firebaseUser != null ? firebaseUser.getEmail() : "null"));
 
         String emailToLoad = null;
 
         if (savedEmail != null && !savedEmail.isEmpty()) {
             emailToLoad = savedEmail;
             // Popolamento rapido per migliorare la UX
+            Log.d("ProfileFragment", "Carico da prefs: name=" + prefs.getSavedName()
+                    + ", address=" + prefs.getSavedAddress());
             inputName.setText(prefs.getSavedName());
             inputAddress.setText(prefs.getSavedAddress());
+            Log.d("ProfileFragment", "Setto email temporanea: " + savedEmail);
+            inputEmail.setText(savedEmail);
         } else if (firebaseUser != null && firebaseUser.getEmail() != null) {
             emailToLoad = firebaseUser.getEmail();
         }
 
         if (emailToLoad != null) {
             // Usiamo la tua VM per caricare i dati reali dal DB/Network
+            Log.d("ProfileFragment", "Chiamo vm.loadUser con email = " + emailToLoad);
             vm.loadUser(emailToLoad);
         } else {
             // Solo se non c'è NESSUNA traccia dell'utente torniamo alla Welcome
@@ -172,6 +185,10 @@ public class ProfileFragment extends Fragment {
                 if (isAdded()) requireActivity().onBackPressed();
             }
         }
+        Log.d("ProfileFragment", "savedEmail = " + savedEmail);
+        Log.d("ProfileFragment", "firebaseEmail = " +
+                (firebaseUser != null ? firebaseUser.getEmail() : "null"));
+
         // L'aggiornamento della UI avverrà tramite l'osservatore già definito in setupObservers().
     }
 
@@ -260,4 +277,12 @@ public class ProfileFragment extends Fragment {
 
         inputEmail.setEnabled(false);
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("ProfileFragment", "onResume chiamato");
+
+        loadUserFromPrefs();
+    }
+
 }

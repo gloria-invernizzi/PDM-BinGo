@@ -1,6 +1,7 @@
 package com.application.bingo.datasource;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
@@ -26,21 +27,28 @@ public class UserLocalSource {
 
     public void getUser(String email, UserRepository.UserCallback callback) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d("UserLocalSource", "getUser chiamato per email = " + email);
             User u = userDao.findByEmail(email);
             if (u != null) {
+                Log.d("UserLocalSource", "Trovato in Room: " + u);
                 callback.onUserLoaded(u);
                 return;
             }
             // fallback Prefs
+            Log.d("UserLocalSource", "Non trovato in Room, provo prefs");
             String name = prefs.getSavedName();
             String surname = prefs.getSavedSurname();
             String address = prefs.getSavedAddress();
             String photoUri = prefs.getSavedPhotoUri();
+            Log.d("UserLocalSource", "Prefs read: name=" + name + ", surname=" + surname
+                    + ", address=" + address + ", photoUri=" + photoUri);
             if (!name.isEmpty() || !address.isEmpty() || !photoUri.isEmpty()) {
                 User prefsUser = new User(name, surname, address, email, prefs.getSavedPassword());
                 prefsUser.setPhotoUri(photoUri);
+                Log.d("UserLocalSource", "Creo utente dai prefs: " + prefsUser);
                 callback.onUserLoaded(prefsUser);
             } else {
+                Log.d("UserLocalSource", "Prefs vuoti, ritorno null");
                 callback.onUserLoaded(null);
             }
         });
