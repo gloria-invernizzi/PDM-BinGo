@@ -1,97 +1,119 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="20dp"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?attr/colorSurface">
 
     <TextView
         android:id="@+id/dialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_notification"
-        android:textSize="20sp"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="@dimen/margin_medium"/>
+        android:layout_marginBottom="16dp"
+        android:textColor="?attr/colorOnSurface"/>
 
+    <!-- Scelta bin -->
     <RadioGroup
         android:id="@+id/groupBins"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioButton android:id="@+id/binIndifferenziata"
+        <RadioButton
+            android:id="@+id/binIndifferenziata"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/residual"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:buttonTint="?attr/colorPrimary"/>
 
-        <RadioButton android:id="@+id/binPlastica"
+        <RadioButton
+            android:id="@+id/binPlastica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/plastic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:buttonTint="?attr/colorPrimary"/>
 
-        <RadioButton android:id="@+id/binCarta"
+        <RadioButton
+            android:id="@+id/binCarta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/paper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:buttonTint="?attr/colorPrimary"/>
 
-        <RadioButton android:id="@+id/binVetro"
+        <RadioButton
+            android:id="@+id/binVetro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/glass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:buttonTint="?attr/colorPrimary"/>
 
-        <RadioButton android:id="@+id/binOrganico"
+        <RadioButton
+            android:id="@+id/binOrganico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/organic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:buttonTint="?attr/colorPrimary"/>
     </RadioGroup>
 
+    <!-- Ripetizione -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/repeat_every" />
+            android:text="@string/repeat_every"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurface"/>
 
         <Spinner
             android:id="@+id/spinnerRepeat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:entries="@array/weeks_array"/>
+            android:entries="@array/weeks_array"
+            android:layout_marginStart="16dp"/>
     </LinearLayout>
 
+    <!-- Time picker -->
     <TimePicker
         android:id="@+id/timePicker"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"/>
+        android:timePickerMode="spinner"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
 
     <LinearLayout
-        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
         android:orientation="horizontal"
-        android:gravity="end">
+        android:gravity="end"
+        android:layout_marginTop="8dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCancel"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            style="@style/Widget.Material3.Button.TextButton"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSave"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save"
-            android:layout_marginStart="@dimen/margin_small"/>
+            android:layout_marginStart="16dp"
+            style="@style/Widget.Material3.Button.ElevatedButton"/>
     </LinearLayout>
 </LinearLayout>

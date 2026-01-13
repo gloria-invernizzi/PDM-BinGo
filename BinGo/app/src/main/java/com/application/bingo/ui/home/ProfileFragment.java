@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImage, btnEditPhoto;
     private TextInputEditText inputName, inputEmail, inputAddress;
     private MaterialButton btnEditSave, btnLogout;
-
+    private ImageButton btnSettings;
     private ProfileViewModel vm;
     private PrefsManager prefs;
     private PhotoHandler photoHandler;
@@ -197,6 +198,10 @@ public class ProfileFragment extends Fragment {
     // BOTTONI
     // ---------------------------------------------------------------------------------------------
     private void setupButtons() {
+        btnSettings.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireView());
+            navController.navigate(R.id.settingsFragment);
+        });
         btnEditPhoto.setOnClickListener(v -> showPhotoDialog());
         btnEditSave.setOnClickListener(v -> handleEditSave());
         btnLogout.setOnClickListener(v -> performLogout());
@@ -246,12 +251,15 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void showPhotoDialog() {
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Cambia foto")
-                .setItems(new String[]{"Galleria", "Fotocamera"}, (dialog, which) -> {
-                    if (which == 0) photoHandler.pickFromGallery();
-                    else takePhotoWithPermission();
-                })
-                .show();
+                .setTitle(R.string.change_photo)
+                .setItems(
+                        new String[]{
+                            getString(R.string.photo_from_gallery),
+                            getString(R.string.photo_from_camera)},
+                        (dialog, which) -> {
+                            if (which == 0) photoHandler.pickFromGallery();
+                            else takePhotoWithPermission();
+                        }).show();
     }
 
     private void takePhotoWithPermission() {
@@ -267,6 +275,7 @@ public class ProfileFragment extends Fragment {
     // SETUP VIEW
     // ---------------------------------------------------------------------------------------------
     private void setupViews(View view) {
+        btnSettings = view.findViewById(R.id.btn_settings);
         profileImage = view.findViewById(R.id.profile_image);
         btnEditPhoto = view.findViewById(R.id.btn_change_photo);
         inputName = view.findViewById(R.id.input_name);

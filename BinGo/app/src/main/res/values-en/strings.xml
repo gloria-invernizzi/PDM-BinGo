@@ -118,11 +118,15 @@
     <string name="prepare_bin">Prepare bin</string>
     <string name="notification_text">Tomorrow they collect %1$s</string>
 
-        <string name="settings_title">Settings</string>
-        <string name="account_section">Account</string>
-        <string name="preferences_section">Preferences</string>
-        <string name="dark_theme">Dark Theme</string>
-        <string name="notifications_section">Notifications</string>
-        <string name="enable_notifications">Enable Notifications</string>
+    <string name="settings_title">Settings</string>
+    <string name="account_section">Account</string>
+    <string name="preferences_section">Preferences</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="notifications_section">Notifications</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="or_separator">or</string>
+    <string name="change_photo">Change photo</string>
+    <string name="photo_from_gallery">Choose from gallery</string>
+    <string name="photo_from_camera">Open camera</string>
 
 </resources>

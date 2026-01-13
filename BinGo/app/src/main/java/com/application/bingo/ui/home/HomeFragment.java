@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.application.bingo.R;
+import com.application.bingo.ui.home.scan.ManualEntryFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -37,13 +38,18 @@ public class HomeFragment extends Fragment {
 
         CardView scanCard = view.findViewById(R.id.card_scan);
         scanCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_scanFragment));
-        CardView manualCard = view.findViewById(R.id.card_manual);
-        manualCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_manualEntryFragment));
         CardView whereToThrow = view.findViewById(R.id.where_to_throw);
         whereToThrow.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_whereToThrowFragment));
         CardView familyCard = view.findViewById(R.id.card_family);
         familyCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_familyFragment));
-        CardView favoriteCard = view.findViewById(R.id.card_favorite);
-        favoriteCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_favoriteFragment));
+
+        ManualEntryFragment manualFragment = (ManualEntryFragment) getChildFragmentManager()
+                .findFragmentById(R.id.manual_fragment_container);
+
+        if (manualFragment != null) {
+            manualFragment.setOnManualEntryListener(bundle -> {
+                Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_resultFragment, bundle);
+            });
+        }
     }
 }

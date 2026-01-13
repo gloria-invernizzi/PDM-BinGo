@@ -12,11 +12,11 @@
         android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
+            android:id="@+id/action_homeFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+        <action
             android:id="@+id/action_homeFragment_to_scanFragment"
             app:destination="@id/scanFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_manualEntryFragment"
-            app:destination="@id/manualEntryFragment" />
         <action
             android:id="@+id/action_homeFragment_to_calendarFragment"
             app:destination="@id/calendarFragment" />
@@ -39,17 +39,6 @@
         tools:layout="@layout/fragment_scan">
         <action
             android:id="@+id/action_scanFragment_to_resultFragment"
-            app:destination="@id/resultFragment" />
-    </fragment>
-
-    <!-- Manual Entry Fragment -->
-    <fragment
-        android:id="@+id/manualEntryFragment"
-        android:name="com.application.bingo.ui.home.scan.ManualEntryFragment"
-        android:label="Manual Entry"
-        tools:layout="@layout/fragment_manual_entry">
-        <action
-            android:id="@+id/action_manualEntryFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
     </fragment>
 

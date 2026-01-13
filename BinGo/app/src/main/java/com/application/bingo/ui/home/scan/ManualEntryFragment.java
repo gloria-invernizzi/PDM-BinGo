@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
@@ -22,6 +23,15 @@ import android.widget.Toast;
 import com.application.bingo.R;
 
 public class ManualEntryFragment extends Fragment {
+    public interface OnManualEntryListener {
+        void onGoToResult(Bundle bundle);
+    }
+
+    private OnManualEntryListener listener;
+
+    public void setOnManualEntryListener(OnManualEntryListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,20 +53,17 @@ public class ManualEntryFragment extends Fragment {
         EditText barcodeInput = view.findViewById(R.id.barcode_input);
         Button submitButton = view.findViewById(R.id.submit_button);
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        submitButton.setOnClickListener(v -> {
                 String barcode = barcodeInput.getText().toString().trim();
 
                 if (!TextUtils.isEmpty(barcode)) {
                     Bundle bundle = new Bundle();
                     bundle.putString("barcode", barcode);
-                    Navigation.findNavController(requireView()).navigate(R.id.action_manualEntryFragment_to_resultFragment, bundle);
+                    listener.onGoToResult(bundle);
                 } else {
                     Toast.makeText(requireContext(), R.string.insert_valid_barcode, Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
     }
 
 }

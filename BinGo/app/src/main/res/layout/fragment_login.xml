@@ -2,10 +2,9 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background3">
+    android:background="?attr/colorSecondaryContainer">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -103,11 +102,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp">
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_centerInParent="true"
-                    android:background="#555"/>
                 <TextView
                     android:id="@+id/text_or"
                     android:layout_width="wrap_content"
@@ -131,16 +125,6 @@
                 app:icon="@drawable/icon_google"
                 app:iconGravity="textStart"
                 app:iconTint="@null" />
-
-            <Button
-                android:id="@+id/register_button"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                android:text="@string/create_account" />
-
         </LinearLayout>
     </ScrollView>
 

@@ -9,17 +9,20 @@ import androidx.lifecycle.ViewModelProvider;
 import com.application.bingo.repository.SettingsRepository;
 import com.application.bingo.repository.UserRepository;
 import com.application.bingo.repository.NotificationRepository;
+import com.application.bingo.repository.WasteRepository;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final Application application;
     private final UserRepository userRepository;
+    private final WasteRepository wasteRepository;
     private final SettingsRepository settingsRepository;
     private final NotificationRepository notificationRepository;
 
     public ViewModelFactory(Application application) {
         this.application = application;
         this.userRepository = new UserRepository(application);
+        this.wasteRepository = new WasteRepository(application);
         this.settingsRepository = new SettingsRepository(application);
         this.notificationRepository = new NotificationRepository(application);
     }
@@ -39,6 +42,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new NotificationViewModel(notificationRepository);
         } else if (modelClass.isAssignableFrom(FamilyViewModel.class)) {
             return (T) new FamilyViewModel(userRepository);
+        }else if (modelClass.isAssignableFrom(WasteViewModel.class)) {
+            return (T) new WasteViewModel(wasteRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

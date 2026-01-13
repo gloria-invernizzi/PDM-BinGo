@@ -166,4 +166,7 @@
         <string name="dark_theme">Tema scuro</string>
         <string name="notifications_section">Notifiche</string>
         <string name="enable_notifications">Attiva notifiche</string>
+    <string name="change_photo">Cambia foto</string>
+    <string name="photo_from_gallery">Scegli dalla galleria</string>
+    <string name="photo_from_camera">Apri fotocamera</string>
 </resources>

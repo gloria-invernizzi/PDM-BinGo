@@ -32,8 +32,6 @@ public class WasteAdapter extends RecyclerView.Adapter<WasteAdapter.ViewHolder> 
         this.colorMap = colorMap;
         this.categoryTextMap = categoryTextMap;
     }
-
-    // --- ViewHolder ---
     public static class ViewHolder extends RecyclerView.ViewHolder {
         View colorBar;
         TextView textTitle;

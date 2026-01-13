@@ -27,7 +27,7 @@
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="8dp"/>
 
-        <!-- Family Settings (New Entry) -->
+        <!-- Gestione famiglia -->
         <LinearLayout
             android:id="@+id/btn_family"
             android:layout_width="match_parent"
@@ -74,12 +74,7 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?attr/colorOutlineVariant"
-            android:layout_marginVertical="4dp"/>
-
+        <!-- Cambio password -->
         <LinearLayout
             android:id="@+id/btn_change_password"
             android:layout_width="match_parent"
@@ -113,6 +108,7 @@
 
         </LinearLayout>
 
+        <!-- Cambio email -->
         <LinearLayout
             android:id="@+id/btn_change_email"
             android:layout_width="match_parent"
@@ -134,7 +130,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cambia Email"
+                android:text='@string/change_email'
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 android:layout_marginStart="16dp"/>
 
@@ -157,7 +153,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"/>
 
-        <!-- TEMA -->
+        <!-- Tema -->
         <LinearLayout
             android:id="@+id/layout_theme"
             android:layout_width="match_parent"
@@ -165,9 +161,10 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:clickable="true"
-        android:focusable="true"
-        android:paddingVertical="8dp"
-        android:background="?attr/selectableItemBackground">
+            android:focusable="true"
+            android:paddingVertical="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginBottom="8dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -182,12 +179,9 @@
             android:text="@string/theme"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:layout_marginStart="16dp"/>
+        </LinearLayout>
 
-
-    </LinearLayout>
-
-        <!-- LINGUA -->
-        <!-- LINGUA -->
+        <!-- Lingua -->
         <LinearLayout
             android:id="@+id/layout_language"
             android:layout_width="match_parent"
@@ -195,8 +189,9 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:clickable="true"
-        android:focusable="true"
-        android:paddingVertical="8dp">
+            android:focusable="true"
+            android:paddingVertical="8dp"
+            android:layout_marginBottom="8dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -211,8 +206,7 @@
             android:text="@string/language"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:layout_marginStart="16dp"/>
-
-    </LinearLayout>
+        </LinearLayout>
 
         <!-- SEZIONE: NOTIFICHE -->
         <TextView
@@ -224,6 +218,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"/>
 
+        <!-- Notifiche -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -269,7 +264,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Suono"
+                android:text='@string/sound'
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 android:layout_marginStart="16dp"/>
 
@@ -297,7 +292,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Vibrazione"
+                android:text="@string/vibration"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
                 android:layout_marginStart="16dp"/>
 
@@ -306,5 +301,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

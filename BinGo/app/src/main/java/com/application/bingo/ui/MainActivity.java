@@ -65,24 +65,8 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int id = destination.getId();
 
-            // Nascondi toolbar in alto nel WelcomeFragment
-            if (id == R.id.welcomeFragment)
-                toolbar.setVisibility(View.GONE);
-            else
-                toolbar.setVisibility(View.VISIBLE);
-
-            // Toolbar in alto del ProfileFragment
-            if (id == R.id.profileFragment){
-                toolbar.inflateMenu(R.menu.profile_top_menu);
-                toolbar.setOnMenuItemClickListener(item -> {
-                    if (item.getItemId() == R.id.action_settings){
-                        navController.navigate(R.id.settingsFragment);
-                        return true;
-                    }
-                    return  false;
-                });
-            }else
-                toolbar.getMenu().clear();
+            // Nascondi Toolbar
+            toolbar.setVisibility(View.GONE);
 
             //Elenco fragment che non devono avere Bottom Navigation
             if (id == R.id.welcomeFragment ||
@@ -90,10 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     id == R.id.registerFragment ||
                     id == R.id.recoverPasswordFragment) {
                 bottomNav.setVisibility(View.GONE);
-                //toolbar.setVisibility(View.GONE);
             } else {
                 bottomNav.setVisibility(View.VISIBLE);
-                //toolbar.setVisibility(View.VISIBLE);
             }
         });
 

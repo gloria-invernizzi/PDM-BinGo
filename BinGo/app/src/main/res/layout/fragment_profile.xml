@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- SETTINGS -->
+    <ImageButton
+        android:id="@+id/btn_settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end|top"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/ic_settings"
+        app:tint="?attr/colorOnSurface"/>
+
     <!-- CONTENUTO SCROLLABILE -->
     <ScrollView
         android:layout_width="match_parent"
@@ -30,7 +42,6 @@
                     android:layout_gravity="center"
                     android:background="@drawable/circle_background"
                     android:scaleType="centerCrop"
-                    android:clipToOutline="true"
                     android:outlineProvider="background"
                     android:src="@drawable/ic_profile_placeholder"
                     android:contentDescription="@string/profile_picture"/>
@@ -44,7 +55,8 @@
                     android:src="@drawable/ic_camera"
                     android:background="@drawable/circle_surface"
                     android:padding="6dp"
-                    android:elevation="6dp"/>
+                    android:elevation="6dp"
+                    app:tint="?attr/colorOnSurface"/>
             </FrameLayout>
 
             <TextView
