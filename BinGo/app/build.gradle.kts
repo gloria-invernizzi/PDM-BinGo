@@ -37,6 +37,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation("androidx.test.espresso:espresso-core:3.7.0")
+    debugImplementation("androidx.fragment:fragment-testing:1.8.9")
+    implementation("androidx.test.ext:junit:1.3.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -76,5 +79,13 @@ dependencies {
     // Lifecycle & ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.7")
     implementation("androidx.lifecycle:lifecycle-livedata:2.8.7")
+
+    // Dipendenze per i test strumentali con Espresso
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    // Supporto per testare i Fragment
+    debugImplementation("androidx.fragment:fragment-testing:1.6.1")
+
 
 }
