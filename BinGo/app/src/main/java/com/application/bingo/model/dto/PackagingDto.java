@@ -1,5 +1,7 @@
 package com.application.bingo.model.dto;
 
+import com.application.bingo.model.Packaging;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,12 @@ public class PackagingDto {
 
     public PackagingDto() {
         this.translations = new ArrayList<>();
+    }
+
+    public PackagingDto(Packaging packaging) {
+        this.shape = packaging.getShape();
+        this.material = packaging.getMaterial();
+        this.environmentalScoreMaterialScore = packaging.getEnvironmentalScoreMaterialScore();
     }
 
     public String getShape() {

@@ -3,8 +3,14 @@ package com.application.bingo.service;
 import android.app.Application;
 import android.content.Context;
 
+import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
+import com.application.bingo.datasource.product.BaseProductLocalDataSource;
+import com.application.bingo.datasource.product.BaseProductRemoteDataSource;
+import com.application.bingo.datasource.product.ProductApiDataSource;
+import com.application.bingo.datasource.product.ProductLocalDataSource;
 import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.repository.product.ProductRepository;
 import com.application.bingo.util.normalizer.ProductDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,5 +52,26 @@ public class ServiceLocator {
 
     public AppDatabase getAppDatabase(Context context) {
         return AppDatabase.getInstance(context);
+    }
+
+    public ProductRepository getProductRepository(Application application, boolean debugMode) {
+        BaseProductRemoteDataSource productRemoteDataSource;
+        BaseProductLocalDataSource productLocalDataSource;
+        PrefsManager prefsManager = new PrefsManager(application);
+
+        // TODO: debug mode
+        /*if (debugMode) {
+            Json jsonParserUtil = new JSONParserUtils(application);
+            productRemoteDataSource =
+                    new ArticleMockDataSource(jsonParserUtil);
+        } else {
+            productRemoteDataSource =
+                    new ArticleNewsAPIDataSource(application.getString(R.string.product_api_key));
+        }*/
+
+        productRemoteDataSource = new ProductApiDataSource();
+        productLocalDataSource = new ProductLocalDataSource(getAppDatabase(application), prefsManager);
+
+        return new ProductRepository(application, productRemoteDataSource, productLocalDataSource);
     }
 }

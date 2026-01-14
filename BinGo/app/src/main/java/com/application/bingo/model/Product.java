@@ -12,16 +12,12 @@ public class Product {
     @PrimaryKey
     @NonNull
     public String barcode = "";
-
     @ColumnInfo(name = "image_url")
     private String imageUrl = "";
-
     private String name = "";
     private String brand = "";
-
     @ColumnInfo(name = "non_recyclable_and_non_biodegradable")
     private boolean nonRecyclableAndNonBiodegradable;
-
     @ColumnInfo(name = "is_favorite")
     private boolean isFavorite; // TODO: think about, maybe we need relation n - n, https://developer.android.com/training/data-storage/room/relationships/many-to-many?hl=it
 
@@ -34,7 +30,7 @@ public class Product {
         this.name = productDto.getName();
         this.brand = productDto.getBrand();
         this.nonRecyclableAndNonBiodegradable = productDto.getNonRecyclableAndNonBiodegradable();
-        this.isFavorite = true;
+        this.isFavorite = productDto.isFavorite();
     }
 
     public String getImageUrl() {
@@ -62,16 +58,6 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
-
-    /*
-    public List<Packaging> getPackagings() {
-        return packagings;
-    }
-
-    public void setPackagings(List<Packaging> packagings) {
-        this.packagings = packagings;
-    }
-     */
 
     public String getBrand() {
         return brand;

@@ -46,8 +46,9 @@
     <string name="brand">Marca %1$s</string>
     <string name="parsing_error">Errore nel parsing dei dati</string>
     <string name="result_failed">Prodotto non trovato o errore di rete</string>
-    <string name="request_error">Errore nella richiesta</string>
+    <string name="request_error">Errore nella richiesta: %1$s</string>
     <string name="product_name">Nome prodotto</string>
+    <string name="product_brand">Marca prodotto</string>
     <string name="back_to_login">Torna al login</string>
     <string name="add_notification">Crea notifica</string>
     <string name="delete_notification">Cancella notifica</string>

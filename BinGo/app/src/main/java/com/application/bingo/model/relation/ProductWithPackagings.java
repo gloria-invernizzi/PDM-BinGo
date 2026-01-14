@@ -1,7 +1,10 @@
-package com.application.bingo.model;
+package com.application.bingo.model.relation;
 
 import androidx.room.Embedded;
 import androidx.room.Relation;
+
+import com.application.bingo.model.Packaging;
+import com.application.bingo.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;

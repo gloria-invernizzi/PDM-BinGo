@@ -7,8 +7,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import com.application.bingo.model.Packaging;
-import com.application.bingo.model.PackagingWithTranslations;
-import com.application.bingo.model.ProductWithPackagings;
+import com.application.bingo.model.relation.PackagingWithTranslations;
 
 import java.util.List;
 

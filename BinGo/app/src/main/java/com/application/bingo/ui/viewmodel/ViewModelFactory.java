@@ -10,6 +10,8 @@ import com.application.bingo.repository.SettingsRepository;
 import com.application.bingo.repository.UserRepository;
 import com.application.bingo.repository.NotificationRepository;
 import com.application.bingo.repository.WasteRepository;
+import com.application.bingo.repository.product.ProductRepository;
+import com.application.bingo.service.ServiceLocator;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -18,6 +20,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final WasteRepository wasteRepository;
     private final SettingsRepository settingsRepository;
     private final NotificationRepository notificationRepository;
+    private final ProductRepository productRepository;
 
     public ViewModelFactory(Application application) {
         this.application = application;
@@ -25,6 +28,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.wasteRepository = new WasteRepository(application);
         this.settingsRepository = new SettingsRepository(application);
         this.notificationRepository = new NotificationRepository(application);
+        this.productRepository = ServiceLocator.getInstance().getProductRepository(application, false);
     }
 
     @NonNull
@@ -44,6 +48,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new FamilyViewModel(userRepository);
         }else if (modelClass.isAssignableFrom(WasteViewModel.class)) {
             return (T) new WasteViewModel(wasteRepository);
+        } else if (modelClass.isAssignableFrom(ProductViewModel.class)) {
+            return (T) new ProductViewModel(productRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

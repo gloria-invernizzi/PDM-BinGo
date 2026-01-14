@@ -1,4 +1,5 @@
 <resources>
+    <!-- TODO: filter colors, remove useless-->
     <color name="md_theme_primary">#97D945</color>
     <color name="md_theme_onPrimary">#1F3700</color>
     <color name="md_theme_primaryContainer">#64A104</color>

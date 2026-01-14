@@ -4,11 +4,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Transaction;
 
 import com.application.bingo.model.Material;
-import com.application.bingo.model.Packaging;
-import com.application.bingo.model.PackagingWithTranslations;
 
 import java.util.List;
 

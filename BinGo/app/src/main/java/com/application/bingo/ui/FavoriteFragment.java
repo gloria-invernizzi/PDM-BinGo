@@ -9,26 +9,39 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.application.bingo.R;
+
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.bingo.model.Product;
+import com.application.bingo.model.Result;
+import com.application.bingo.model.dto.ProductDto;
 import com.application.bingo.ui.adapter.ProductAdapter;
+import com.application.bingo.ui.viewmodel.ProductViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class FavoriteFragment extends Fragment {
-
-    private List<Product> productList;
-    private ProductAdapter adapter;
     private RecyclerView recyclerView;
+    private List<ProductDto> favoriteProducts;
+    private ProductAdapter productAdapter;
+    private ProductViewModel productViewModel;
+    private CircularProgressIndicator circularProgressIndicator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        productList = new ArrayList<>();
+        productViewModel = new ViewModelProvider(
+                requireActivity(),
+                new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
+
+        favoriteProducts = new ArrayList<>();
     }
 
     @Override
@@ -36,23 +49,32 @@ public class FavoriteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
+
+        circularProgressIndicator = view.findViewById(R.id.circularProgressIndicator);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        adapter =
-                new ProductAdapter(productList, false,
-                        new ProductAdapter.OnItemClickListener() {
-                            @Override
-                            public void onProductClick(Product product) {
+        productAdapter = new ProductAdapter(favoriteProducts, true);
 
-                            }
+        recyclerView.setAdapter(productAdapter);
 
-                            @Override
-                            public void onFavoriteButtonPressed(int position) {}
-                        });
+        productViewModel.getFavoriteProductsLiveData().observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        this.favoriteProducts.clear();
+                        this.favoriteProducts.addAll(((Result.Success<List<ProductDto>>) result).getData());
 
-        recyclerView.setAdapter(adapter);
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                        circularProgressIndicator.setVisibility(View.GONE);
+                    } else {
+                        Snackbar.make(view,
+                                "error",
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+        ;
+
         return view;
     }
-
 }

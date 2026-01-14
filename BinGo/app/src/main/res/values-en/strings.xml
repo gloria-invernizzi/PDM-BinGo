@@ -46,8 +46,9 @@
     <string name="brand">Brand %1$s</string>
     <string name="parsing_error">Data parsing error</string>
     <string name="result_failed">Product not found or network error</string>
-    <string name="request_error">Request error</string>
+    <string name="request_error">Request error: %1$s</string>
     <string name="product_name">Product name</string>
+    <string name="product_brand">Product brand</string>
 
     <string name="old_password_hint">Old Password</string>
     <string name="new_password_hint">New Password</string>

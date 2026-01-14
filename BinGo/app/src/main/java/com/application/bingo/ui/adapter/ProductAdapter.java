@@ -1,6 +1,7 @@
 package com.application.bingo.ui.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,23 +13,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
-import com.application.bingo.model.Product;
+import com.application.bingo.model.relation.ProductWithPackagings;
+import com.application.bingo.model.dto.ProductDto;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     public interface OnItemClickListener {
-        void onProductClick(Product product);
+        void onProductClick(ProductWithPackagings product);
         void onFavoriteButtonPressed(int position);
     }
 
-    private List<Product> productList;
+    private List<ProductDto> products;
     private boolean heartVisible;
     private Context context;
-    private final OnItemClickListener onItemClickListener;
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewName;
         private final TextView textViewBrand;
         private final CheckBox favoriteCheckbox;
@@ -39,11 +40,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
             textViewName = view.findViewById(R.id.product_name);
             textViewBrand =  view.findViewById(R.id.product_brand);
-            favoriteCheckbox = view.findViewById(R.id.favoriteButton);
-            imageView = view.findViewById(R.id.imageView);
+            favoriteCheckbox = view.findViewById(R.id.is_favorite);
+            imageView = view.findViewById(R.id.product_image);
 
-            favoriteCheckbox.setOnClickListener(this);
-            view.setOnClickListener(this);
+            /* favoriteCheckbox.setOnClickListener(this);
+            view.setOnClickListener(this);*/
         }
 
         public TextView getTextViewName() {
@@ -60,23 +61,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         public ImageView getImageView() { return  imageView; }
 
-        @Override
+        /* @Override
         public void onClick(View v) {
             if (v.getId() == R.id.favoriteButton) {
                 onItemClickListener.onFavoriteButtonPressed(getAdapterPosition());
             } else {
-                onItemClickListener.onProductClick(productList.get(getAdapterPosition()));
+                onItemClickListener.onProductClick(products.get(getAdapterPosition()));
             }
-        }
+        }*/
 
     }
 
-    public ProductAdapter(List<Product> productList, boolean heartVisible, OnItemClickListener onItemClickListener) {
-        this.productList = productList;
+    public ProductAdapter(List<ProductDto> products, boolean heartVisible) {
+        this.products = products;
         this.heartVisible = heartVisible;
-        this.onItemClickListener = onItemClickListener;
     }
-
 
     @NonNull
     @Override
@@ -92,9 +91,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.getTextViewName().setText(productList.get(position).getName());
-        viewHolder.getTextViewBrand().setText(productList.get(position).getBrand());
-        viewHolder.getFavoriteCheckbox().setChecked(productList.get(position).isFavorite());
+        ProductDto product = products.get(position);
+
+        viewHolder.getTextViewName().setText(product.getName());
+        viewHolder.getTextViewBrand().setText(product.getBrand());
+        viewHolder.getFavoriteCheckbox().setChecked(product.isFavorite());
+
+        if (!product.getImageUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(product.getImageUrl())
+                    .placeholder(new ColorDrawable(R.drawable.product_not_found))
+                    .into(viewHolder.getImageView())
+            ;
+        }
 
         if (!heartVisible) {
             viewHolder.getFavoriteCheckbox().setVisibility(View.INVISIBLE);
@@ -104,6 +113,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return products.size();
     }
 }

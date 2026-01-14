@@ -2,6 +2,8 @@ package com.application.bingo.model.dto;
 
 import androidx.room.ColumnInfo;
 
+import com.application.bingo.model.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,15 @@ public class ProductDto {
 
     public ProductDto() {
         this.packagings = new ArrayList<>();
+    }
+
+    public ProductDto(Product product) {
+        this.barcode = product.getBarcode();
+        this.imageUrl = product.getImageUrl();
+        this.name = product.getName();
+        this.brand = product.getBrand();
+        this.nonRecyclableAndNonBiodegradable = product.getNonRecyclableAndNonBiodegradable();
+        this.isFavorite = product.isFavorite();
     }
 
     public String getImageUrl() {
