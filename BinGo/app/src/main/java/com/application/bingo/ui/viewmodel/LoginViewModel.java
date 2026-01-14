@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.application.bingo.model.User;
 import com.application.bingo.repository.UserRepository;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginViewModel extends AndroidViewModel {
@@ -24,7 +25,9 @@ public class LoginViewModel extends AndroidViewModel {
         _loginState.setValue(new LoginState.Loading());
 
         // Cerchiamo l'utente locale ma eseguiamo SEMPRE il sign-in su Firebase per validare la sessione
+
         repository.firebaseSignIn(email, password).addOnCompleteListener(task -> {
+            // Login ONLINE riuscito
             if (task.isSuccessful()) {
                 repository.findLocalUser(email, password, localUser -> {
                     if (localUser != null) {
@@ -36,17 +39,33 @@ public class LoginViewModel extends AndroidViewModel {
                         _loginState.postValue(new LoginState.Success(name, "", "", email, password));
                     }
                 });
-            } else {
-                // Se fallisce Firebase, proviamo solo locale (modalità offline)
-                repository.findLocalUser(email, password, localUser -> {
-                    if (localUser != null) {
-                        _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
-                    } else {
-                        _loginState.postValue(new LoginState.Error("Credenziali errate"));
-                    }
-                });
+                return;
             }
+
+            Exception e = task.getException();
+            if (e instanceof FirebaseAuthException) {
+                String code = ((FirebaseAuthException) e).getErrorCode();
+                // ERRORI DI CREDENZIALI → NON usare login locale
+                if (code.equals("ERROR_INVALID_CREDENTIAL") || code.equals("ERROR_USER_NOT_FOUND") || code.equals("ERROR_WRONG_PASSWORD") || code.equals("ERROR_USER_DISABLED") || code.equals("ERROR_INVALID_EMAIL")) {
+                    _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                    return;
+                }
+                // ERRORE DI RETE → usa login locale
+                if (code.equals("ERROR_NETWORK_REQUEST_FAILED")) {
+                    repository.findLocalUser(email, password, localUser -> {
+                        if (localUser != null) {
+                            _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
+                        } else {
+                            _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                        }
+                    });
+                    return;
+                }
+            }
+            // Errori generici
+            _loginState.postValue(new LoginState.Error("Errore di autenticazione"));
         });
+
     }
 
     public void loginWithGoogle(AuthCredential credential) {

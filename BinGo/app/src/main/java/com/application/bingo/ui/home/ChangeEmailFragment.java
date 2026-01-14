@@ -72,8 +72,7 @@ public class ChangeEmailFragment extends Fragment {
         viewModel.getLogoutLiveData().observe(getViewLifecycleOwner(), logout -> {
             if (Boolean.TRUE.equals(logout)) {
                 FirebaseAuth.getInstance().signOut();
-                NavHostFragment.findNavController(this)
-                        .popBackStack(R.id.welcomeFragment, false);
+                NavHostFragment.findNavController(this).navigate(R.id.welcomeFragment);
             }
         });
 
@@ -89,9 +88,6 @@ public class ChangeEmailFragment extends Fragment {
                         Toast.LENGTH_LONG
                 ).show();
 
-                NavHostFragment.findNavController(this)
-                        .popBackStack(R.id.welcomeFragment, false);
-                return;
             }
 
             String oldEmail = firebaseUser.getEmail();

@@ -30,52 +30,21 @@ public class UserRemoteSource {
      */
     public void updateEmail(String newEmail, String password, UserRepository.Callback callback) {
         FirebaseUser user = auth.getCurrentUser();
-        Log.d(TAG, "updateEmail chiamato. currentUser = " + user);
 
-        if (user != null) {
-            Log.d(TAG, "Email corrente: " + user.getEmail());
-        } else {
-            Log.e(TAG, "updateEmail: utente non autenticato!");
+        if (user == null) {
             callback.onFailure("Utente non autenticato");
             return;
         }
 
-        user.reload().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e(TAG, "Errore reload utente", task.getException());
-                callback.onFailure("Errore reload utente: " + task.getException().getMessage());
-                return;
-            }
+        if (!user.isEmailVerified()) {
+            user.sendEmailVerification();
+            callback.onFailure("Devi prima verificare la tua email attuale.");
+            return;
+        }
 
-            if (!user.isEmailVerified()) {
-                Log.d(TAG, "Email non verificata. Invio mail di verifica...");
-                user.sendEmailVerification()
-                        .addOnSuccessListener(v -> Log.d(TAG, "Mail di verifica inviata correttamente"))
-                        .addOnFailureListener(e -> Log.e(TAG, "Errore invio mail di verifica", e));
-                callback.onFailure("Devi prima verificare la tua email corrente. Controlla la tua casella di posta.");
-                return;
-            }
-
-            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), password);
-            user.reauthenticate(credential)
-                    .addOnSuccessListener(v -> {
-                        Log.d(TAG, "Re-auth completata. Aggiornamento email...");
-                        user.updateEmail(newEmail)
-                                .addOnSuccessListener(unused -> {
-                                    Log.d(TAG, "Email aggiornata su Firebase: " + newEmail);
-                                    user.sendEmailVerification();
-                                    callback.onSuccess("Email aggiornata con successo. Verifica la nuova email!");
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e(TAG, "Errore updateEmail", e);
-                                    callback.onFailure("Errore updateEmail: " + e.getMessage());
-                                });
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Re-auth fallita", e);
-                        callback.onFailure("Re-auth fallita: " + e.getMessage());
-                    });
-        });
+        user.verifyBeforeUpdateEmail(newEmail)
+                .addOnSuccessListener(v -> callback.onSuccess("Email di verifica inviata alla nuova casella."))
+                .addOnFailureListener(e -> callback.onFailure("Errore: " + e.getMessage()));
     }
 
     /**
