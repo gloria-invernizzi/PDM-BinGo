@@ -10,7 +10,18 @@
     <string name="remember_me">Remember me</string>
     <string name="hint_email">Email</string>
     <string name="hint_address">Address</string>
+
+    <string name="user_name">User name</string>
     <string name="family">Family</string>
+    <string name="family_code">Family code</string>
+    <string name="join_family">Join family</string>
+    <string name="leave_family">Leave family</string>
+    <string name="no_family">You are not part of any family. Create a new group or join an existing one to share the calendar.</string>
+    <string name="create_new_family">Create new family</string>
+    <string name="family_group">Family group</string>
+    <string name="members">Members:</string>
+    <string name="share_code">Share this code with your family members to add them to the group.</string>
+
     <string name="edit_profile">Edit profile</string>
     <string name="edit_address">Edit address</string>
     <string name="change_password">Change password</string>

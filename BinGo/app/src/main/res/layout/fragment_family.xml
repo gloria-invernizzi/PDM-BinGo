@@ -10,7 +10,7 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gestione Famiglia"
+        android:text="@string/family"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
         android:layout_marginBottom="24dp"
         android:layout_gravity="center_horizontal"/>
@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Non fai parte di nessuna famiglia. Crea un nuovo gruppo o unisciti a uno esistente per condividere il calendario."
+            android:text="@string/no_family"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:textAlignment="center"
             android:layout_marginBottom="24dp"/>
@@ -35,13 +35,13 @@
             android:id="@+id/btn_create_family"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Crea Nuova Famiglia"
+            android:text="@string/create_new_family"
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Codice Famiglia">
+            android:hint="@string/family_code">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_family_code"
@@ -53,7 +53,7 @@
             android:id="@+id/btn_join_family"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Unisciti alla Famiglia"
+            android:text="@string/join_family"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_marginTop="8dp"/>
 
@@ -70,14 +70,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Codice Famiglia:"
+            android:text="@string/family_code"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
 
         <TextView
             android:id="@+id/text_family_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CODE1234"
+            android:text="@string/family_code"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
@@ -86,14 +86,14 @@
          <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Condividi questo codice con i tuoi familiari per aggiungerli al gruppo."
+            android:text="@string/share_code"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:layout_marginBottom="24dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Membri:"
+            android:text="@string/members"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:layout_marginBottom="8dp"/>
 
@@ -107,7 +107,7 @@
             android:id="@+id/btn_leave_family"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lascia Famiglia"
+            android:text="@string/leave_family"
             android:textColor="?attr/colorError"
             style="@style/Widget.Material3.Button.TextButton"/>
 

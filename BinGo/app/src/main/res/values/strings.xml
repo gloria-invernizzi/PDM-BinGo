@@ -17,7 +17,17 @@
     <string name="hint_name">Nome e Cognome</string>
     <string name="hint_email">Email</string>
     <string name="hint_address">Residenza</string>
+
+    <string name="user_name">Nome Utente</string>
     <string name="family">Famiglia</string>
+    <string name="family_code">Codice Famiglia</string>
+    <string name="join_family">Unisciti alla Famiglia</string>
+    <string name="leave_family">Lascia Famiglia</string>
+    <string name="no_family">Non fai parte di nessuna famiglia. Crea un nuovo gruppo o unisciti a uno esistente per condividere il calendario.</string>
+    <string name="create_new_family">Crea nuova famiglia</string>
+    <string name="family_group">Gruppo Famiglia</string>
+    <string name="members">Members:</string>
+    <string name="share_code">Condividi questo codice con i tuoi familiari per aggiungerli al gruppo.</string>
 
     <string name="product_image">Immagine del prodotto</string>
     <string name="result">Risultato</string>

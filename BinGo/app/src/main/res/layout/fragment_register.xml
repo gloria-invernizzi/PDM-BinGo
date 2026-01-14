@@ -17,8 +17,9 @@
         android:layout_marginBottom="@dimen/margin_xlarge"
         android:textSize="34sp"
         android:text="@string/create_account"
-        android:textAppearance="?attr/textAppearanceHeadline6"
         android:textStyle="bold"
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
