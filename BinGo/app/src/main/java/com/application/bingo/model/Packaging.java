@@ -7,8 +7,6 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.application.bingo.model.dto.PackagingDto;
-
 @Entity(
         tableName = "packaging",
         foreignKeys = @ForeignKey(
@@ -20,9 +18,10 @@ import com.application.bingo.model.dto.PackagingDto;
         indices = {@Index("product_barcode")}
 )
 public class Packaging {
-    // ecoscore_data -> adjustment -> packaging
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
     private String shape;
-    @PrimaryKey
+
     @NonNull
     private String material = "";
 
@@ -35,13 +34,12 @@ public class Packaging {
     public Packaging() {
     }
 
-    public Packaging (PackagingDto dto, String productBarcode) {
-        this.shape = dto.getShape();
-        this.material = dto.getMaterial();
-        this.environmentalScoreMaterialScore = dto.getEnvironmentalScoreMaterialScore();
+    public int getUid() {
+        return uid;
+    }
 
-        this.productBarcode = productBarcode;
-
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getShape() {

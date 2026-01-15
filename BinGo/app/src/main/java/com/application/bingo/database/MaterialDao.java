@@ -15,6 +15,6 @@ public interface MaterialDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Material material);
 
-    @Query("SELECT * FROM material WHERE packaging_material = :material")
-    List<Material> findByPackageId(long material);
+    @Query("SELECT * FROM material WHERE packaging_id = :packagingId")
+    List<Material> findByPackageId(long packagingId);
 }

@@ -5,8 +5,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.application.bingo.model.dto.ProductDto;
-
 @Entity(tableName = "product")
 public class Product {
     @PrimaryKey
@@ -22,15 +20,6 @@ public class Product {
     private boolean isFavorite; // TODO: think about, maybe we need relation n - n, https://developer.android.com/training/data-storage/room/relationships/many-to-many?hl=it
 
     public Product() {
-    }
-
-    public Product(ProductDto productDto) {
-        this.barcode = productDto.getBarcode();
-        this.imageUrl = productDto.getImageUrl();
-        this.name = productDto.getName();
-        this.brand = productDto.getBrand();
-        this.nonRecyclableAndNonBiodegradable = productDto.getNonRecyclableAndNonBiodegradable();
-        this.isFavorite = productDto.isFavorite();
     }
 
     public String getImageUrl() {

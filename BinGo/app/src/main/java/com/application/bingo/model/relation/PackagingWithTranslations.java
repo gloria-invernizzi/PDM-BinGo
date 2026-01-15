@@ -15,7 +15,7 @@ public class PackagingWithTranslations {
 
     @Relation(
             parentColumn = "material",
-            entityColumn = "packaging_material",
+            entityColumn = "packaging_id",
             entity = Material.class
     )
     private List<Material> translations = new ArrayList<>();

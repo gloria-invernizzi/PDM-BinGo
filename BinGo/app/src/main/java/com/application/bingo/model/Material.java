@@ -6,41 +6,29 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import com.application.bingo.model.dto.MaterialDto;
-
 @Entity(
         tableName = "material",
         foreignKeys = @ForeignKey(
                 entity = Packaging.class,
-                parentColumns = "material",
-                childColumns = "packaging_material",
+                parentColumns = "uid",
+                childColumns = "packaging_id",
                 onDelete = ForeignKey.CASCADE
         ),
-        indices = {@Index("packaging_material")}
+        indices = {@Index("packaging_id")}
 )
 public class Material {
     @PrimaryKey(autoGenerate = true)
     private long uid;
-
     private String name;
     private String description;
     private String language;
     private boolean empty;
 
-    @ColumnInfo(name = "packaging_material")
-    private String packagingMaterial;
+    @ColumnInfo(name = "packaging_id")
+    private String packagingId;
 
     public Material() {
     }
-    public Material(MaterialDto dto, String packagingMaterial) {
-        this.name = dto.getName();
-        this.description = dto.getDescription();
-        this.language = dto.getLanguage().languageAsString();
-        this.empty = dto.isEmpty();
-
-        this.packagingMaterial = packagingMaterial;
-    }
-
     public long getUid() {
         return uid;
     }
@@ -73,12 +61,12 @@ public class Material {
         this.language = language;
     }
 
-    public String getPackagingMaterial() {
-        return this.packagingMaterial;
+    public String getPackagingId() {
+        return this.packagingId;
     }
 
-    public void setPackagingMaterial(String packagingMaterial) {
-        this.packagingMaterial = packagingMaterial;
+    public void setPackagingId(String packagingId) {
+        this.packagingId = packagingId;
     }
 
     public boolean isEmpty() {

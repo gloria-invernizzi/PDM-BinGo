@@ -9,7 +9,7 @@ import com.application.bingo.datasource.product.BaseProductLocalDataSource;
 import com.application.bingo.datasource.product.BaseProductRemoteDataSource;
 import com.application.bingo.datasource.product.ProductApiDataSource;
 import com.application.bingo.datasource.product.ProductLocalDataSource;
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.repository.product.ProductRepository;
 import com.application.bingo.util.normalizer.ProductDeserializer;
 import com.google.gson.Gson;
@@ -39,7 +39,7 @@ public class ServiceLocator {
 
     public ProductAPIService getProductAPIService(Context context) {
         Gson gson = new GsonBuilder()
-            .registerTypeAdapter(ProductDto.class, new ProductDeserializer(context))
+            .registerTypeAdapter(ProductWithPackagingWithTranslation.class, new ProductDeserializer(context))
             .create()
         ;
 
@@ -72,6 +72,7 @@ public class ServiceLocator {
         productRemoteDataSource = new ProductApiDataSource();
         productLocalDataSource = new ProductLocalDataSource(getAppDatabase(application), prefsManager);
 
+        // Repository ha sorgente dati sia remota che locale
         return new ProductRepository(application, productRemoteDataSource, productLocalDataSource);
     }
 }

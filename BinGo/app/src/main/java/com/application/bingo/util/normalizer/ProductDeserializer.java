@@ -1,9 +1,12 @@
 package com.application.bingo.util.normalizer;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.application.bingo.model.dto.PackagingDto;
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.Packaging;
+import com.application.bingo.model.Product;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
+import com.application.bingo.model.relation.PackagingWithTranslations;
 import com.application.bingo.service.ServiceLocator;
 import com.application.bingo.util.MaterialParserUtils;
 import com.google.gson.JsonArray;
@@ -15,9 +18,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDeserializer implements JsonDeserializer<ProductDto>
+public class ProductDeserializer implements JsonDeserializer<ProductWithPackagingWithTranslation>
 {
     private static final String PACKAGING_MISSING_MATERIAL = "packaging_data_missing";
 
@@ -27,11 +31,14 @@ public class ProductDeserializer implements JsonDeserializer<ProductDto>
     }
 
     @Override
-    public ProductDto deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public ProductWithPackagingWithTranslation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         JsonObject obj = json.getAsJsonObject();
 
-        ProductDto product = new ProductDto();
+        Product product = new Product();
+
+        ProductWithPackagingWithTranslation productWithPackagingWithTranslation = new ProductWithPackagingWithTranslation();
+        productWithPackagingWithTranslation.setProduct(product);
 
         JsonObject jsonProduct = obj.getAsJsonObject("product");
         JsonObject jsonPackage = jsonProduct
@@ -43,17 +50,25 @@ public class ProductDeserializer implements JsonDeserializer<ProductDto>
         if (!(jsonPackage.has("warning") && jsonPackage.get("warning").getAsString().equalsIgnoreCase(PACKAGING_MISSING_MATERIAL))) {
             JsonArray jsonPackagings = jsonPackage.getAsJsonArray("packagings");
 
-            Type listType = new TypeToken<List<PackagingDto>>() {}.getType();
-            List<PackagingDto> packagingList = context.deserialize(jsonPackagings, listType);
+            Type listType = new TypeToken<List<Packaging>>() {}.getType();
+            List<Packaging> packagingList = context.deserialize(jsonPackagings, listType);
+
+            List<PackagingWithTranslations> packagingWithTranslationsList = new ArrayList<>();
 
             MaterialParserUtils materialParser = new MaterialParserUtils(appContext);
-            for (PackagingDto packaging:
+            for (Packaging packaging:
                  packagingList) {
-                materialParser.parseMaterial(packaging);
+                PackagingWithTranslations packagingWithTranslations = new PackagingWithTranslations();
+                packagingWithTranslations.setPackaging(packaging);
+
+                materialParser.parseMaterial(packagingWithTranslations);
+
+                packagingWithTranslationsList.add(packagingWithTranslations);
             }
 
             product.setNonRecyclableAndNonBiodegradable(jsonPackage.get("non_recyclable_and_non_biodegradable_materials").getAsBoolean());
-            product.setPackagings(packagingList);
+
+            productWithPackagingWithTranslation.setPackagings(packagingWithTranslationsList);
         }
 
         if (jsonProduct.has("product_name_it")) {
@@ -69,10 +84,20 @@ public class ProductDeserializer implements JsonDeserializer<ProductDto>
         product.setBarcode(obj.get("code").getAsString());
         product.setBrand(jsonProduct.get("brands").getAsString());
 
-        if (ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findByBarcode(product.getBarcode()) != null) {
-            product.setFavorite(true);
+        /*
+        * try {
+            ProductWithPackagingWithTranslation p = ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findProduct(product.getBarcode());
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+            }
+        * */
+
+        ProductWithPackagingWithTranslation localProduct = ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findProduct(product.getBarcode());
+
+        if (null != localProduct) {
+            product.setFavorite(localProduct.getProduct().isFavorite());
         }
 
-        return product;
+        return productWithPackagingWithTranslation;
     }
 }

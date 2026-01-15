@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
+import com.application.bingo.model.Product;
 import com.application.bingo.model.relation.ProductWithPackagings;
-import com.application.bingo.model.dto.ProductDto;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         void onFavoriteButtonPressed(int position);
     }
 
-    private List<ProductDto> products;
+    private List<ProductWithPackagings> products;
     private boolean heartVisible;
     private Context context;
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -72,7 +72,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     }
 
-    public ProductAdapter(List<ProductDto> products, boolean heartVisible) {
+    public ProductAdapter(List<ProductWithPackagings> products, boolean heartVisible) {
         this.products = products;
         this.heartVisible = heartVisible;
     }
@@ -91,7 +91,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        ProductDto product = products.get(position);
+        Product product = products.get(position).getProduct();
 
         viewHolder.getTextViewName().setText(product.getName());
         viewHolder.getTextViewBrand().setText(product.getBrand());

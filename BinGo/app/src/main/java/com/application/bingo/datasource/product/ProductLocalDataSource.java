@@ -5,8 +5,8 @@ import com.application.bingo.database.AppDatabase;
 import com.application.bingo.database.PackagingDao;
 import com.application.bingo.database.ProductDao;
 import com.application.bingo.model.Product;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.model.relation.ProductWithPackagings;
-import com.application.bingo.model.dto.ProductDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,50 +27,21 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
     @Override
     public void getProduct(String barcode) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            productCallback.onSuccessFromLocal(productDAO.findByBarcode(barcode));
+            productCallback.onSuccessFromLocal(productDAO.findProduct(barcode));
         });
     }
 
     @Override
     public void getFavoriteProducts() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<ProductWithPackagings> favorites = productDAO.findAll();
-            List<ProductDto> products = new ArrayList<>();
-
-            for (ProductWithPackagings productWithPackagings : favorites) {
-                Product productEntity = productWithPackagings.getProduct();
-                ProductDto productDto = new ProductDto(productEntity);
-
-                /*
-                * List<PackagingDto> packagingDtos = new ArrayList<>();
-
-                for (PackagingWithTranslations productWithTranslations : productWithPackagings.getPackagings()) {
-                    Packaging packagingEntity = productWithTranslations.getPackaging();
-                    PackagingDto packagingDto = new PackagingDto(packagingEntity);
-
-                    List<MaterialDto> materialDtos = new ArrayList<>();
-
-                    for (Material materialEntity : productWithTranslations.getMaterials()) {
-                        materialDtos.add(new MaterialDto(materialEntity));
-                    }
-
-                    packagingDto.setTranslations(materialDtos);
-                    packagingDtos.add(packagingDto);
-                }
-
-                productDto.setPackagings(packagingDtos);
-                 * */
-                products.add(productDto);
-            }
-
-            productCallback.onProductsFavoritesSuccessFromLocale(products);
+            productCallback.onProductsFavoritesSuccessFromLocale(productDAO.findFavorites());
         });
     }
 
     @Override
-    public void insertProduct(ProductDto product) {
+    public void insertProduct(ProductWithPackagingWithTranslation product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            productDAO.insertProductDto(product);
+            productDAO.insertProductWithPackagingsWithTranslations(product);
         });
     }
 
@@ -82,7 +53,7 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
     //}
 
     @Override
-    public void removeFromFavorites(ProductDto product) {
+    public void removeFromFavorites(ProductWithPackagingWithTranslation product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             productDAO.removeFromFavorites(product);
         });

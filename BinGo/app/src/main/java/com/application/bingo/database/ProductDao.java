@@ -9,60 +9,63 @@ import androidx.room.Update;
 import com.application.bingo.model.Material;
 import com.application.bingo.model.Packaging;
 import com.application.bingo.model.Product;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
+import com.application.bingo.model.relation.PackagingWithTranslations;
 import com.application.bingo.model.relation.ProductWithPackagings;
-import com.application.bingo.model.dto.MaterialDto;
-import com.application.bingo.model.dto.PackagingDto;
-import com.application.bingo.model.dto.ProductDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
 public abstract class ProductDao {
-    @Insert
-    public abstract void insert(Product product);
-
     @Transaction
     @Query("SELECT * FROM product")
     public abstract List<ProductWithPackagings> findAll();
+    @Transaction
+    @Query("SELECT * FROM product WHERE is_favorite = 1")
+    public abstract List<ProductWithPackagings> findFavorites();
 
     @Transaction
     @Query("SELECT * FROM product WHERE barcode = :barcode")
-    public abstract ProductWithPackagings findByBarcode(String barcode);
+    public abstract ProductWithPackagings findProductWithPackagingsByBarcode(String barcode);
+    @Transaction
+    @Query("SELECT * FROM packaging WHERE product_barcode = :barcode")
+    public abstract List<PackagingWithTranslations> findPackagingWithTranslationByProduct(String barcode);
+    public ProductWithPackagingWithTranslation findProduct(String barcode) {
+        ProductWithPackagings localProduct = findProductWithPackagingsByBarcode(barcode);
+
+        if (null == localProduct) {
+            return null;
+        }
+
+        ProductWithPackagingWithTranslation productWithPackagingWithTranslation = new ProductWithPackagingWithTranslation();
+
+        productWithPackagingWithTranslation.setProduct(localProduct.getProduct());
+        productWithPackagingWithTranslation.setPackagings(findPackagingWithTranslationByProduct(barcode));
+
+        return productWithPackagingWithTranslation;
+    }
 
     @Insert
-    abstract void insertPackaging(List<Packaging> packaging);
-
+    public abstract void insert(Product product);
+    @Insert
+    abstract void insertPackaging(Packaging packaging);
     @Insert
     abstract void insertTranslations(List<Material> translations);
+    public void insertProductWithPackagingsWithTranslations(ProductWithPackagingWithTranslation productWithPackagingWithTranslation) {
+        insert(productWithPackagingWithTranslation.getProduct());
+        for (PackagingWithTranslations packaging:
+                productWithPackagingWithTranslation.getPackagings()) {
+
+            insertPackaging(packaging.getPackaging());
+            insertTranslations(packaging.getTranslations());
+        }
+    }
 
     @Update
     abstract void update(Product product);
-
     @Update
-    public void removeFromFavorites(ProductDto dto) {
+    public void removeFromFavorites(ProductWithPackagingWithTranslation dto) {
         //TODO
-    }
-
-    @Transaction
-    public void insertProductDto(ProductDto dto) {
-        Product product = new Product(dto);
-        insert(product);
-
-        List<Packaging> packagings = new ArrayList<>();
-        List<Material> translations = new ArrayList<>();
-
-        for (PackagingDto packageDto : dto.getPackagings()) {
-            Packaging packaging = new Packaging(packageDto, product.getBarcode());
-            packagings.add(packaging);
-
-            for (MaterialDto materialDto : packageDto.getTranslations()) {
-                translations.add(new Material(materialDto, packaging.getMaterial()));
-            }
-        }
-
-        insertPackaging(packagings);
-        insertTranslations(translations);
     }
 }
 

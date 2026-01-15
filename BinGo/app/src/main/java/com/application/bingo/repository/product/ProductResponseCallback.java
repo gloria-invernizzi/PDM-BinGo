@@ -1,20 +1,20 @@
 package com.application.bingo.repository.product;
 
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.model.relation.ProductWithPackagings;
-import com.application.bingo.model.dto.ProductDto;
 
 import java.util.List;
 
 // interfaccia implementabile dai fragment
 public interface ProductResponseCallback {
     // Remote
-    void onSuccessFromRemote(ProductDto product, long lastUpdate);
+    void onSuccessFromRemote(ProductWithPackagingWithTranslation product, long lastUpdate);
     void onFailureFromRemote(Exception exception);
 
     // Locale
-    void onSuccessFromLocal(ProductWithPackagings product);
+    void onSuccessFromLocal(ProductWithPackagingWithTranslation product);
     void onFailureFromLocal(Exception exception);
-    void onProductsFavoritesSuccessFromLocale(List<ProductDto> favorites);
+    void onProductsFavoritesSuccessFromLocale(List<ProductWithPackagings> favorites);
 
     /*
     void onFavoriteStatusChanged(Article news, List<Article> favorite);

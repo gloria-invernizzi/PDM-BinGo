@@ -10,16 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
 import com.application.bingo.constants.Language;
-import com.application.bingo.model.dto.MaterialDto;
-import com.application.bingo.model.dto.PackagingDto;
+import com.application.bingo.model.Material;
+import com.application.bingo.model.relation.PackagingWithTranslations;
 
 import java.util.List;
 
 public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecyclerAdapter.PackagingViewHolder> {
 
-    private List<PackagingDto> packagings;
+    private List<PackagingWithTranslations> packagings;
 
-    public PackagingRecyclerAdapter(List<PackagingDto> packagings) {
+    public PackagingRecyclerAdapter(List<PackagingWithTranslations> packagings) {
         this.packagings = packagings;
     }
 
@@ -50,10 +50,10 @@ public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecy
             return;
         }
 
-        PackagingDto packaging = packagings.get(position);
+        PackagingWithTranslations packaging = packagings.get(position);
 
-        MaterialDto translation = packaging.getTranslations().stream()
-                .filter(trans -> trans.getLanguage() == Language.ITA)
+        Material translation = packaging.getTranslations().stream()
+                .filter(trans -> trans.getLanguage().equalsIgnoreCase(Language.ITA.languageAsString()))
                 .findFirst()
                 .orElse(null);
 

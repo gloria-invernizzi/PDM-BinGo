@@ -1,6 +1,6 @@
 package com.application.bingo.datasource.product;
 
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.repository.product.ProductResponseCallback;
 
 public abstract class BaseProductLocalDataSource {
@@ -14,9 +14,9 @@ public abstract class BaseProductLocalDataSource {
 
     public abstract void getFavoriteProducts();
 
-    public abstract void insertProduct(ProductDto product);
+    public abstract void insertProduct(ProductWithPackagingWithTranslation product);
 
-    public abstract void removeFromFavorites(ProductDto productDto);
+    public abstract void removeFromFavorites(ProductWithPackagingWithTranslation productDto);
 
     // public abstract void insertProduct(ProductWithPackagings product);
 }

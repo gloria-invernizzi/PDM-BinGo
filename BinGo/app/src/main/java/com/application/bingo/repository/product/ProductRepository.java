@@ -6,17 +6,17 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.application.bingo.datasource.product.BaseProductLocalDataSource;
 import com.application.bingo.datasource.product.BaseProductRemoteDataSource;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.model.Result;
-import com.application.bingo.model.dto.ProductDto;
 
 import java.util.List;
 
 public class ProductRepository implements ProductResponseCallback {
     private static final String TAG = ProductRepository.class.getSimpleName();
 
-    private final MutableLiveData<Result<ProductDto>> productMutableLiveData;
-    private final MutableLiveData<Result<List<ProductDto>>> favoritesProductsMutableLiveData;
+    private final MutableLiveData<Result<ProductWithPackagingWithTranslation>> productMutableLiveData;
+    private final MutableLiveData<Result<List<ProductWithPackagings>>> favoritesProductsMutableLiveData;
 
     private final BaseProductRemoteDataSource productRemoteDataSource;
     private final BaseProductLocalDataSource productLocalDataSource;
@@ -34,31 +34,31 @@ public class ProductRepository implements ProductResponseCallback {
         this.productLocalDataSource.setProductCallback(this);
     }
 
-    public MutableLiveData<Result<ProductDto>> getProduct(String barcode, String productType) {
+    public MutableLiveData<Result<ProductWithPackagingWithTranslation>> getProduct(String barcode, String productType) {
         // TODO maybe fetch from DB if the product was saved, maybe use a timestamp limit
         productRemoteDataSource.getProduct(barcode, productType);
 
         return productMutableLiveData;
     }
 
-    public MutableLiveData<Result<List<ProductDto>>> getFavoriteProducts() {
+    public MutableLiveData<Result<List<ProductWithPackagings>>> getFavoriteProducts() {
         productLocalDataSource.getFavoriteProducts();
 
         return favoritesProductsMutableLiveData;
     }
 
-    public void insertProduct(ProductDto product) {
+    public void insertProduct(ProductWithPackagingWithTranslation product) {
         productLocalDataSource.insertProduct(product);
     }
 
-    public void removeFromFavorites(ProductDto product) {
+    public void removeFromFavorites(ProductWithPackagingWithTranslation product) {
         productLocalDataSource.removeFromFavorites(product);
     }
 
     // TODO aggiornare i livedata durante le callback
     @Override
-    public void onSuccessFromRemote(ProductDto product, long lastUpdate) {
-        Result.Success<ProductDto> result = new Result.Success<>(product);
+    public void onSuccessFromRemote(ProductWithPackagingWithTranslation product, long lastUpdate) {
+        Result.Success<ProductWithPackagingWithTranslation> result = new Result.Success<>(product);
 
         productMutableLiveData.postValue(result);
     }
@@ -69,7 +69,7 @@ public class ProductRepository implements ProductResponseCallback {
     }
 
     @Override
-    public void onSuccessFromLocal(ProductWithPackagings product) {
+    public void onSuccessFromLocal(ProductWithPackagingWithTranslation product) {
 
     }
 
@@ -79,8 +79,8 @@ public class ProductRepository implements ProductResponseCallback {
     }
 
     @Override
-    public void onProductsFavoritesSuccessFromLocale(List<ProductDto> favorites) {
-        Result.Success<List<ProductDto>> result = new Result.Success<List<ProductDto>>(favorites);
+    public void onProductsFavoritesSuccessFromLocale(List<ProductWithPackagings> favorites) {
+        Result.Success<List<ProductWithPackagings>> result = new Result.Success<>(favorites);
 
         favoritesProductsMutableLiveData.postValue(result);
     }

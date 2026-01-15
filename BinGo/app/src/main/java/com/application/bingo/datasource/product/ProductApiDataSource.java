@@ -3,7 +3,7 @@ package com.application.bingo.datasource.product;
 import androidx.annotation.NonNull;
 
 import com.application.bingo.R;
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.service.ServiceLocator;
 import java.util.Date;
 
@@ -14,15 +14,15 @@ import retrofit2.Response;
 public class ProductApiDataSource extends BaseProductRemoteDataSource {
     @Override
     public void getProduct(String barcode, String productType) {
-        Call<ProductDto> responseCall = ServiceLocator.getInstance()
+        Call<ProductWithPackagingWithTranslation> responseCall = ServiceLocator.getInstance()
                 .getProductAPIService(application)
                 .getProduct(barcode, productType)
         ;
 
-        responseCall.enqueue(new Callback<ProductDto>() {
+        responseCall.enqueue(new Callback<ProductWithPackagingWithTranslation>() {
             @Override
-            public void onResponse(@NonNull Call<ProductDto> call,
-                                   @NonNull Response<ProductDto> response) {
+            public void onResponse(@NonNull Call<ProductWithPackagingWithTranslation> call,
+                                   @NonNull Response<ProductWithPackagingWithTranslation> response) {
 
                 if (response.body() != null && response.isSuccessful()) {
                     productResponseCallback.onSuccessFromRemote(response.body(), new Date().getTime());
@@ -32,7 +32,7 @@ public class ProductApiDataSource extends BaseProductRemoteDataSource {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ProductDto> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ProductWithPackagingWithTranslation> call, @NonNull Throwable t) {
             }
         });
     }

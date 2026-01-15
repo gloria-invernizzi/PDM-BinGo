@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.application.bingo.constants.Language;
-import com.application.bingo.model.dto.MaterialDto;
-import com.application.bingo.model.dto.PackagingDto;
+import com.application.bingo.model.Material;
+import com.application.bingo.model.relation.PackagingWithTranslations;
 
 import org.json.JSONObject;
 
@@ -18,7 +18,7 @@ public class MaterialParserUtils {
         this.context = context;
     }
 
-    public PackagingDto parseMaterial(PackagingDto packaging) {
+    public PackagingWithTranslations parseMaterial(PackagingWithTranslations packaging) {
         try {
             // TODO: move json loading on object creation, constructor, instead of reading all every time
             InputStream input = context.getAssets().open("open_food_facts_packaging_materials.json");
@@ -34,15 +34,15 @@ public class MaterialParserUtils {
             String json = new String(buffer, "UTF-8");
             JSONObject obj = new JSONObject(json);
 
-            JSONObject materialObj = obj.getJSONObject(packaging.getMaterial());
+            JSONObject materialObj = obj.getJSONObject(packaging.getPackaging().getMaterial());
 
             for (Language language:
                  Language.cases()) {
                 boolean hasDescription = false;
                 boolean hasName = false;
 
-                MaterialDto material = new MaterialDto();
-                material.setLanguage(language);
+                Material material = new Material();
+                material.setLanguage(language.languageAsString());
 
                 if (materialObj.has("description")) {
                     JSONObject description = materialObj.getJSONObject("description");

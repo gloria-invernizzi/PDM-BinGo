@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.model.Result;
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.ui.adapter.ProductAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class FavoriteFragment extends Fragment {
     private RecyclerView recyclerView;
-    private List<ProductDto> favoriteProducts;
+    private List<ProductWithPackagings> favoriteProducts;
     private ProductAdapter productAdapter;
     private ProductViewModel productViewModel;
     private CircularProgressIndicator circularProgressIndicator;
@@ -62,7 +62,7 @@ public class FavoriteFragment extends Fragment {
                 result -> {
                     if (result.isSuccess()) {
                         this.favoriteProducts.clear();
-                        this.favoriteProducts.addAll(((Result.Success<List<ProductDto>>) result).getData());
+                        this.favoriteProducts.addAll(((Result.Success<List<ProductWithPackagings>>) result).getData());
 
                         recyclerView.setVisibility(View.VISIBLE);
 

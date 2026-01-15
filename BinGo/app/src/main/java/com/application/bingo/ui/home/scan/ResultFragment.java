@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import android.widget.Toast;
 
 import com.application.bingo.R;
 import com.application.bingo.model.Result;
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.ui.adapter.PackagingRecyclerAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
@@ -73,19 +72,19 @@ public class ResultFragment extends Fragment {
         productViewModel.getProductLiveData(barcode, System.currentTimeMillis()).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        ProductDto productDto = ((Result.Success<ProductDto>) result).getData();
+                        ProductWithPackagingWithTranslation productWithPackagingWithTranslations = ((Result.Success<ProductWithPackagingWithTranslation>) result).getData();
 
-                        this.productName.setText(productDto.getName());
-                        this.productBrand.setText(getString(R.string.brand, productDto.getBrand()));
-                        this.favoriteCheckbox.setChecked(productDto.isFavorite());
+                        this.productName.setText(productWithPackagingWithTranslations.getProduct().getName());
+                        this.productBrand.setText(getString(R.string.brand, productWithPackagingWithTranslations.getProduct().getBrand()));
+                        this.favoriteCheckbox.setChecked(productWithPackagingWithTranslations.getProduct().isFavorite());
 
                         this.loadingSpinner.setVisibility(View.GONE);
 
-                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(productDto.getPackagings()));
+                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(productWithPackagingWithTranslations.getPackagings()));
 
                         Glide.with(requireContext())
-                            .load((null != productDto.getImageUrl() && !productDto.getImageUrl().isEmpty())
-                                    ? productDto.getImageUrl()
+                            .load((null != productWithPackagingWithTranslations.getProduct().getImageUrl() && !productWithPackagingWithTranslations.getProduct().getImageUrl().isEmpty())
+                                    ? productWithPackagingWithTranslations.getProduct().getImageUrl()
                                     : R.drawable.product_not_found
                             )
                             .placeholder(R.drawable.product_not_found)
@@ -95,14 +94,14 @@ public class ResultFragment extends Fragment {
                         favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                productDto.setFavorite(isChecked);
+                                productWithPackagingWithTranslations.getProduct().setFavorite(isChecked);
 
                                 if (isChecked) {
-                                    productViewModel.insertProduct(productDto);
+                                    productViewModel.insertProduct(productWithPackagingWithTranslations);
 
                                     productViewModel.fetchFavoritesProducts();
                                 } else {
-                                    productViewModel.removeFromFavorites(productDto);
+                                    productViewModel.removeFromFavorites(productWithPackagingWithTranslations);
                                 }
                             }
                         });

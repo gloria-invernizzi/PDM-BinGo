@@ -1,11 +1,11 @@
 package com.application.bingo.ui.viewmodel;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.application.bingo.model.Result;
-import com.application.bingo.model.dto.ProductDto;
+import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
+import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.repository.product.ProductRepository;
 
 import java.util.List;
@@ -14,15 +14,15 @@ public class ProductViewModel extends ViewModel {
     private static final String TAG = ProductViewModel.class.getSimpleName();
 
     private final ProductRepository productRepository;
-    private MutableLiveData<Result<ProductDto>> productLiveData;
-    private MutableLiveData<Result<List<ProductDto>>> favoriteProductsLiveData;
+    private MutableLiveData<Result<ProductWithPackagingWithTranslation>> productLiveData;
+    private MutableLiveData<Result<List<ProductWithPackagings>>> favoriteProductsLiveData;
     private MutableLiveData<String> barcodeLiveData;
 
     public ProductViewModel(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public MutableLiveData<Result<ProductDto>> getProductLiveData(String barcode, long lastUpdate) {
+    public MutableLiveData<Result<ProductWithPackagingWithTranslation>> getProductLiveData(String barcode, long lastUpdate) {
         if (null == productLiveData) {
             fetchProduct(barcode, lastUpdate);
         }
@@ -30,7 +30,7 @@ public class ProductViewModel extends ViewModel {
         return productLiveData;
     }
 
-    public MutableLiveData<Result<List<ProductDto>>> getFavoriteProductsLiveData() {
+    public MutableLiveData<Result<List<ProductWithPackagings>>> getFavoriteProductsLiveData() {
         if (null == favoriteProductsLiveData) {
             getFavoriteProducts();
         }
@@ -65,11 +65,11 @@ public class ProductViewModel extends ViewModel {
         getFavoriteProducts();
     }
 
-    public void insertProduct(ProductDto product) {
+    public void insertProduct(ProductWithPackagingWithTranslation product) {
         productRepository.insertProduct(product);
     }
 
-    public void removeFromFavorites(ProductDto product) {
+    public void removeFromFavorites(ProductWithPackagingWithTranslation product) {
         productRepository.removeFromFavorites(product);
     }
 }

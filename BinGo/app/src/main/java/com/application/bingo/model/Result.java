@@ -1,7 +1,5 @@
 package com.application.bingo.model;
 
-import com.application.bingo.model.dto.ProductDto;
-
 public abstract class Result<T> {
     private Result() {}
 
