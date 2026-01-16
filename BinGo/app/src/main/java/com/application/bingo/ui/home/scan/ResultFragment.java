@@ -26,9 +26,11 @@ import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+
 public class ResultFragment extends Fragment {
 
-    private TextView productName, productBrand, productBarcode, textResult, recyclingTitle;
+    private TextView productName, productBrand, productBarcode, recyclingTitle;
     private CheckBox favoriteCheckbox;
     private ImageView productImage;
     private RecyclerView packagingRecyclerView;
@@ -55,11 +57,11 @@ public class ResultFragment extends Fragment {
         productName = view.findViewById(R.id.product_name);
         productBrand = view.findViewById(R.id.product_brand);
         productBarcode = view.findViewById(R.id.product_barcode);
-        textResult = view.findViewById(R.id.text_result);
         productImage = view.findViewById(R.id.product_image);
         favoriteCheckbox = view.findViewById(R.id.favorite_checkbox);
         recyclingTitle = view.findViewById(R.id.recycling_title);
         packagingRecyclerView = view.findViewById(R.id.packaging_material_container);
+
         productBarcode.setText(getString(R.string.barcode, barcode));
 
         packagingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -77,6 +79,7 @@ public class ResultFragment extends Fragment {
                         this.favoriteCheckbox.setChecked(productWithPackagingWithTranslations.getProduct().isFavorite());
 
                         this.loadingSpinner.setVisibility(View.GONE);
+                        this.favoriteCheckbox.setVisibility(View.VISIBLE);
 
                         this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(productWithPackagingWithTranslations.getPackagings()));
 
@@ -106,10 +109,14 @@ public class ResultFragment extends Fragment {
                     } else {
                         Toast.makeText(requireContext(), getString(R.string.request_error, result.toString()), Toast.LENGTH_SHORT).show();
 
-                        textResult.setText(R.string.result_failed);
-                        recyclingTitle.setText(" ");
+                        this.productName.setText(R.string.result_failed);
+                        this.productBrand.setText(" ");
+                        this.recyclingTitle.setText(" ");
 
-                        loadingSpinner.setVisibility(View.GONE);
+                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(new ArrayList<>()));
+
+                        this.favoriteCheckbox.setVisibility(View.INVISIBLE);
+                        this.loadingSpinner.setVisibility(View.GONE);
 
                         Glide.with(requireContext())
                             .load(R.drawable.product_not_found)
