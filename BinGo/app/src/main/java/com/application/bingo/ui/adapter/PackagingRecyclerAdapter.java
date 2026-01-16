@@ -37,7 +37,7 @@ public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecy
     @Override
     public PackagingViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.packaging_card, viewGroup, false);
+                .inflate(R.layout.packaging_item, viewGroup, false);
 
         return new PackagingViewHolder(view);
     }
