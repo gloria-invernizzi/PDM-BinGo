@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BinGo!</string>
+    <string name="welcome">¡BIENVENIDO!</string>
+
+    <string name="password">Contraseña</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="did_you_forget_your_password">¿Olvidaste tu contraseña?</string>
+    <string name="remember_me">Recuérdame</string>
+    <string name="login_with_google">Iniciar sesión con Google</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="or_separator">o</string>
+
+    <string name="name">Nombre</string>
+    <string name="surname">Apellido</string>
+    <string name="address">Dirección</string>
+    <string name="hint_name">Nombre y Apellido</string>
+    <string name="hint_email">Correo electrónico</string>
+    <string name="hint_address">Residencia</string>
+
+    <string name="user_name">Nombre de usuario</string>
+    <string name="family">Familia</string>
+    <string name="family_code">Código de familia</string>
+    <string name="join_family">Unirse a la familia</string>
+    <string name="leave_family">Salir de la familia</string>
+    <string name="no_family">No perteneces a ninguna familia. Crea un nuevo grupo o únete a uno existente para compartir el calendario.</string>
+    <string name="create_new_family">Crear nueva familia</string>
+    <string name="family_group">Grupo familiar</string>
+    <string name="members">Miembros:</string>
+    <string name="share_code">Comparte este código con tus familiares para agregarlos al grupo.</string>
+
+    <string name="product_image">Imagen del producto</string>
+    <string name="result">Resultado</string>
+    <string name="barcode">Código de barras %1$s</string>
+    <string name="confirm">Confirmar</string>
+    <string name="flash_on">Encender linterna</string>
+    <string name="frame_barcode">Enmarca el código de barras</string>
+    <string name="scan_barcode">Escanear código de barras</string>
+    <string name="manual_entry">Ingresar manualmente</string>
+    <string name="calendar">Calendario</string>
+    <string name="insert_barcode">Ingresar código de barras</string>
+    <string name="insert_valid_barcode">Ingresa un código de barras válido</string>
+    <string name="packaging">Empaque</string>
+    <string name="material">Material</string>
+    <string name="result_success">Información del producto y disposición mostradas correctamente</string>
+    <string name="brand">Marca %1$s</string>
+    <string name="parsing_error">Error al procesar los datos</string>
+    <string name="result_failed">Producto no encontrado o error de red</string>
+    <string name="request_error">Error en la solicitud: %1$s</string>
+    <string name="product_name">Nombre del producto</string>
+    <string name="product_brand">Marca del producto</string>
+    <string name="back_to_login">Volver al inicio de sesión</string>
+    <string name="add_notification">Crear notificación</string>
+    <string name="delete_notification">Eliminar notificación</string>
+    <string name="change_email">Cambiar correo electrónico</string>
+    <string name="send_email">Enviar correo de recuperación</string>
+    <string name="recover_info">Introduce la dirección de correo asociada a tu cuenta para recibir las instrucciones de recuperación.</string>
+    <string name="recover_password">Recuperar contraseña</string>
+    <string name="search_product">Buscar un producto…</string>
+    <string name="notifications_disabled">Notificaciones desactivadas en la configuración</string>
+
+    <string name="error_missing_fields">Campos faltantes</string>
+    <string name="login_successful">Inicio de sesión exitoso</string>
+    <string name="error_google_sign_in">Falló el acceso con Google</string>
+    <string name="error_firebase_auth">Autenticación fallida</string>
+
+    <string name="old_password_hint">Contraseña antigua</string>
+    <string name="new_password_hint">Nueva contraseña</string>
+    <string name="update_password_button">Actualizar contraseña</string>
+
+    <!-- Materiales -->
+    <string name="material_metal">Metal</string>
+    <string name="material_plastic">Plástico</string>
+    <string name="material_glass">Vidrio</string>
+    <string name="material_paper">Papel</string>
+    <string name="material_cardboard">Cartón</string>
+    <string name="material_paper_aluminium">Plástico y latas</string>
+
+    <!-- Formas -->
+    <string name="shape_food_can">Lata</string>
+    <string name="shape_bottle">Botella</string>
+    <string name="shape_tray">Bandeja</string>
+    <string name="shape_box">Caja</string>
+    <string name="shape">Forma</string>
+
+    <string name="home">Inicio</string>
+    <string name="where_to_throw">¿Dónde lo tiro?</string>
+    <string name="favorite">Favoritos</string>
+
+    <string name="no_packaging_details">No hay información sobre el empaque del producto</string>
+
+    <!-- I file con ID di Google/Firebase rimangono invariati -->
+    <string name="default_app_client_id" translatable="false">549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">549574946118-sthhfs9gplhd7l82a0q3nfpcentmg59o.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">549574946118</string>
+    <string name="google_api_key" translatable="false">AIzaSyD7wR0oT7__FqZ67haVyguBpfUZir2chlg</string>
+    <string name="google_app_id" translatable="false">1:549574946118:android:5ab38ee7b4dd06f140c947</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD7wR0oT7__FqZ67haVyguBpfUZir2chlg</string>
+    <string name="google_storage_bucket" translatable="false">pdm-bingo.firebasestorage.app</string>
+    <string name="project_id" translatable="false">pdm-bingo</string>
+
+    <!-- Categorías -->
+    <string name="organic">Orgánico</string>
+    <string name="plastic">Plástico y metales</string>
+    <string name="paper">Papel y cartón</string>
+    <string name="residual">Residuos no reciclables</string>
+    <string name="glass">Vidrio</string>
+    <string name="ecomobile">Ecoestación móvil</string>
+    <string name="center">Centro de recogida</string>
+    <string name="all">Todos</string>
+
+    <!-- Configuración de la app -->
+    <string name="settings">Configuración</string>
+    <string name="profile_title">Perfil</string>
+    <string name="profile_picture">Foto de perfil</string>
+    <string name="edit_photo">Editar foto</string>
+    <string name="preferences">Preferencias de la app</string>
+    <string name="theme">Tema</string>
+    <string name="language">Idioma</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="sound">Sonido</string>
+    <string name="vibration">Vibración</string>
+    <string name="choose_theme">Elegir tema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string-array name="themes">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+    </string-array>
+    <string name="choose_language">Elegir idioma</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="edit_address">Editar dirección</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="logout">Cerrar sesión</string>
+
+    <string name="one_week">1 semana</string>
+    <string name="two_weeks">2 semanas</string>
+    <string name="three_weeks">3 semanas</string>
+    <string name="four_weeks">4 semanas</string>
+    <string-array name="weeks_array">
+        <item>@string/one_week</item>
+        <item>@string/two_weeks</item>
+        <item>@string/three_weeks</item>
+        <item>@string/four_weeks</item>
+    </string-array>
+
+    <string name="italian">Italiano</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+    <string-array name="languages">
+        <item>@string/italian</item>
+        <item>@string/english</item>
+        <item>@string/spanish</item>
+    </string-array>
+
+    <plurals name="repeat_weeks">
+        <item quantity="one">Cada semana</item>
+        <item quantity="other">Cada %d semanas</item>
+    </plurals>
+
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="repeat_every">Repetir cada</string>
+    <string name="account_management">Gestión de cuenta</string>
+    <string name="delete_notification_dialog">¿Deseas eliminar solo esta notificación o todas las repeticiones?</string>
+    <string name="solo_questa">Solo esta</string>
+    <string name="all_repetitions">Todas las repeticiones</string>
+    <string name="prepare_bin">Preparar el contenedor</string>
+    <string name="notification_text">Mañana recogen %1$s</string>
+
+    <string name="settings_title">Configuración</string>
+    <string name="account_section">Cuenta</string>
+    <string name="preferences_section">Preferencias</string>
+    <string name="dark_theme">Tema oscuro</string>
+    <string name="notifications_section">Notificaciones</string>
+    <string name="enable_notifications">Activar notificaciones</string>
+    <string name="change_photo">Cambiar foto</string>
+    <string name="photo_from_gallery">Elegir de la galería</string>
+    <string name="photo_from_camera">Abrir cámara</string>
+
+    <string name="error_save_notifications">Error al guardar la configuración de notificaciones</string>
+    <string name="error_save_sound">Error al guardar la configuración de sonido</string>
+    <string name="error_save_vibration">Error al guardar la configuración de vibración</string>
+    <string name="error_load_settings">Error al cargar la configuración</string>
+    <string name="error_load_themes">Error al cargar los temas</string>
+    <string name="error_save_theme">Error al guardar el tema</string>
+    <string name="error_load_languages">Error al cargar los idiomas</string>
+    <string name="error_save_language">Error al guardar el idioma</string>
+
+    <string name="local_error">Error local: %1$s</string>
+    <string name="email_updated">Correo actualizado localmente</string>
+    <string name="family_updated_success">Familia actualizada con éxito</string>
+    <string name="family_update_error">Error al actualizar la familia: %1$s</string>
+
+    <string name="user_not_authenticated">Usuario no autenticado</string>
+    <string name="verify_email_first">Debes verificar primero tu correo electrónico actual.</string>
+    <string name="verification_email_sent">Correo de verificación enviado a la nueva dirección.</string>
+    <string name="generic_error">Error: %1$s</string>
+    <string name="password_updated">Contraseña actualizada en Firebase</string>
+    <string name="password_update_error">Error al actualizar la contraseña: %1$s</string>
+    <string name="reauth_failed">Reautenticación fallida: %1$s</string>
+
+    <string name="passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="email_updated_firebase_not_local">Correo actualizado en Firebase pero no localmente: %1$s</string>
+
+    <string name="session_expired">Sesión expirada. Por favor, inicia sesión de nuevo.</string>
+    <string name="fill_all_fields">Rellena todos los campos</string>
+    <string name="emails_do_not_match">Los correos no coinciden</string>
+    <string name="enter_password">Introduce la contraseña</string>
+
+    <string name="user_not_logged_in">Usuario no conectado</string>
+    <string name="must_be_online">Debes estar en línea para cambiar la contraseña</string>
+
+    <string name="password_updated_success">Contraseña actualizada correctamente</string>
+    <string name="permission_denied">Permiso denegado</string>
+    <string name="no_photo_selected">No se ha seleccionado ninguna foto</string>
+    <string name="camera_error">Error de cámara</string>
+
+    <string name="edit">Editar</string>
+    <string name="data_saved">Datos guardados</string>
+
+
+        <string name="invalid_email">Correo electrónico no válido</string>
+        <string name="google_users_cannot_change_password">Los usuarios de Google no pueden cambiar la contraseña</string>
+        <string name="cannot_change_offline">No puedes cambiar la contraseña sin conexión</string>
+
+    <string name="invalid_password">Contraseña no válida</string>
+    <string name="email_verified">Correo electrónico verificado, puedes cambiar el correo</string>
+    <string name="email_not_verified">Correo electrónico no verificado</string>
+    <string name="user_reload_error">Error al recargar el usuario</string>
+    <string name="user_not_found">Usuario no encontrado</string>
+    <string name="user_not_loaded">Usuario no cargado</string>
+
+    <string name="confirm_identity_title">Confirma identidad</string>
+    <string name="confirm_button">Confirmar</string>
+    <string name="cancel_button">Cancelar</string>
+
+
+
+
+</resources>

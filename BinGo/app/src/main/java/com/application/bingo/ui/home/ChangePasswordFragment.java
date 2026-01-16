@@ -65,7 +65,7 @@ public class ChangePasswordFragment extends Fragment {
         // -------------------------------
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null || currentUser.getEmail() == null) {
-            Toast.makeText(requireContext(), "Utente non loggato", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.user_not_logged_in), Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).popBackStack();
             return;
         }
@@ -77,7 +77,7 @@ public class ChangePasswordFragment extends Fragment {
         // -------------------------------
         UserRepository repo = new UserRepository(requireContext());
         if (!repo.isConnectedToInternet()) {
-            Toast.makeText(requireContext(), "Devi essere online per cambiare la password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.must_be_online), Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).popBackStack();
             return;
         }
@@ -95,7 +95,7 @@ public class ChangePasswordFragment extends Fragment {
             Log.d(TAG, "Messaggio LiveData: " + message);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 
-            if ("Password aggiornata con successo".equals(message)) {
+            if (getString(R.string.password_updated_success).equals(message)) {
                 if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
                 if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
                 if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
@@ -113,12 +113,12 @@ public class ChangePasswordFragment extends Fragment {
 
             // Validazioni minime
             if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmPass)) {
-                Toast.makeText(requireContext(), "Compila tutti i campi", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!newPass.equals(confirmPass)) {
-                Toast.makeText(requireContext(), "Le password non corrispondono", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.passwords_do_not_match), Toast.LENGTH_SHORT).show();
                 return;
             }
 

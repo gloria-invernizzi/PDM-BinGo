@@ -181,6 +181,7 @@
     <string name="photo_from_gallery">Scegli dalla galleria</string>
     <string name="photo_from_camera">Apri fotocamera</string>
 
+
     <string name="error_save_notifications">Errore nel salvare impostazioni notifiche</string>
     <string name="error_save_sound">Errore nel salvare impostazioni suono</string>
     <string name="error_save_vibration">Errore nel salvare impostazioni vibrazione</string>
@@ -189,6 +190,60 @@
     <string name="error_save_theme">Errore nel salvare tema</string>
     <string name="error_load_languages">Errore nel caricare lingue</string>
     <string name="error_save_language">Errore nel salvare lingua</string>
+
+    <string name="local_error">Errore locale: %1$s</string>
+    <string name="email_updated">Email aggiornata localmente</string>
+    <string name="family_updated_success">Famiglia aggiornata con successo</string>
+    <string name="family_update_error">Errore nell\'aggiornamento della famiglia: %1$s</string>
+
+    <string name="user_not_authenticated">Utente non autenticato</string>
+    <string name="verify_email_first">Devi prima verificare la tua email attuale.</string>
+    <string name="verification_email_sent">Email di verifica inviata alla nuova casella.</string>
+    <string name="generic_error">Errore: %1$s</string>
+    <string name="password_updated">Password aggiornata su Firebase</string>
+    <string name="password_update_error">Errore update password: %1$s</string>
+    <string name="reauth_failed">Re-auth fallita: %1$s</string>
+
+    <string name="passwords_do_not_match">Le password non coincidono</string>
+    <string name="email_updated_firebase_not_local">Email aggiornata su Firebase ma non localmente: %1$s</string>
+
+    <string name="session_expired">Sessione scaduta. Effettua di nuovo il login.</string>
+    <string name="fill_all_fields">Compila tutti i campi</string>
+    <string name="emails_do_not_match">Le email non corrispondono</string>
+    <string name="enter_password">Inserisci la password</string>
+
+    <string name="user_not_logged_in">Utente non loggato</string>
+    <string name="must_be_online">Devi essere online per cambiare la password</string>
+
+
+    <string name="permission_denied">Permesso negato</string>
+    <string name="no_photo_selected">Nessuna foto selezionata</string>
+    <string name="camera_error">Errore fotocamera</string>
+
+    <string name="edit">Modifica</string>
+    <string name="data_saved">Dati salvati</string>
+
+
+    <string name="invalid_email">Email utente non valida</string>
+
+    <string name="google_users_cannot_change_password">Gli utenti Google non possono cambiare la password</string>
+    <string name="cannot_change_offline">Non puoi cambiare la password offline</string>
+    <string name="password_updated_success">Password aggiornata con successo</string>
+
+    <string name="invalid_password">Password non valida</string>
+    <string name="email_verified">Email verificata, puoi cambiare email</string>
+    <string name="email_not_verified">Email non ancora verificata</string>
+    <string name="user_reload_error">Errore reload utente</string>
+    <string name="user_not_found">Utente non trovato</string>
+    <string name="user_not_loaded">Utente non caricato</string>
+
+    <string name="confirm_identity_title">Conferma identità</string>
+    <string name="confirm_button">Conferma</string>
+    <string name="cancel_button">Annulla</string>
+
+
+
+
 
 
 </resources>

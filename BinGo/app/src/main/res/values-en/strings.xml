@@ -150,5 +150,56 @@
     <string name="error_load_languages">Error loading languages</string>
     <string name="error_save_language">Error saving language</string>
 
+    <string name="local_error">Local error: %1$s</string>
+    <string name="email_updated">Email updated locally</string>
+    <string name="family_updated_success">Family updated successfully</string>
+    <string name="family_update_error">Error updating family: %1$s</string>
+
+    <string name="user_not_authenticated">User not authenticated</string>
+    <string name="verify_email_first">You must first verify your current email.</string>
+    <string name="verification_email_sent">Verification email sent to the new address.</string>
+    <string name="generic_error">Error: %1$s</string>
+    <string name="password_updated">Password updated on Firebase</string>
+    <string name="password_update_error">Password update error: %1$s</string>
+    <string name="reauth_failed">Re-authentication failed: %1$s</string>
+
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="email_updated_firebase_not_local">Email updated on Firebase but not locally: %1$s</string>
+
+    <string name="session_expired">Session expired. Please log in again.</string>
+    <string name="fill_all_fields">Fill in all fields</string>
+    <string name="emails_do_not_match">Emails do not match</string>
+    <string name="enter_password">Enter password</string>
+
+    <string name="user_not_logged_in">User not logged in</string>
+    <string name="must_be_online">You must be online to change the password</string>
+    <string name="password_updated_success">Password updated successfully</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="no_photo_selected">No photo selected</string>
+    <string name="camera_error">Camera error</string>
+    <string name="edit">Edit</string>
+    <string name="data_saved">Data saved</string>
+    <string name="invalid_email">Invalid email</string>
+
+
+    <string name="google_users_cannot_change_password">Google users cannot change the password</string>
+    <string name="cannot_change_offline">You cannot change the password offline</string>
+
+    <string name="invalid_password">Invalid password</string>
+    <string name="email_verified">Email verified, you can change email</string>
+    <string name="email_not_verified">Email not yet verified</string>
+    <string name="user_reload_error">User reload error</string>
+    <string name="user_not_found">User not found</string>
+    <string name="user_not_loaded">User not loaded</string>
+
+    <string name="confirm_identity_title">Confirm identity</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="cancel_button">Cancel</string>
+
+
+
+
+
+
 
 </resources>

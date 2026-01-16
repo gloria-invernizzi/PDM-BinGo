@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.application.bingo.R;
 import com.application.bingo.repository.UserRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,7 +47,7 @@ public class ChangeEmailViewModel extends AndroidViewModel {
      */
     public void changeEmail(String oldEmail, String oldPassword, String newEmail) {
         if (oldPassword == null || oldPassword.isEmpty()) {
-            messageLiveData.setValue("Password non valida");
+            messageLiveData.setValue(getApplication().getString(R.string.invalid_password));
             return;
         }
 
@@ -78,18 +79,23 @@ public class ChangeEmailViewModel extends AndroidViewModel {
             user.reload().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     boolean verified = user.isEmailVerified();
-                    Log.d("ChangeEmailVM", "Reload completato. Email verificata = " + verified);
-                    messageLiveData.postValue(verified ?
-                            "Email verificata, puoi cambiare email" :
-                            "Email non ancora verificata");
+                    if (verified) {
+                        messageLiveData.postValue(getApplication().getString(R.string.email_verified));
+                    } else {
+                        messageLiveData.postValue(getApplication().getString(R.string.email_not_verified));
+                    }
                 } else {
-                    Log.e("ChangeEmailVM", "Errore reload utente", task.getException());
-                    messageLiveData.postValue("Errore reload utente: " + task.getException().getMessage());
+                    messageLiveData.postValue(
+                            getApplication().getString(R.string.user_reload_error)
+                                    + ": " + task.getException().getMessage()
+                    );
                 }
             });
+
         } else {
             Log.e("ChangeEmailVM", "refreshFirebaseUser: utente non loggato");
-            messageLiveData.postValue("Utente non loggato");
+            messageLiveData.postValue(getApplication().getString(R.string.user_not_logged_in));
+
         }
     }
 

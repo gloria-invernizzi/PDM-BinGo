@@ -36,11 +36,12 @@ public class ConfirmPasswordDialogFragment extends DialogFragment {
         passwordEditText = view.findViewById(R.id.password_edit_text);
 
         return new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Conferma identità")
+                .setTitle(getString(R.string.confirm_identity_title))
                 .setView(view)
-                .setPositiveButton("Conferma", null) //  listener dopo
-                .setNegativeButton("Annulla", (dialog, which) -> dismiss())
+                .setPositiveButton(getString(R.string.confirm_button), null)
+                .setNegativeButton(getString(R.string.cancel_button), (dialog, which) -> dismiss())
                 .create();
+
     }
 
     @Override
@@ -58,9 +59,10 @@ public class ConfirmPasswordDialogFragment extends DialogFragment {
                             : "";
 
                     if (password.isEmpty()) {
-                        passwordEditText.setError("Inserisci la password");
-                        return; //  NON chiude il dialog
+                        passwordEditText.setError(getString(R.string.enter_password));
+                        return; // NON chiude il dialog
                     }
+
 
                     if (listener != null) {
                         listener.onPasswordConfirmed(password);

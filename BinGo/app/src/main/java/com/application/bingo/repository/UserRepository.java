@@ -1,6 +1,8 @@
 package com.application.bingo.repository;
 
 import android.content.Context;
+
+import com.application.bingo.R;
 import com.application.bingo.database.AppDatabase;
 import com.application.bingo.database.UserDao;
 import com.application.bingo.datasource.UserLocalSource;
@@ -85,7 +87,7 @@ public class UserRepository {
     public UserRepository(Context context) {
         this.context = context.getApplicationContext();
         this.localSource = new UserLocalSource(this.context);
-        this.remoteSource = new UserRemoteSource();
+        this.remoteSource = new UserRemoteSource(this.context);
         this.userDao = AppDatabase.getInstance(this.context).userDao();
         this.mAuth = FirebaseAuth.getInstance();
         this.executor = Executors.newFixedThreadPool(4);
@@ -128,7 +130,7 @@ public class UserRepository {
      */
     public void changePassword(String email, String oldPwd, String newPwd, String confirmPwd, Callback callback) {
         if (!newPwd.equals(confirmPwd)) {
-            callback.onFailure("Le password non coincidono");
+            callback.onFailure(context.getString(R.string.passwords_do_not_match));
             return;
         }
 
@@ -161,7 +163,8 @@ public class UserRepository {
 
                     @Override
                     public void onFailure(String msg) {
-                        if (callback != null) callback.onFailure("Email aggiornata su Firebase ma non localmente: " + msg);
+                        if (callback != null) callback.onFailure(
+                                context.getString(R.string.email_updated_firebase_not_local, msg));
                     }
                 });
             }

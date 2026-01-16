@@ -35,19 +35,19 @@ public class ChangePasswordViewModel extends ViewModel {
      */
     public void changePassword(String email, String oldPassword, String newPassword, String confirmPassword) {
         if (email == null || email.isEmpty()) {
-            messageLiveData.postValue("Email utente non valida");
+            messageLiveData.postValue("invalid_email");
             return;
         }
 
         if (oldPassword == null || oldPassword.isEmpty() ||
                 newPassword == null || newPassword.isEmpty() ||
                 confirmPassword == null || confirmPassword.isEmpty()) {
-            messageLiveData.postValue("Compila tutti i campi");
+            messageLiveData.postValue("fill_all_fields");
             return;
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            messageLiveData.postValue("Le password non corrispondono");
+            messageLiveData.postValue("passwords_do_not_match");
             return;
         }
 
@@ -58,7 +58,7 @@ public class ChangePasswordViewModel extends ViewModel {
             @Override
             public void onResult(boolean isGoogleUser) {
                 if (isGoogleUser) {
-                    messageLiveData.postValue("Gli utenti Google non possono cambiare la password");
+                    messageLiveData.postValue("google_users_cannot_change_password");
                     return;
                 }
 
@@ -66,7 +66,7 @@ public class ChangePasswordViewModel extends ViewModel {
                 // Controllo connessione internet
                 // -------------------------------
                 if (!userRepository.isConnectedToInternet()) {
-                    messageLiveData.postValue("Non puoi cambiare la password offline");
+                    messageLiveData.postValue("cannot_change_offline");
                     return;
                 }
 
@@ -76,7 +76,7 @@ public class ChangePasswordViewModel extends ViewModel {
                 userRepository.changePassword(email, oldPassword, newPassword, confirmPassword, new UserRepository.Callback() {
                     @Override
                     public void onSuccess(String msg) {
-                        messageLiveData.postValue("Password aggiornata con successo");
+                        messageLiveData.postValue("password_updated_success");
                     }
 
                     @Override

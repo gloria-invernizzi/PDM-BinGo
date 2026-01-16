@@ -68,7 +68,7 @@ public class ProfileViewModel extends ViewModel {
     public void updateProfile(String name, String address) {
         User u = user.getValue();
         if (u == null) {
-            error.postValue("Utente non caricato");
+            error.postValue("user_not_loaded");
             return;
         }
         u.setName(name);
@@ -84,7 +84,7 @@ public class ProfileViewModel extends ViewModel {
     public void savePhotoUri(String email, String uri) {
         User u = user.getValue();
         if (u == null) {
-            error.postValue("Utente non caricato");
+            error.postValue("user_not_found");
             return;
         }
         u.setPhotoUri(uri);
