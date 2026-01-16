@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.application.bingo.R;
 
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +55,20 @@ public class FavoriteFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        productAdapter = new ProductAdapter(favoriteProducts, true);
+        productAdapter = new ProductAdapter(favoriteProducts, true, new ProductAdapter.OnItemClickListenerCallback() {
+            @Override
+            public void onItemClick(ProductWithPackagings product) {
+                productViewModel.updateBarcode(product.getProduct().getBarcode());
+
+                Navigation.findNavController(view).navigate(R.id.action_favoriteFragment_to_resultFragment);
+            }
+            @Override
+            public void onFavoriteCheckboxClick(ProductWithPackagings product) {
+                product.getProduct().setFavorite(!product.getProduct().isFavorite());
+
+                productViewModel.updateProduct(product.getProduct());
+            }
+        });
 
         recyclerView.setAdapter(productAdapter);
 

@@ -12,6 +12,8 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.application.bingo.R;
+import com.application.bingo.ui.viewmodel.ProductViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.application.bingo.util.scanner.AppCustomScanFragment;
 import com.application.bingo.util.scanner.CustomImageAnalyzer;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -29,11 +33,16 @@ public class ScanFragment extends AppCustomScanFragment {
 
     private PreviewView previewView;
     private String lastBarcodeScanned;
+    private ProductViewModel productViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        productViewModel = new ViewModelProvider(
+                requireActivity(),
+                new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
+
         return inflater.inflate(R.layout.fragment_scan, container, false);
     }
 
@@ -111,5 +120,7 @@ public class ScanFragment extends AppCustomScanFragment {
         return this;
     }
 
-
+    public ProductViewModel getProductViewModel() {
+        return this.productViewModel;
+    }
 }

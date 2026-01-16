@@ -53,6 +53,7 @@ public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecy
         PackagingWithTranslations packaging = packagings.get(position);
 
         Material translation = packaging.getTranslations().stream()
+                //TODO: filter by the language defined on the application
                 .filter(trans -> trans.getLanguage().equalsIgnoreCase(Language.ITA.languageAsString()))
                 .findFirst()
                 .orElse(null);

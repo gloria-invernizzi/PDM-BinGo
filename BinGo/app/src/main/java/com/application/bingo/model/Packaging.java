@@ -58,11 +58,12 @@ public class Packaging {
         this.environmentalScoreMaterialScore = environmentalScoreMaterialScore;
     }
 
+    @NonNull
     public String getMaterial() {
         return material;
     }
 
-    public void setMaterial(String material) {
+    public void setMaterial(@NonNull String material) {
         this.material = material;
     }
 

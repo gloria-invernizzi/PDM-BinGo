@@ -15,6 +15,7 @@ public interface ProductResponseCallback {
     void onSuccessFromLocal(ProductWithPackagingWithTranslation product);
     void onFailureFromLocal(Exception exception);
     void onProductsFavoritesSuccessFromLocale(List<ProductWithPackagings> favorites);
+    void onProductStatusChanged(ProductWithPackagingWithTranslation product, List<ProductWithPackagings> favorites);
 
     /*
     void onFavoriteStatusChanged(Article news, List<Article> favorite);

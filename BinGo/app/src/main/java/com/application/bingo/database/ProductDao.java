@@ -1,5 +1,6 @@
 package com.application.bingo.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -29,7 +30,7 @@ public abstract class ProductDao {
     public abstract ProductWithPackagings findProductWithPackagingsByBarcode(String barcode);
     @Transaction
     @Query("SELECT * FROM packaging WHERE product_barcode = :barcode")
-    public abstract List<PackagingWithTranslations> findPackagingWithTranslationByProduct(String barcode);
+    public abstract List<PackagingWithTranslations> findPackagingWithTranslationByBarcode(String barcode);
     public ProductWithPackagingWithTranslation findProduct(String barcode) {
         ProductWithPackagings localProduct = findProductWithPackagingsByBarcode(barcode);
 
@@ -40,7 +41,7 @@ public abstract class ProductDao {
         ProductWithPackagingWithTranslation productWithPackagingWithTranslation = new ProductWithPackagingWithTranslation();
 
         productWithPackagingWithTranslation.setProduct(localProduct.getProduct());
-        productWithPackagingWithTranslation.setPackagings(findPackagingWithTranslationByProduct(barcode));
+        productWithPackagingWithTranslation.setPackagings(findPackagingWithTranslationByBarcode(barcode));
 
         return productWithPackagingWithTranslation;
     }
@@ -51,8 +52,9 @@ public abstract class ProductDao {
     abstract void insertPackaging(Packaging packaging);
     @Insert
     abstract void insertTranslations(List<Material> translations);
-    public void insertProductWithPackagingsWithTranslations(ProductWithPackagingWithTranslation productWithPackagingWithTranslation) {
+    public void insertProductWithPackagingsWithTranslations(@NonNull ProductWithPackagingWithTranslation productWithPackagingWithTranslation) {
         insert(productWithPackagingWithTranslation.getProduct());
+
         for (PackagingWithTranslations packaging:
                 productWithPackagingWithTranslation.getPackagings()) {
 
@@ -62,10 +64,23 @@ public abstract class ProductDao {
     }
 
     @Update
-    abstract void update(Product product);
+    public abstract void updateProduct(Product product);
+
     @Update
-    public void removeFromFavorites(ProductWithPackagingWithTranslation dto) {
-        //TODO
+    public abstract void updatePackaging(Packaging packagings);
+
+    @Update
+    public abstract void updateTranslations(List<Material> translations);
+
+    public void updateProductWithPackagingsWithTranslations(@NonNull ProductWithPackagingWithTranslation productWithPackagingWithTranslation) {
+        updateProduct(productWithPackagingWithTranslation.getProduct());
+
+        for (PackagingWithTranslations packaging:
+                productWithPackagingWithTranslation.getPackagings()) {
+
+            updatePackaging(packaging.getPackaging());
+            updateTranslations(packaging.getTranslations());
+        }
     }
 }
 

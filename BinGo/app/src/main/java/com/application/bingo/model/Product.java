@@ -17,10 +17,7 @@ public class Product {
     @ColumnInfo(name = "non_recyclable_and_non_biodegradable")
     private boolean nonRecyclableAndNonBiodegradable;
     @ColumnInfo(name = "is_favorite")
-    private boolean isFavorite; // TODO: think about, maybe we need relation n - n, https://developer.android.com/training/data-storage/room/relationships/many-to-many?hl=it
-
-    public Product() {
-    }
+    private boolean isFavorite;
 
     public String getImageUrl() {
         return imageUrl;
@@ -37,7 +34,6 @@ public class Product {
 
     public void setBarcode(@NonNull String barcode) {
         this.barcode = barcode;
-
     }
 
     public String getName() {
@@ -61,7 +57,7 @@ public class Product {
     }
 
     public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
+        this.isFavorite = favorite;
     }
 
     public boolean getNonRecyclableAndNonBiodegradable() {

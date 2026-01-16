@@ -27,7 +27,11 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
     @Override
     public void getProduct(String barcode) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            productCallback.onSuccessFromLocal(productDAO.findProduct(barcode));
+            if (null == productDAO.findProduct(barcode)) {
+                productCallback.onFailureFromLocal(new Exception("Il prodotto non esiste nel database locale"));
+            } else {
+                productCallback.onSuccessFromLocal(productDAO.findProduct(barcode));
+            }
         });
     }
 
@@ -39,23 +43,39 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
     }
 
     @Override
-    public void insertProduct(ProductWithPackagingWithTranslation product) {
+    public void addToFavorites(ProductWithPackagingWithTranslation product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            productDAO.insertProductWithPackagingsWithTranslations(product);
+            if (null == productDAO.findProduct(product.getProduct().getBarcode())) {
+                productDAO.insertProductWithPackagingsWithTranslations(product);
+            } else {
+                productDAO.updateProductWithPackagingsWithTranslations(product);
+            }
+
+            productCallback.onProductStatusChanged(product, productDAO.findFavorites());
         });
     }
-
-    //@Override
-    //public void insertProduct(ProductWithPackagings productWithPackagings) {
-    //    AppDatabase.databaseWriteExecutor.execute(() -> {
-    //        productDAO.insert(productWithPackagings.getProduct());
-    //    });
-    //}
 
     @Override
     public void removeFromFavorites(ProductWithPackagingWithTranslation product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            productDAO.removeFromFavorites(product);
+            productDAO.updateProductWithPackagingsWithTranslations(product);
+
+            productCallback.onProductStatusChanged(product, productDAO.findFavorites());
         });
+    }
+
+    @Override
+    public void updateProduct(Product product) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            productDAO.updateProduct(product);
+
+            ProductWithPackagingWithTranslation productWithPackagingWithTranslation = productDAO.findProduct(product.getBarcode());
+
+            productCallback.onProductStatusChanged(productWithPackagingWithTranslation, productDAO.findFavorites());
+        });
+    }
+
+    @Override
+    public void updateProduct(ProductWithPackagingWithTranslation product) {
     }
 }

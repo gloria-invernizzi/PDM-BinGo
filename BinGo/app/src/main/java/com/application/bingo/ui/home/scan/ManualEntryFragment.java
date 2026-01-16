@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -21,6 +22,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.application.bingo.R;
+import com.application.bingo.ui.viewmodel.ProductViewModel;
+import com.application.bingo.ui.viewmodel.ViewModelFactory;
 
 public class ManualEntryFragment extends Fragment {
     public interface OnManualEntryListener {
@@ -28,6 +31,8 @@ public class ManualEntryFragment extends Fragment {
     }
 
     private OnManualEntryListener listener;
+
+    private ProductViewModel productViewModel;
 
     public void setOnManualEntryListener(OnManualEntryListener listener) {
         this.listener = listener;
@@ -37,6 +42,10 @@ public class ManualEntryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        productViewModel = new ViewModelProvider(
+                requireActivity(),
+                new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
+
         return inflater.inflate(R.layout.fragment_manual_entry, container, false);
     }
 
@@ -57,8 +66,9 @@ public class ManualEntryFragment extends Fragment {
                 String barcode = barcodeInput.getText().toString().trim();
 
                 if (!TextUtils.isEmpty(barcode)) {
+                    productViewModel.updateBarcode(barcode);
+
                     Bundle bundle = new Bundle();
-                    bundle.putString("barcode", barcode);
                     listener.onGoToResult(bundle);
                 } else {
                     Toast.makeText(requireContext(), R.string.insert_valid_barcode, Toast.LENGTH_SHORT).show();

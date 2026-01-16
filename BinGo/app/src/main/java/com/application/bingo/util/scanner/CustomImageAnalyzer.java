@@ -39,9 +39,9 @@ public class CustomImageAnalyzer implements ImageAnalysis.Analyzer {
                             if (value != null && !value.equalsIgnoreCase(scanFragment.getLastScanned())) {
                                 scanFragment.setLastScanned(value);
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("barcode", value);
-                                Navigation.findNavController(scanFragment.requireView()).navigate(R.id.action_scanFragment_to_resultFragment, bundle);
+                                scanFragment.getProductViewModel().updateBarcode(value);
+
+                                Navigation.findNavController(scanFragment.requireView()).navigate(R.id.action_scanFragment_to_resultFragment);
 
                                 break;
                             }

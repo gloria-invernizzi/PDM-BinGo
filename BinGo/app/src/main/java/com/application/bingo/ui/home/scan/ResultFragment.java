@@ -2,6 +2,7 @@ package com.application.bingo.ui.home.scan;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -49,6 +50,8 @@ public class ResultFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
+        String barcode = productViewModel.getBarcodeLiveData().getValue() + " ";
+
         productName = view.findViewById(R.id.product_name);
         productBrand = view.findViewById(R.id.product_brand);
         productBarcode = view.findViewById(R.id.product_barcode);
@@ -57,18 +60,13 @@ public class ResultFragment extends Fragment {
         favoriteCheckbox = view.findViewById(R.id.favorite_checkbox);
         recyclingTitle = view.findViewById(R.id.recycling_title);
         packagingRecyclerView = view.findViewById(R.id.packaging_material_container);
-
-        packagingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        String barcode = getArguments().getString("barcode");
         productBarcode.setText(getString(R.string.barcode, barcode));
 
-        productViewModel.updateBarcode(barcode);
+        packagingRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         loadingSpinner = view.findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
-        // TODO: work with last update ??
         productViewModel.getProductLiveData(barcode, System.currentTimeMillis()).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
@@ -93,20 +91,18 @@ public class ResultFragment extends Fragment {
 
                         favoriteCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
                                 productWithPackagingWithTranslations.getProduct().setFavorite(isChecked);
 
                                 if (isChecked) {
-                                    productViewModel.insertProduct(productWithPackagingWithTranslations);
-
-                                    productViewModel.fetchFavoritesProducts();
+                                    productViewModel.addToFavorites(productWithPackagingWithTranslations);
                                 } else {
                                     productViewModel.removeFromFavorites(productWithPackagingWithTranslations);
                                 }
                             }
                         });
 
-                        Toast.makeText(requireContext(), R.string.result_success, Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(requireContext(), R.string.result_success, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(requireContext(), getString(R.string.request_error, result.toString()), Toast.LENGTH_SHORT).show();
 
