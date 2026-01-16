@@ -254,6 +254,7 @@
     <string name="error_generic">Errore: </string>
 
     <string name="error_unknown">Errore sconosciuto</string>
+    <string name="empty_favorite_list">Nessun prodotto selezionato.</string>
 
 
 </resources>

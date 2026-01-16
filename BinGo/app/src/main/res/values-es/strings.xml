@@ -248,6 +248,6 @@
     <string name="recovery_email_sent">Correo de recuperación enviado. Revisa tu bandeja de entrada.</string>
     <string name="error_generic">Error: </string>
     <string name="error_unknown">Error desconocido</string>
-
+    <string name="empty_favorite_list">Ningún elemento entre los favoritos</string>
 
 </resources>

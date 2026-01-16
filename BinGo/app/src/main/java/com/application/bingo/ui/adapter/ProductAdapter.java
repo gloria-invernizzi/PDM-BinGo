@@ -47,8 +47,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             favoriteCheckbox = view.findViewById(R.id.is_favorite);
             imageView = view.findViewById(R.id.product_image);
 
-            favoriteCheckbox.setOnClickListener(this);
-            view.setOnClickListener(this);
+            if (null != favoriteCheckbox) {
+                favoriteCheckbox.setOnClickListener(this);
+                view.setOnClickListener(this);
+            }
         }
 
         public TextView getTextViewName() {
@@ -86,7 +88,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.product_item, viewGroup, false);
+                .inflate(products.isEmpty() ? R.layout.empty_product_item : R.layout.product_item, viewGroup, false);
 
         if (this.context == null) this.context = viewGroup.getContext();
 
@@ -95,27 +97,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Product product = products.get(position).getProduct();
+        if (!products.isEmpty()) {
+            Product product = products.get(position).getProduct();
 
-        viewHolder.getTextViewName().setText(product.getName());
-        viewHolder.getTextViewBrand().setText(product.getBrand());
-        viewHolder.getFavoriteCheckbox().setChecked(product.isFavorite());
+            viewHolder.getTextViewName().setText(product.getName());
+            viewHolder.getTextViewBrand().setText(product.getBrand());
+            viewHolder.getFavoriteCheckbox().setChecked(product.isFavorite());
 
-        if (!product.getImageUrl().isEmpty()) {
-            Glide.with(context)
-                    .load(product.getImageUrl())
-                    .into(viewHolder.getImageView())
-            ;
-        }
+            if (!product.getImageUrl().isEmpty()) {
+                Glide.with(context)
+                        .load(product.getImageUrl())
+                        .into(viewHolder.getImageView())
+                ;
+            }
 
-        if (!heartVisible) {
-            viewHolder.getFavoriteCheckbox().setVisibility(View.INVISIBLE);
+            if (!heartVisible) {
+                viewHolder.getFavoriteCheckbox().setVisibility(View.INVISIBLE);
+            }
         }
     }
 
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return products.isEmpty() ? 1 : products.size();
     }
 }

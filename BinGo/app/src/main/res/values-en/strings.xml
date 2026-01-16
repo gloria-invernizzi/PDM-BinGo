@@ -213,6 +213,6 @@
     <string name="error_google_sign_in">Accesso con Google fallito</string>
     <string name="error_firebase_auth">Autenticazione fallita</string>
 
-
+    <string name="empty_favorite_list">Empty favorites list</string>
 
 </resources>
