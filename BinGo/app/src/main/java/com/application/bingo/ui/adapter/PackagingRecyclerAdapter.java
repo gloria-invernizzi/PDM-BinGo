@@ -18,9 +18,11 @@ import java.util.List;
 public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecyclerAdapter.PackagingViewHolder> {
 
     private List<PackagingWithTranslations> packagings;
+    private String language;
 
-    public PackagingRecyclerAdapter(List<PackagingWithTranslations> packagings) {
+    public PackagingRecyclerAdapter(List<PackagingWithTranslations> packagings, String language) {
         this.packagings = packagings;
+        this.language = language;
     }
 
     public static class PackagingViewHolder extends RecyclerView.ViewHolder {
@@ -53,8 +55,7 @@ public class PackagingRecyclerAdapter extends RecyclerView.Adapter<PackagingRecy
         PackagingWithTranslations packaging = packagings.get(position);
 
         Material translation = packaging.getTranslations().stream()
-                //TODO: filter by the language defined on the application
-                .filter(trans -> trans.getLanguage().equalsIgnoreCase(Language.ITA.languageAsString()))
+                .filter(trans -> trans.getLanguage().equalsIgnoreCase(language))
                 .findFirst()
                 .orElse(null);
 

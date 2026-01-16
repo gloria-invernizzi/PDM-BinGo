@@ -23,6 +23,7 @@ import com.application.bingo.model.Result;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.ui.adapter.PackagingRecyclerAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
+import com.application.bingo.ui.viewmodel.SettingsViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.bumptech.glide.Glide;
 
@@ -36,14 +37,16 @@ public class ResultFragment extends Fragment {
     private RecyclerView packagingRecyclerView;
     private ProgressBar loadingSpinner;
     private ProductViewModel productViewModel;
+    private SettingsViewModel settingsViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        productViewModel = new ViewModelProvider(
-                requireActivity(),
-                new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
+        ViewModelFactory viewModelFactory = new ViewModelFactory(requireActivity().getApplication());
+
+        productViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(ProductViewModel.class);
+        settingsViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SettingsViewModel.class);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class ResultFragment extends Fragment {
                         this.loadingSpinner.setVisibility(View.GONE);
                         this.favoriteCheckbox.setVisibility(View.VISIBLE);
 
-                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(productWithPackagingWithTranslations.getPackagings()));
+                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(productWithPackagingWithTranslations.getPackagings(), settingsViewModel.getLanguage()));
 
                         Glide.with(requireContext())
                             .load((null != productWithPackagingWithTranslations.getProduct().getImageUrl() && !productWithPackagingWithTranslations.getProduct().getImageUrl().isEmpty())
@@ -113,7 +116,7 @@ public class ResultFragment extends Fragment {
                         this.productBrand.setText(" ");
                         this.recyclingTitle.setText(" ");
 
-                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(new ArrayList<>()));
+                        this.packagingRecyclerView.setAdapter(new PackagingRecyclerAdapter(new ArrayList<>(), settingsViewModel.getLanguage()));
 
                         this.favoriteCheckbox.setVisibility(View.INVISIBLE);
                         this.loadingSpinner.setVisibility(View.GONE);
