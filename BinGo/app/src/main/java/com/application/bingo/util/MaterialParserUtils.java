@@ -13,12 +13,8 @@ import java.io.InputStream;
 
 // 5449000214911
 public class MaterialParserUtils {
-    private Context context;
+    private JSONObject rawPackagingMaterials;
     public MaterialParserUtils(Context context) {
-        this.context = context;
-    }
-
-    public PackagingWithTranslations parseMaterial(PackagingWithTranslations packaging) {
         try {
             // TODO: move json loading on object creation, constructor, instead of reading all every time
             InputStream input = context.getAssets().open("open_food_facts_packaging_materials.json");
@@ -32,9 +28,15 @@ public class MaterialParserUtils {
             input.close();
 
             String json = new String(buffer, "UTF-8");
-            JSONObject obj = new JSONObject(json);
+            this.rawPackagingMaterials = new JSONObject(json);
+        } catch (Exception e) {
+            Log.e("MaterialParser", e.getMessage() + " ");
+        }
+    }
 
-            JSONObject materialObj = obj.getJSONObject(packaging.getPackaging().getMaterial());
+    public PackagingWithTranslations parseMaterial(PackagingWithTranslations packaging) {
+        try {
+            JSONObject materialObj = this.rawPackagingMaterials.getJSONObject(packaging.getPackaging().getMaterial());
 
             for (Language language:
                  Language.cases()) {
