@@ -180,4 +180,15 @@
     <string name="change_photo">Cambia foto</string>
     <string name="photo_from_gallery">Scegli dalla galleria</string>
     <string name="photo_from_camera">Apri fotocamera</string>
+
+    <string name="error_save_notifications">Errore nel salvare impostazioni notifiche</string>
+    <string name="error_save_sound">Errore nel salvare impostazioni suono</string>
+    <string name="error_save_vibration">Errore nel salvare impostazioni vibrazione</string>
+    <string name="error_load_settings">Errore nel caricare le impostazioni</string>
+    <string name="error_load_themes">Errore nel caricare temi</string>
+    <string name="error_save_theme">Errore nel salvare tema</string>
+    <string name="error_load_languages">Errore nel caricare lingue</string>
+    <string name="error_save_language">Errore nel salvare lingua</string>
+
+
 </resources>

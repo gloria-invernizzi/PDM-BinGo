@@ -141,4 +141,14 @@
     <string name="photo_from_gallery">Choose from gallery</string>
     <string name="photo_from_camera">Open camera</string>
 
+    <string name="error_save_notifications">Error saving notification settings</string>
+    <string name="error_save_sound">Error saving sound settings</string>
+    <string name="error_save_vibration">Error saving vibration settings</string>
+    <string name="error_load_settings">Error loading settings</string>
+    <string name="error_load_themes">Error loading themes</string>
+    <string name="error_save_theme">Error saving theme</string>
+    <string name="error_load_languages">Error loading languages</string>
+    <string name="error_save_language">Error saving language</string>
+
+
 </resources>

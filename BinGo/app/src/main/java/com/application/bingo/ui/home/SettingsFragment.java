@@ -88,8 +88,9 @@ public class SettingsFragment extends Fragment {
                     e.printStackTrace();
                     if (getContext() != null) {
                         Toast.makeText(getContext(),
-                                "Errore nel salvare impostazioni notifiche",
+                                getString(R.string.error_save_notifications),
                                 Toast.LENGTH_SHORT).show();
+
                     }
                 }
             });
@@ -108,8 +109,9 @@ public class SettingsFragment extends Fragment {
                     e.printStackTrace();
                     if (getContext() != null) {
                         Toast.makeText(getContext(),
-                                "Errore nel salvare impostazioni suono",
+                                getString(R.string.error_save_sound),
                                 Toast.LENGTH_SHORT).show();
+
                     }
                 }
             });
@@ -124,7 +126,7 @@ public class SettingsFragment extends Fragment {
                     e.printStackTrace();
                     if (getContext() != null) {
                         Toast.makeText(getContext(),
-                                "Errore nel salvare impostazioni vibrazione",
+                                getString(R.string.error_save_vibration),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -139,7 +141,7 @@ public class SettingsFragment extends Fragment {
             e.printStackTrace();
             if (getContext() != null) {
                 Toast.makeText(getContext(),
-                        "Errore nel caricare le impostazioni",
+                        getString(R.string.error_load_settings),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -167,16 +169,20 @@ public class SettingsFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (getContext() != null)
-                                android.widget.Toast.makeText(getContext(), "Errore nel salvare tema",
-                                        android.widget.Toast.LENGTH_SHORT).show();
+                                android.widget.  Toast.makeText(getContext(),
+                                        getString(R.string.error_save_theme),
+                                        Toast.LENGTH_SHORT).show();
+
+
                         }
                     })
                     .show();
         } catch (Exception e) {
             e.printStackTrace();
             if (getContext() != null)
-                android.widget.Toast.makeText(getContext(), "Errore nel caricare temi",
-                        android.widget.Toast.LENGTH_SHORT).show();
+                android.widget. Toast.makeText(getContext(),
+                        getString(R.string.error_load_themes),
+                        Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -185,7 +191,7 @@ public class SettingsFragment extends Fragment {
         try {
             String[] lingueLabel = getResources().getStringArray(R.array.languages);
             String[] lingueCode = {"it", "en", "es"};
-
+            //Se non esiste lingua salvata, usa la lingua di default del telefono
             String savedLang = settingsVM.getLanguage();
             if (savedLang == null || savedLang.isEmpty()) {
                 savedLang = getResources().getConfiguration()
@@ -194,53 +200,39 @@ public class SettingsFragment extends Fragment {
                         .getLanguage();
             }
 
-            int checkedItem = 0;
+            int checkedItem = 0; //ligua selezionata di default nel dialog
             for (int i = 0; i < lingueCode.length; i++) {
                 if (lingueCode[i].equalsIgnoreCase(savedLang)) {
                     checkedItem = i;
                     break;
                 }
             }
-
+            //creo Dialog
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.choose_language)
                     .setSingleChoiceItems(lingueLabel, checkedItem, (dialog, which) -> {
                         try {
-                            String selectedCode = lingueCode[which];
-                            settingsVM.setLanguage(selectedCode);
-                            updateLocale(selectedCode);
-                            dialog.dismiss();
+                            String selectedCode = lingueCode[which]; //which: posizione lingua scelta
+                            settingsVM.setLanguage(selectedCode);//salva lingua scelta
+                            dialog.dismiss(); //chiude dialog
+                            requireActivity().recreate(); //ricrea activity
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (getContext() != null)
-                                android.widget.Toast.makeText(getContext(), "Errore nel salvare lingua",
-                                        android.widget.Toast.LENGTH_SHORT).show();
+                                android.widget.Toast.makeText(getContext(),
+                                        getString(R.string.error_save_language),
+                                        Toast.LENGTH_SHORT).show();
+
                         }
                     })
                     .show();
         } catch (Exception e) {
             e.printStackTrace();
             if (getContext() != null)
-                android.widget.Toast.makeText(getContext(), "Errore nel caricare lingue",
-                        android.widget.Toast.LENGTH_SHORT).show();
+                android.widget.Toast.makeText(getContext(),
+                        getString(R.string.error_load_languages),
+                        Toast.LENGTH_SHORT).show();
         }
     }
-    private void updateLocale(String langCode) {
-        try {
-            Locale locale = new Locale(langCode);
-            Locale.setDefault(locale);
 
-            Resources res = requireActivity().getResources();
-            Configuration config = new Configuration(res.getConfiguration());
-            config.setLocale(locale);
-            res.updateConfiguration(config, res.getDisplayMetrics());
-
-            if (isAdded()) requireActivity().recreate();
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (getContext() != null)
-                android.widget.Toast.makeText(getContext(), "Errore nell'aggiornare la lingua",
-                        android.widget.Toast.LENGTH_SHORT).show();
-        }
-    }
 }
