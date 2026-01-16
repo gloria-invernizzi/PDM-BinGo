@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "549574946118-5t8r72d7i3b3au254j6u7v8jqp80tenf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.application.bingo",
+            "certificate_hash": "ac50a50b626cfa61afad08d7fb57a3b705f98d88"
+          }
+        },
+        {
           "client_id": "549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
