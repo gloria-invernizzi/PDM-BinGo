@@ -1,7 +1,9 @@
 package com.application.bingo.datasource;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.application.bingo.R;
 import com.application.bingo.repository.UserRepository;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -17,7 +19,9 @@ public class UserRemoteSource {
     private static final String TAG = "UserRemoteSource";
     private final FirebaseAuth auth;
 
-    public UserRemoteSource() {
+    private final Context context;
+    public UserRemoteSource(Context context) {
+        this.context = context;
         auth = FirebaseAuth.getInstance();
     }
 
@@ -32,19 +36,19 @@ public class UserRemoteSource {
         FirebaseUser user = auth.getCurrentUser();
 
         if (user == null) {
-            callback.onFailure("Utente non autenticato");
+            callback.onFailure(context.getString(R.string.user_not_authenticated));
             return;
         }
 
         if (!user.isEmailVerified()) {
             user.sendEmailVerification();
-            callback.onFailure("Devi prima verificare la tua email attuale.");
+            callback.onFailure(context.getString(R.string.verify_email_first));
             return;
         }
 
         user.verifyBeforeUpdateEmail(newEmail)
-                .addOnSuccessListener(v -> callback.onSuccess("Email di verifica inviata alla nuova casella."))
-                .addOnFailureListener(e -> callback.onFailure("Errore: " + e.getMessage()));
+                .addOnSuccessListener(v -> callback.onSuccess(context.getString(R.string.verification_email_sent)))
+                .addOnFailureListener(e -> callback.onFailure(context.getString(R.string.generic_error, e.getMessage())));
     }
 
     /**
@@ -53,7 +57,8 @@ public class UserRemoteSource {
     public void updatePassword(String email, String oldPassword, String newPassword, UserRepository.Callback callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
-            if (callback != null) callback.onFailure("Utente non autenticato");
+            if (callback != null) callback.onFailure(context.getString(R.string.user_not_authenticated));
+
             return;
         }
 
@@ -63,15 +68,15 @@ public class UserRemoteSource {
                 .addOnSuccessListener(unused -> user.updatePassword(newPassword)
                         .addOnSuccessListener(v -> {
                             Log.d(TAG, "Password aggiornata su Firebase");
-                            if (callback != null) callback.onSuccess("Password aggiornata su Firebase");
+                            if (callback != null) callback.onSuccess(context.getString(R.string.password_updated));
                         })
                         .addOnFailureListener(e -> {
                             Log.e(TAG, "Errore update password", e);
-                            if (callback != null) callback.onFailure("Errore update password: " + e.getMessage());
+                            if (callback != null) callback.onFailure(context.getString(R.string.password_update_error, e.getMessage()));
                         }))
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Re-auth fallita", e);
-                    if (callback != null) callback.onFailure("Re-auth fallita: " + e.getMessage());
+                    if (callback != null) callback.onFailure(context.getString(R.string.reauth_failed, e.getMessage()));
                 });
     }
 }

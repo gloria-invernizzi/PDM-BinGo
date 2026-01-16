@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.application.bingo.PrefsManager;
+import com.application.bingo.R;
 import com.application.bingo.database.AppDatabase;
 import com.application.bingo.database.UserDao;
 import com.application.bingo.model.User;
@@ -16,11 +17,13 @@ import java.util.List;
  * Gestisce tutto ciò che è locale: Room + PrefsManager
  */
 public class UserLocalSource {
+    private final Context context;
 
     private final UserDao userDao;
     private final PrefsManager prefs;
 
     public UserLocalSource(Context context) {
+        this.context = context;
         userDao = AppDatabase.getInstance(context).userDao();
         prefs = new PrefsManager(context);
     }
@@ -101,7 +104,8 @@ public class UserLocalSource {
                 callback.onSuccess(UserRepository.PASSWORD_OK);
 
             } catch (Exception e) {
-                callback.onFailure("Errore locale: " + e.getMessage());
+                callback.onFailure(context.getString(R.string.local_error, e.getMessage()));
+
             }
         });
     }
@@ -119,9 +123,12 @@ public class UserLocalSource {
                 userDao.update(localUser);
                 prefs.updateEmailOnly(newEmail); // solo email, non cancella altri dati
 
-                callback.onSuccess("Email aggiornata localmente");
+                callback.onSuccess(context.getString(R.string.email_updated));
+
             } catch (Exception e) {
-                callback.onFailure("Errore locale: " + e.getMessage());
+                callback.onFailure(context.getString(R.string.local_error, e.getMessage()));
+
+
             }
         });
     }
@@ -130,9 +137,11 @@ public class UserLocalSource {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
                 userDao.updateFamilyId(email, familyId);
-                callback.onSuccess("Famiglia aggiornata con successo");
+                callback.onSuccess(context.getString(R.string.family_updated_success));
+
             } catch (Exception e) {
-                callback.onFailure("Errore nell'aggiornamento della famiglia: " + e.getMessage());
+                callback.onFailure(context.getString(R.string.family_update_error, e.getMessage()));
+
             }
         });
     }

@@ -88,7 +88,7 @@ public class ProfileFragment extends Fragment {
         cameraPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
                     if (granted) photoHandler.takePhoto();
-                    else Toast.makeText(getContext(), "Permesso negato", Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(getContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
                 });
 
         // -----------------------------------------------------------------------------------------
@@ -130,21 +130,47 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void setupObservers() {
 
+        // Observer dei dati dell'utente
         vm.getUser().observe(getViewLifecycleOwner(), user -> {
             Log.d("ProfileFragment", "Observer ProfileViewModel: user=" + user);
             if (user != null) {
-                Log.d("ProfileFragment", "Imposto UI: " + user.getName() + ", " + user.getEmail() + ", " + user.getAddress());
+                Log.d("ProfileFragment", "Imposto UI: "
+                        + user.getName() + ", "
+                        + user.getEmail() + ", "
+                        + user.getAddress());
                 inputName.setText(user.getName());
                 inputEmail.setText(user.getEmail());
                 inputAddress.setText(user.getAddress());
+
                 if (user.getPhotoUri() != null && !user.getPhotoUri().isEmpty()) {
                     profileImage.setImageURI(Uri.parse(user.getPhotoUri()));
                 }
             } else {
                 Log.d("ProfileFragment", "VM non ha restituito nessun utente");
+                // Mostra messaggio internazionalizzato
+                Toast.makeText(requireContext(), getString(R.string.user_not_found), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Observer dei messaggi di errore (chiavi logiche dal ViewModel)
+        vm.getError().observe(getViewLifecycleOwner(), msgKey -> {
+            if (msgKey != null) {
+                String message;
+                switch (msgKey) {
+                    case "user_not_found":
+                        message = getString(R.string.user_not_found);
+                        break;
+                    case "user_not_loaded":
+                        message = getString(R.string.user_not_loaded);
+                        break;
+                    default:
+                        message = msgKey; // fallback per eventuali messaggi dinamici dal repo
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     // ---------------------------------------------------------------------------------------------
     // CARICA UTENTE DAI PREFS
@@ -215,7 +241,7 @@ public class ProfileFragment extends Fragment {
             isEditing = true;
             inputName.setEnabled(true);
             inputAddress.setEnabled(true);
-            btnEditSave.setText("Salva");
+            btnEditSave.setText(getString(R.string.save));
             return;
         }
 
@@ -228,8 +254,8 @@ public class ProfileFragment extends Fragment {
                 inputAddress.getText().toString().trim()
         );
 
-        Toast.makeText(getContext(), "Dati salvati", Toast.LENGTH_SHORT).show();
-        btnEditSave.setText("Modifica");
+        Toast.makeText(getContext(), getString(R.string.data_saved), Toast.LENGTH_SHORT).show();
+        btnEditSave.setText(getString(R.string.edit));
     }
 
     // ---------------------------------------------------------------------------------------------

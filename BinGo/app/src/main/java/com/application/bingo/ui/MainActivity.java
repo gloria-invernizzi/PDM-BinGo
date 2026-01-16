@@ -2,6 +2,8 @@ package com.application.bingo.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -25,18 +27,26 @@ import com.application.bingo.R;
 import com.application.bingo.repository.SettingsRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        //imposta lingua
+        applySavedLanguage();
         // Tema dinamico (dark/light)
         SettingsRepository settingsRepo = new SettingsRepository(this);
-        AppCompatDelegate.setDefaultNightMode(
-                settingsRepo.isDarkTheme()
-                        ? AppCompatDelegate.MODE_NIGHT_YES
-                        : AppCompatDelegate.MODE_NIGHT_NO
-        );
+
+        if (settingsRepo.isDarkTheme()) {
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES
+            );
+        } else {
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO
+            );
+        }
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -129,4 +139,20 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         return navController.navigateUp() || super.onSupportNavigateUp();
     }
+//applicare la lingua salvata prima che l'UI venga creata
+    private void applySavedLanguage() {
+
+        SettingsRepository settingsRepo = new SettingsRepository(this);
+        String lang = settingsRepo.getLanguage(); //recupero la lingua
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Resources res = getResources(); //ottengo le resource dell'activity
+        Configuration config = new Configuration(res.getConfiguration());
+        config.setLocale(locale); //sostituisco la lingua
+
+        res.updateConfiguration(config, res.getDisplayMetrics());
+    }
+
 }

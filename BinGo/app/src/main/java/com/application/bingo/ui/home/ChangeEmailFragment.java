@@ -64,7 +64,21 @@ public class ChangeEmailFragment extends Fragment {
         viewModel.getMessageLiveData().observe(getViewLifecycleOwner(), msg -> {
             btnChangeEmail.setEnabled(true);
             if (msg != null) {
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show();
+                String message;
+                switch (msg) {
+                    case "fill_all_fields":
+                        message = getString(R.string.fill_all_fields);
+                        break;
+                    case "emails_do_not_match":
+                        message = getString(R.string.emails_do_not_match);
+                        break;
+                    case "enter_password":
+                        message = getString(R.string.enter_password);
+                        break;
+                    default:
+                        message = msg; // fallback
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -82,12 +96,7 @@ public class ChangeEmailFragment extends Fragment {
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             if (firebaseUser == null) {
-                Toast.makeText(
-                        requireContext(),
-                        "Sessione scaduta. Effettua di nuovo il login.",
-                        Toast.LENGTH_LONG
-                ).show();
-
+                Toast.makeText(requireContext(), getString(R.string.session_expired), Toast.LENGTH_LONG).show();
             }
 
             String oldEmail = firebaseUser.getEmail();
@@ -95,12 +104,14 @@ public class ChangeEmailFragment extends Fragment {
             String confirmEmail = confermaEmailEditText.getText().toString().trim();
 
             if (newEmail.isEmpty() || confirmEmail.isEmpty()) {
-                Toast.makeText(requireContext(), "Compila tutti i campi", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
+
                 return;
             }
 
             if (!newEmail.equals(confirmEmail)) {
-                Toast.makeText(requireContext(), "Le email non corrispondono", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.emails_do_not_match), Toast.LENGTH_SHORT).show();
+
                 return;
             }
 
@@ -108,11 +119,7 @@ public class ChangeEmailFragment extends Fragment {
                     new ConfirmPasswordDialogFragment(password -> {
 
                         if (password == null || password.isEmpty()) {
-                            Toast.makeText(
-                                    requireContext(),
-                                    "Inserisci la password",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            Toast.makeText(requireContext(), getString(R.string.enter_password), Toast.LENGTH_SHORT).show();
                             return;
                         }
 

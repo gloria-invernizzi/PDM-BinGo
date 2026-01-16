@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 
+import com.application.bingo.R;
+
 /**
  * PhotoHandler:
  * Classe helper per gestire la selezione della foto profilo.
@@ -26,6 +28,7 @@ public class PhotoHandler {
     private Uri cameraImageUri;
 
     public interface PhotoCallback {
+
         void onPhotoSelected(Uri uri);
     }
 
@@ -67,7 +70,7 @@ public class PhotoHandler {
         if (data != null && data.getData() != null) {
             callback.onPhotoSelected(data.getData());
         } else {
-            Toast.makeText(context, "Nessuna foto selezionata", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.no_photo_selected), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -76,7 +79,7 @@ public class PhotoHandler {
         if (cameraImageUri != null) {
             callback.onPhotoSelected(cameraImageUri);
         } else {
-            Toast.makeText(context, "Errore fotocamera", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.camera_error), Toast.LENGTH_SHORT).show();
         }
     }
 }
