@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "549574946118-f1od71ihbqtkro6ibmqm63l9acoohedu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.application.bingo",
+            "certificate_hash": "1698492598f32a7ad9583a54372c4b396c5a829b"
+          }
+        },
+        {
           "client_id": "549574946118-o29qoq8huh7j4k4deov171og4donpbic.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

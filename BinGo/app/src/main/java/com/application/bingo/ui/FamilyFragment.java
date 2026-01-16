@@ -108,7 +108,8 @@ public class FamilyFragment extends Fragment {
         btnJoin.setOnClickListener(v -> {
             String code = inputFamilyCode.getText().toString().trim();
             if (TextUtils.isEmpty(code)) {
-                inputFamilyCode.setError("Inserisci un codice");
+                inputFamilyCode.setError(getString(R.string.error_enter_code));
+
                 return;
             }
             if (currentUserEmail != null) {

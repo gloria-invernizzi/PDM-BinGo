@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.application.bingo.R;
 import com.application.bingo.model.User;
 import com.application.bingo.repository.UserRepository;
 import com.google.firebase.auth.AuthCredential;
@@ -47,7 +49,8 @@ public class LoginViewModel extends AndroidViewModel {
                 String code = ((FirebaseAuthException) e).getErrorCode();
                 // ERRORI DI CREDENZIALI → NON usare login locale
                 if (code.equals("ERROR_INVALID_CREDENTIAL") || code.equals("ERROR_USER_NOT_FOUND") || code.equals("ERROR_WRONG_PASSWORD") || code.equals("ERROR_USER_DISABLED") || code.equals("ERROR_INVALID_EMAIL")) {
-                    _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                    _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_invalid_credentials)));
+
                     return;
                 }
                 // ERRORE DI RETE → usa login locale
@@ -63,7 +66,8 @@ public class LoginViewModel extends AndroidViewModel {
                 }
             }
             // Errori generici
-            _loginState.postValue(new LoginState.Error("Errore di autenticazione"));
+            _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_authentication)));
+
         });
 
     }
@@ -80,7 +84,8 @@ public class LoginViewModel extends AndroidViewModel {
                     _loginState.postValue(new LoginState.Success(name, "", "", email, ""))
                 );
             } else {
-                _loginState.postValue(new LoginState.Error("Google Login fallito"));
+                _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_google_login)));
+
             }
         });
     }

@@ -63,13 +63,13 @@ public class RecoverPasswordFragment extends Fragment {
 
         // Validazione dell'email in input
         if (TextUtils.isEmpty(email)) {
-            etEmail.setError("L'email è richiesta.");
+            etEmail.setError(getString(R.string.error_email_required));
             etEmail.requestFocus();
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Inserisci un'email valida.");
+            etEmail.setError(getString(R.string.error_email_invalid));
             etEmail.requestFocus();
             return;
         }
@@ -82,15 +82,15 @@ public class RecoverPasswordFragment extends Fragment {
                     // Nascondi il feedback nel caso ci fosse (DA RIVEDERE)
                     if (task.isSuccessful()) {
                         // Email inviata con successo
-                        Toast.makeText(getContext(), "Email di recupero inviata. Controlla la tua casella di posta.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getString(R.string.recovery_email_sent), Toast.LENGTH_LONG).show();
                         // Torna automaticamente alla schermata di login:
                         if(getView() != null) {
                             Navigation.findNavController(getView()).popBackStack();
                         }
                     } else {
                         // Errore durante l'invio
-                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "Errore sconosciuto";
-                        Toast.makeText(getContext(), "Errore: " + errorMessage, Toast.LENGTH_LONG).show();
+                        String errorMessage = task.getException() != null ? task.getException().getMessage() : getString(R.string.error_unknown);
+                        Toast.makeText(getContext(), getString(R.string.error_generic) + errorMessage, Toast.LENGTH_LONG).show();
                     }
                 });
     }

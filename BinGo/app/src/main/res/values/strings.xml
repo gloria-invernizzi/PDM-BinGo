@@ -241,9 +241,19 @@
     <string name="confirm_button">Conferma</string>
     <string name="cancel_button">Annulla</string>
 
+    <string name="error_invalid_credentials">Credenziali errate</string>
+    <string name="error_authentication">Errore di autenticazione</string>
+    <string name="error_google_login">Login con Google fallito</string>
 
+    <string name="error_enter_code">Inserisci un codice</string>
+    <string name="error_loading_favorites">Errore nel caricamento dei preferiti</string>
 
+    <string name="error_email_required">L\'email è richiesta.</string>
+    <string name="error_email_invalid">Inserisci un\'email valida.</string>
+    <string name="recovery_email_sent">Email di recupero inviata. Controlla la tua casella di posta.</string>
+    <string name="error_generic">Errore: </string>
 
+    <string name="error_unknown">Errore sconosciuto</string>
 
 
 </resources>

@@ -196,9 +196,22 @@
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
 
+    <string name="error_invalid_credentials">Invalid credentials</string>
+    <string name="error_authentication">Authentication error</string>
+    <string name="error_google_login">Google login failed</string>
+    <string name="error_enter_code">Please enter a code</string>
+    <string name="error_loading_favorites">Failed to load favorites</string>
 
+    <string name="error_email_required">Email is required.</string>
+    <string name="error_email_invalid">Please enter a valid email.</string>
+    <string name="recovery_email_sent">Recovery email sent. Check your inbox.</string>
+    <string name="error_generic">Error: </string>
+    <string name="error_unknown">Unknown error</string>
 
-
+    <string name="error_missing_fields">Campi mancanti</string>
+    <string name="login_successful">Login effettuato</string>
+    <string name="error_google_sign_in">Accesso con Google fallito</string>
+    <string name="error_firebase_auth">Autenticazione fallita</string>
 
 
 

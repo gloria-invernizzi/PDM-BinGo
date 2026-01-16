@@ -68,9 +68,8 @@ public class FavoriteFragment extends Fragment {
 
                         circularProgressIndicator.setVisibility(View.GONE);
                     } else {
-                        Snackbar.make(view,
-                                "error",
-                                Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, getString(R.string.error_loading_favorites), Snackbar.LENGTH_SHORT).show();
+
                     }
                 })
         ;
