@@ -84,17 +84,9 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
         product.setBarcode(obj.get("code").getAsString());
         product.setBrand(jsonProduct.get("brands").getAsString());
 
-        /*
-        * try {
-            ProductWithPackagingWithTranslation p = ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findProduct(product.getBarcode());
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-            }
-        * */
-
         ProductWithPackagingWithTranslation localProduct = ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findProduct(product.getBarcode());
 
-        if (null != localProduct) {
+        if (null != localProduct && localProduct.getProduct().isFavorite()) {
             product.setFavorite(localProduct.getProduct().isFavorite());
         }
 

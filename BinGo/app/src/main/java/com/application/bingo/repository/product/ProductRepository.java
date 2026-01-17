@@ -108,7 +108,7 @@ public class ProductRepository implements ProductResponseCallback {
 
     @Override
     public void onProductStatusChanged(ProductWithPackagingWithTranslation product, List<ProductWithPackagings> favorites) {
-        //productMutableLiveData.postValue(new Result.Success<>(product));
+        // productMutableLiveData.postValue(new Result.Success<>(product)); CREA DELLE SITAZIONI RIDONDANTI, SI VERIFICANO ERRORI
 
         favoritesProductsMutableLiveData.postValue(new Result.Success<>(favorites));
     }
