@@ -87,11 +87,9 @@ public class ProductRepository implements ProductResponseCallback {
 
     @Override
     public void onSuccessFromLocal(ProductWithPackagingWithTranslation product) {
-        /*
-        * Result.Success<ProductWithPackagingWithTranslation> result = new Result.Success<>(product);
+        Result.Success<ProductWithPackagingWithTranslation> result = new Result.Success<>(product);
 
         productMutableLiveData.postValue(result);
-        * */
     }
 
     @Override
@@ -110,7 +108,7 @@ public class ProductRepository implements ProductResponseCallback {
 
     @Override
     public void onProductStatusChanged(ProductWithPackagingWithTranslation product, List<ProductWithPackagings> favorites) {
-        productMutableLiveData.postValue(new Result.Success<>(product));
+        //productMutableLiveData.postValue(new Result.Success<>(product));
 
         favoritesProductsMutableLiveData.postValue(new Result.Success<>(favorites));
     }

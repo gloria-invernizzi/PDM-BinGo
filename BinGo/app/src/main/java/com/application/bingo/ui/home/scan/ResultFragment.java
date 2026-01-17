@@ -38,6 +38,7 @@ public class ResultFragment extends Fragment {
     private ProgressBar loadingSpinner;
     private ProductViewModel productViewModel;
     private SettingsViewModel settingsViewModel;
+    private ProductWithPackagingWithTranslation productWithPackagingWithTranslations;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class ResultFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
-        String barcode = productViewModel.getBarcodeLiveData().getValue() + " ";
+        String barcode = productViewModel.getBarcodeLiveData().getValue();
 
         productName = view.findViewById(R.id.product_name);
         productBrand = view.findViewById(R.id.product_brand);
@@ -75,7 +76,7 @@ public class ResultFragment extends Fragment {
         productViewModel.getProductLiveData(barcode, System.currentTimeMillis()).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        ProductWithPackagingWithTranslation productWithPackagingWithTranslations = ((Result.Success<ProductWithPackagingWithTranslation>) result).getData();
+                        this.productWithPackagingWithTranslations = ((Result.Success<ProductWithPackagingWithTranslation>) result).getData();
 
                         this.productName.setText(productWithPackagingWithTranslations.getProduct().getName());
                         this.productBrand.setText(getString(R.string.brand, productWithPackagingWithTranslations.getProduct().getBrand()));

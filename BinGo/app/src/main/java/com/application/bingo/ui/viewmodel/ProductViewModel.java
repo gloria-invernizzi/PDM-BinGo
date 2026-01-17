@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 import com.application.bingo.model.Product;
 import com.application.bingo.model.Result;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
-import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.repository.product.ProductRepository;
 
 import java.util.List;
