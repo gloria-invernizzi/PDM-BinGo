@@ -73,7 +73,7 @@ public class ResultFragment extends Fragment {
         loadingSpinner = view.findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
-        productViewModel.getProductLiveData(barcode, System.currentTimeMillis()).observe(getViewLifecycleOwner(),
+        productViewModel.getProductLiveData(barcode).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         this.productWithPackagingWithTranslations = ((Result.Success<ProductWithPackagingWithTranslation>) result).getData();

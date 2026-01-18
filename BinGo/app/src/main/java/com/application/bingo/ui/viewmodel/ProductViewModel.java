@@ -11,6 +11,7 @@ import com.application.bingo.repository.product.ProductRepository;
 
 import java.util.List;
 
+//modella l'articolo e si interfaccia con la ui
 public class ProductViewModel extends ViewModel {
     private static final String TAG = ProductViewModel.class.getSimpleName();
 
@@ -24,9 +25,9 @@ public class ProductViewModel extends ViewModel {
         this.barcodeLiveData = new MutableLiveData<>("");
     }
 
-    public MutableLiveData<Result> getProductLiveData(String barcode, long lastUpdate) {
+    public MutableLiveData<Result> getProductLiveData(String barcode) {
         if (null == productLiveData) {
-            fetchProduct(barcode, lastUpdate);
+            fetchProduct(barcode);
         }
 
         return productLiveData;
@@ -43,7 +44,7 @@ public class ProductViewModel extends ViewModel {
         return barcodeLiveData;
     }
 
-    private void fetchProduct(String barcode, long lastUpdate) {
+    private void fetchProduct(String barcode) {
         productLiveData = productRepository.getProduct(barcode, "all");
     }
 
@@ -55,7 +56,7 @@ public class ProductViewModel extends ViewModel {
         if (!barcode.equals(barcodeLiveData.getValue())) {
             barcodeLiveData.postValue(barcode);
 
-            fetchProduct(barcode, System.currentTimeMillis());
+            fetchProduct(barcode);
         }
     }
 

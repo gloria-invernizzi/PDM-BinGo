@@ -1,4 +1,4 @@
-package com.application.bingo.ui.home;
+package com.application.bingo.ui.home.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

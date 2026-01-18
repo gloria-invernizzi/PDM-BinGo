@@ -1,4 +1,4 @@
-package com.application.bingo.ui;
+package com.application.bingo.ui.home.family;
 
 import android.os.Bundle;
 import android.text.TextUtils;

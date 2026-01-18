@@ -1,4 +1,4 @@
-package com.application.bingo.ui.home;
+package com.application.bingo.ui.home.profile;
 
 import android.Manifest;
 import android.app.Activity;

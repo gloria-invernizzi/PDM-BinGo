@@ -1,12 +1,11 @@
-package com.application.bingo.ui;
+package com.application.bingo.ui.home.favorites;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.appcompat.widget.SearchView;
 
 import com.application.bingo.R;
 
@@ -17,22 +16,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.model.Result;
 import com.application.bingo.model.relation.ProductWithPackagings;
+import com.application.bingo.ui.SearchableListFragment;
 import com.application.bingo.ui.adapter.ProductAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class FavoriteFragment extends Fragment {
+public class FavoriteFragment extends SearchableListFragment<ProductWithPackagings> {
     private RecyclerView recyclerView;
-    private List<ProductWithPackagings> favoriteProducts;
     private ProductAdapter productAdapter;
     private ProductViewModel productViewModel;
     private CircularProgressIndicator circularProgressIndicator;
+    private SearchView searchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,6 @@ public class FavoriteFragment extends Fragment {
         productViewModel = new ViewModelProvider(
                 requireActivity(),
                 new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
-
-        favoriteProducts = new ArrayList<>();
     }
 
     @Override
@@ -51,11 +48,14 @@ public class FavoriteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
 
-        circularProgressIndicator = view.findViewById(R.id.circularProgressIndicator);
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        this.circularProgressIndicator = view.findViewById(R.id.circularProgressIndicator);
+        this.recyclerView = view.findViewById(R.id.recyclerView);
+        this.searchView = view.findViewById(R.id.search_bar);
 
-        productAdapter = new ProductAdapter(favoriteProducts, true, new ProductAdapter.OnItemClickListenerCallback() {
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+        // use filtered list by query
+        productAdapter = new ProductAdapter(this.filteredList, new ProductAdapter.OnItemClickListenerCallback() {
             @Override
             public void onItemClick(ProductWithPackagings product) {
                 productViewModel.updateBarcode(product.getProduct().getBarcode());
@@ -71,12 +71,17 @@ public class FavoriteFragment extends Fragment {
         });
 
         recyclerView.setAdapter(productAdapter);
+        setupSearchView(searchView);
 
         productViewModel.getFavoriteProductsLiveData().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        this.favoriteProducts.clear();
-                        this.favoriteProducts.addAll(((Result.Success<List<ProductWithPackagings>>) result).getData());
+                        List<ProductWithPackagings> favoritesFullList = ((Result.Success<List<ProductWithPackagings>>) result).getData();
+
+                        this.fullList.clear();
+                        this.fullList.addAll(favoritesFullList);
+
+                        filterByQuery(searchView.getQuery().toString());
 
                         recyclerView.setVisibility(View.VISIBLE);
 
@@ -88,5 +93,20 @@ public class FavoriteFragment extends Fragment {
         ;
 
         return view;
+    }
+
+    @Override
+    protected boolean filterItemCondition(ProductWithPackagings item, String query) {
+        return item.getProduct().getName().toLowerCase().contains(query) ||
+                item.getProduct().getBrand().toLowerCase().contains(query) ||
+                item.getProduct().getBarcode().toLowerCase().contains(query)
+        ;
+    }
+
+    @Override
+    protected void notifyDataSetChanged() {
+        if (productAdapter != null) {
+            productAdapter.notifyDataSetChanged();
+        }
     }
 }

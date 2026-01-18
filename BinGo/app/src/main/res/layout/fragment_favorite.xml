@@ -3,7 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.FavoriteFragment">
+    tools:context=".ui.home.favorites.FavoriteFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:paddingTop="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_height="match_parent"
@@ -20,5 +32,5 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:layout_gravity="center"/>
-
+    </LinearLayout>
 </FrameLayout>

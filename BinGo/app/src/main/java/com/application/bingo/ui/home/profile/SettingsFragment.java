@@ -1,7 +1,5 @@
-package com.application.bingo.ui.home;
+package com.application.bingo.ui.home.profile;
 
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +20,6 @@ import com.application.bingo.ui.viewmodel.SettingsViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.application.bingo.util.calendar.NotificationProcessor;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import java.util.Locale;
 
 /**
  * Fragment per gestire le impostazioni dell'app:

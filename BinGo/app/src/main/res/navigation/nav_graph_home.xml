@@ -45,7 +45,7 @@
     <!-- Calendar Fragment -->
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.application.bingo.ui.CalendarFragment"
+        android:name="com.application.bingo.ui.home.CalendarFragment"
         android:label="Calendar"
         tools:layout="@layout/fragment_calendar"/>
 
@@ -59,7 +59,7 @@
     <!-- Profile Fragment -->
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.application.bingo.ui.home.ProfileFragment"
+        android:name="com.application.bingo.ui.home.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile">
 
@@ -72,7 +72,7 @@
     <!-- Settings Fragment -->
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.application.bingo.ui.home.SettingsFragment"
+        android:name="com.application.bingo.ui.home.profile.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -85,7 +85,7 @@
     <!-- ChangeEmail Fragment -->
     <fragment
         android:id="@+id/changeEmailFragment"
-        android:name="com.application.bingo.ui.home.ChangeEmailFragment"
+        android:name="com.application.bingo.ui.home.profile.ChangeEmailFragment"
         android:label="@string/change_email"
         tools:layout="@layout/fragment_change_email" />
 
@@ -99,14 +99,14 @@
     <!-- ChangePassword Fragment -->
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.application.bingo.ui.home.ChangePasswordFragment"
+        android:name="com.application.bingo.ui.home.profile.ChangePasswordFragment"
         android:label="@string/change_password"
         tools:layout="@layout/fragment_change_password"/>
 
     <!-- Favorite Fragment -->
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.application.bingo.ui.FavoriteFragment"
+        android:name="com.application.bingo.ui.home.favorites.FavoriteFragment"
         android:label="@string/favorite"
         tools:layout="@layout/fragment_favorite">
 
@@ -118,7 +118,7 @@
     <!-- Family Fragment -->
     <fragment
         android:id="@+id/familyFragment"
-        android:name="com.application.bingo.ui.FamilyFragment"
+        android:name="com.application.bingo.ui.home.family.FamilyFragment"
         android:label="Family"
         tools:layout="@layout/fragment_family" />
 

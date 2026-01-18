@@ -1,4 +1,4 @@
-package com.application.bingo.ui;
+package com.application.bingo.ui.home;
 
 import android.app.AlertDialog;
 import android.os.Bundle;

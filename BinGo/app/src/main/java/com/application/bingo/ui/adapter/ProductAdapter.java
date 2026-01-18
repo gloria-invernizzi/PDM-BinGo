@@ -20,6 +20,8 @@ import java.util.List;
 
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+    private static final int VIEW_TYPE_PRODUCT = 0;
+    private static final int VIEW_TYPE_EMPTY = 1;
 
     public interface OnItemClickListenerCallback {
         void onItemClick(ProductWithPackagings product);
@@ -27,7 +29,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     private List<ProductWithPackagings> products;
-    private boolean heartVisible;
     private Context context;
     private OnItemClickListenerCallback onItemClickListenerCallback;
 
@@ -75,9 +76,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }
     }
 
-    public ProductAdapter(List<ProductWithPackagings> products, boolean heartVisible, OnItemClickListenerCallback onItemClickListenerCallback) {
+    public ProductAdapter(List<ProductWithPackagings> products, OnItemClickListenerCallback onItemClickListenerCallback) {
         this.products = products;
-        this.heartVisible = heartVisible;
         this.onItemClickListenerCallback = onItemClickListenerCallback;
     }
 
@@ -86,7 +86,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(products.isEmpty() ? R.layout.empty_product_item : R.layout.product_item, viewGroup, false);
+                .inflate(VIEW_TYPE_EMPTY == viewType ? R.layout.empty_product_item : R.layout.product_item, viewGroup, false);
 
         if (this.context == null) this.context = viewGroup.getContext();
 
@@ -95,23 +95,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        if (!products.isEmpty()) {
-            Product product = products.get(position).getProduct();
+        if (VIEW_TYPE_EMPTY == getItemViewType(position)) {
+            return;
+        }
 
-            viewHolder.getTextViewName().setText(product.getName());
-            viewHolder.getTextViewBrand().setText(product.getBrand());
-            viewHolder.getFavoriteCheckbox().setChecked(product.isFavorite());
+        Product product = this.products.get(position).getProduct();
 
-            if (!product.getImageUrl().isEmpty()) {
-                Glide.with(context)
-                        .load(product.getImageUrl())
-                        .into(viewHolder.getImageView())
-                ;
-            }
+        viewHolder.getTextViewName().setText(product.getName());
+        viewHolder.getTextViewBrand().setText(product.getBrand());
+        viewHolder.getFavoriteCheckbox().setChecked(product.isFavorite());
 
-            if (!heartVisible) {
-                viewHolder.getFavoriteCheckbox().setVisibility(View.INVISIBLE);
-            }
+        if (!product.getImageUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(product.getImageUrl())
+                    .into(viewHolder.getImageView())
+            ;
         }
     }
 
@@ -119,5 +117,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public int getItemCount() {
         return products.isEmpty() ? 1 : products.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (products == null || products.isEmpty()) {
+            return VIEW_TYPE_EMPTY;
+        }
+        return VIEW_TYPE_PRODUCT;
     }
 }
