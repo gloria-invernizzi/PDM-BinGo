@@ -65,20 +65,41 @@ public class LoginViewModel extends AndroidViewModel {
                     _loginState.postValue(new LoginState.Success(name, "", "", email, password))
                 );
             } else {
-                handleFirebaseError(task.getException());
+                handleFirebaseError(task.getException(), email, password);
             }
         });
     }
 
-    private void handleFirebaseError(Exception e) {
-        String errorMsg = getApplication().getString(R.string.error_authentication);
+    private void handleFirebaseError(Exception e, String email, String password) {
         if (e instanceof FirebaseAuthException) {
             String code = ((FirebaseAuthException) e).getErrorCode();
-            if (code.equals("ERROR_WRONG_PASSWORD") || code.equals("ERROR_USER_NOT_FOUND")) {
-                errorMsg = getApplication().getString(R.string.error_invalid_credentials);
+            
+            // ERRORI DI CREDENZIALI → NON usare login locale
+            if (code.equals("ERROR_INVALID_CREDENTIAL") || 
+                code.equals("ERROR_USER_NOT_FOUND") || 
+                code.equals("ERROR_WRONG_PASSWORD") || 
+                code.equals("ERROR_USER_DISABLED") || 
+                code.equals("ERROR_INVALID_EMAIL")) {
+                _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                return;
+            }
+            
+            // ERRORE DI RETE → prova login locale
+            if (code.equals("ERROR_NETWORK_REQUEST_FAILED")) {
+                repository.findLocalUser(email, password, localUser -> {
+                    if (localUser != null) {
+                        _loginState.postValue(new LoginState.Success(
+                            localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
+                    } else {
+                        _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                    }
+                });
+                return;
             }
         }
-        _loginState.postValue(new LoginState.Error(errorMsg));
+        
+        // FALLBACK: Gestisce tutti gli altri errori imprevisti
+        _loginState.postValue(new LoginState.Error("Errore di autenticazione"));
     }
 
     public void loginWithGoogle(AuthCredential credential) {
@@ -94,7 +115,6 @@ public class LoginViewModel extends AndroidViewModel {
                 );
             } else {
                 _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_google_login)));
-
             }
         });
     }
