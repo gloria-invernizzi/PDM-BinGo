@@ -82,7 +82,21 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void loginWithGoogle(AuthCredential credential) {
-        // ... (rimane simile, dato che Google richiede sempre rete)
+        _loginState.setValue(new LoginState.Loading());
+        repository.firebaseSignInWithCredential(credential).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser fbUser = task.getResult().getUser();
+                String name = fbUser != null && fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "";
+                String email = fbUser != null ? fbUser.getEmail() : "";
+
+                repository.saveLocalUser(new User(name, "", "", email, ""), () ->
+                    _loginState.postValue(new LoginState.Success(name, "", "", email, ""))
+                );
+            } else {
+                _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_google_login)));
+
+            }
+        });
     }
 
     public static abstract class LoginState {

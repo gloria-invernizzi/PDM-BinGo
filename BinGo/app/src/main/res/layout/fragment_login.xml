@@ -45,7 +45,8 @@
                     android:layout_height="wrap_content"
                     android:padding="12dp"
                     android:inputType="textEmailAddress"
-                    android:importantForAutofill="yes" />
+                    android:importantForAutofill="yes"
+                    android:autofillHints="emailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -63,7 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
-                    android:importantForAutofill="yes" />
+                    android:importantForAutofill="yes"
+                    android:autofillHints="password" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
