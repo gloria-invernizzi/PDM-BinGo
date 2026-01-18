@@ -26,6 +26,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.application.bingo.R;
 import com.application.bingo.repository.SettingsRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.Locale;
 
@@ -47,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
                     AppCompatDelegate.MODE_NIGHT_NO
             );
         }
+
+        // Abilita persistenza Firestore per accesso dati offline
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build();
+        FirebaseFirestore.getInstance().setFirestoreSettings(settings);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);

@@ -16,6 +16,11 @@
         <action
             android:id="@+id/action_welcomeFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_home"
+            app:destination="@id/nav_graph"
+            app:popUpTo="@id/nav_graph_login"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -43,7 +48,13 @@
         android:id="@+id/registerFragment"
         android:name="com.application.bingo.ui.RegisterFragment"
         android:label="@string/create_account"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_nav_graph_home"
+            app:destination="@id/nav_graph"
+            app:popUpTo="@id/nav_graph_login"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/recoverPasswordFragment"

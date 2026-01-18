@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 import com.application.bingo.R;
 
@@ -23,6 +24,12 @@ public class WelcomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         NavController navController = NavHostFragment.findNavController(this);
+
+        // Controllo sessione esistente (offline/online)
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            navController.navigate(R.id.action_welcomeFragment_to_home);
+            return;
+        }
 
         // Vai al Login
         view.findViewById(R.id.btnGoToLogin).setOnClickListener(v ->

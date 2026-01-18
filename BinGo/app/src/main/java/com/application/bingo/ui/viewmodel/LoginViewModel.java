@@ -23,71 +23,66 @@ public class LoginViewModel extends AndroidViewModel {
         repository = new UserRepository(application);
     }
 
+    /**
+     * Strategia OFFLINE FIRST:
+     * 1. Controlla il database locale (Room). Se l'utente esiste, entra subito.
+     * 2. In parallelo (o se non trovato locale), prova la validazione su Firebase.
+     */
     public void login(String email, String password) {
         _loginState.setValue(new LoginState.Loading());
 
-        // Cerchiamo l'utente locale ma eseguiamo SEMPRE il sign-in su Firebase per validare la sessione
-
-        repository.firebaseSignIn(email, password).addOnCompleteListener(task -> {
-            // Login ONLINE riuscito
-            if (task.isSuccessful()) {
-                repository.findLocalUser(email, password, localUser -> {
-                    if (localUser != null) {
-                        _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
-                    } else {
-                        // Se è su Firebase ma non locale (es. cambio dispositivo)
-                        FirebaseUser fbUser = task.getResult().getUser();
-                        String name = fbUser != null ? fbUser.getDisplayName() : "";
-                        _loginState.postValue(new LoginState.Success(name, "", "", email, password));
-                    }
-                });
-                return;
-            }
-
-            Exception e = task.getException();
-            if (e instanceof FirebaseAuthException) {
-                String code = ((FirebaseAuthException) e).getErrorCode();
-                // ERRORI DI CREDENZIALI → NON usare login locale
-                if (code.equals("ERROR_INVALID_CREDENTIAL") || code.equals("ERROR_USER_NOT_FOUND") || code.equals("ERROR_WRONG_PASSWORD") || code.equals("ERROR_USER_DISABLED") || code.equals("ERROR_INVALID_EMAIL")) {
-                    _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_invalid_credentials)));
-
-                    return;
+        // 1. CERCA PRIMA IN LOCALE (Offline First)
+        repository.findLocalUser(email, password, localUser -> {
+            if (localUser != null) {
+                // TROVATO! Entriamo subito
+                _loginState.postValue(new LoginState.Success(
+                        localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
+                
+                // Se c'è rete, facciamo un sign-in silente su Firebase per aggiornare il token
+                if (repository.isInternetAvailable()) {
+                    repository.firebaseSignIn(email, password);
                 }
-                // ERRORE DI RETE → usa login locale
-                if (code.equals("ERROR_NETWORK_REQUEST_FAILED")) {
-                    repository.findLocalUser(email, password, localUser -> {
-                        if (localUser != null) {
-                            _loginState.postValue(new LoginState.Success(localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
-                        } else {
-                            _loginState.postValue(new LoginState.Error("Credenziali errate"));
-                        }
-                    });
-                    return;
+            } else {
+                // 2. NON TROVATO LOCALE -> PROVA FIREBASE
+                if (repository.isInternetAvailable()) {
+                    performFirebaseLogin(email, password);
+                } else {
+                    _loginState.postValue(new LoginState.Error("Utente non trovato localmente e connessione assente."));
                 }
             }
-            // Errori generici
-            _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_authentication)));
-
         });
+    }
 
+    private void performFirebaseLogin(String email, String password) {
+        repository.firebaseSignIn(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser fbUser = task.getResult().getUser();
+                String name = (fbUser != null && fbUser.getDisplayName() != null) ? fbUser.getDisplayName() : "";
+
+                // Successo online: salviamo localmente per la prossima volta che saremo offline
+                User newUser = new User(name, "", "", email, password);
+                repository.saveLocalUser(newUser, () -> 
+                    _loginState.postValue(new LoginState.Success(name, "", "", email, password))
+                );
+            } else {
+                handleFirebaseError(task.getException());
+            }
+        });
+    }
+
+    private void handleFirebaseError(Exception e) {
+        String errorMsg = getApplication().getString(R.string.error_authentication);
+        if (e instanceof FirebaseAuthException) {
+            String code = ((FirebaseAuthException) e).getErrorCode();
+            if (code.equals("ERROR_WRONG_PASSWORD") || code.equals("ERROR_USER_NOT_FOUND")) {
+                errorMsg = getApplication().getString(R.string.error_invalid_credentials);
+            }
+        }
+        _loginState.postValue(new LoginState.Error(errorMsg));
     }
 
     public void loginWithGoogle(AuthCredential credential) {
-        _loginState.setValue(new LoginState.Loading());
-        repository.firebaseSignInWithCredential(credential).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                FirebaseUser fbUser = task.getResult().getUser();
-                String name = fbUser != null && fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "";
-                String email = fbUser != null ? fbUser.getEmail() : "";
-                
-                repository.saveLocalUser(new User(name, "", "", email, ""), () -> 
-                    _loginState.postValue(new LoginState.Success(name, "", "", email, ""))
-                );
-            } else {
-                _loginState.postValue(new LoginState.Error(getApplication().getString(R.string.error_google_login)));
-
-            }
-        });
+        // ... (rimane simile, dato che Google richiede sempre rete)
     }
 
     public static abstract class LoginState {

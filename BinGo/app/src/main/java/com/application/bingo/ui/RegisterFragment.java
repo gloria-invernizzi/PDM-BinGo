@@ -1,8 +1,6 @@
-// File: `BinGo/app/src/main/java/com/application/bingo/ui/RegisterFragment.java`
 package com.application.bingo.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,26 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.application.bingo.database.AppDatabase;
 import com.application.bingo.PrefsManager;
 import com.application.bingo.R;
 import com.application.bingo.model.User;
+import com.application.bingo.repository.UserRepository;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.AuthResult;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class RegisterFragment extends Fragment {
     private TextInputEditText etName, etSurname, etAddress, etEmail, etPassword, etConfirm;
     private CheckBox cbRemember;
     private PrefsManager prefs;
-    private final Executor bg = Executors.newSingleThreadExecutor();
     private FirebaseAuth mAuth;
+    private UserRepository userRepository;
 
     public RegisterFragment() {}
 
@@ -47,6 +40,7 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        userRepository = new UserRepository(requireContext());
         prefs = new PrefsManager(requireContext());
         etName = view.findViewById(R.id.etName);
         etSurname = view.findViewById(R.id.etSurname);
@@ -87,38 +81,21 @@ public class RegisterFragment extends Fragment {
         }
 
         mAuth.createUserWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(requireActivity(), (Task<AuthResult> task) -> {
+                .addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
-                        bg.execute(() -> {
-                            User existing = AppDatabase.getInstance(requireContext()).userDao().findByEmail(email);
-                            if (existing == null) {
-                                // Usa costruttore a 5 parametri
-                                User user = new User(name, surname, address, email, pass);
-                                user.setPhotoUri(""); // foto vuota iniziale
-                                long id = AppDatabase.getInstance(requireContext()).userDao().insert(user);
-
-                                if (id > 0) {
-                                    if (remember) {
-                                        // salva nome, surname, address, email, password e flag remember
-                                        prefs.saveUser(name, surname, address, email, pass);
-                                        prefs.setRemember(true);
-                                    } else {
-                                        prefs.setRemember(false);
-                                        prefs.clearSavedUser();
-                                    }
-                                    requireActivity().runOnUiThread(() -> {
-                                        Toast.makeText(requireContext(), "Registrazione completata", Toast.LENGTH_SHORT).show();
-                                        requireActivity().getOnBackPressedDispatcher().onBackPressed();
-                                    });
-                                }
+                        User user = new User(name, surname, address, email, pass);
+                        user.setPhotoUri(""); // foto vuota iniziale
+                        userRepository.saveLocalUser(user, () -> requireActivity().runOnUiThread(() -> {
+                            if (remember) {
+                                prefs.saveUser(name, surname, address, email, pass);
+                                prefs.setRemember(true);
                             } else {
-                                // già presente in Room (caso raro)
-                                requireActivity().runOnUiThread(() -> {
-                                    Toast.makeText(requireContext(), "Utente già presente", Toast.LENGTH_SHORT).show();
-                                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
-                                });
+                                prefs.setRemember(false);
+                                prefs.clearSavedUser();
                             }
-                        });
+                            Toast.makeText(requireContext(), "Registrazione completata!", Toast.LENGTH_SHORT).show();
+                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                        }));
                     } else {
                         Exception exception = task.getException();
                         if (exception instanceof FirebaseAuthUserCollisionException) {
@@ -130,8 +107,6 @@ public class RegisterFragment extends Fragment {
                         }
                     }
                 });
-
-
     }
 
     private String getText(TextInputEditText et) {
