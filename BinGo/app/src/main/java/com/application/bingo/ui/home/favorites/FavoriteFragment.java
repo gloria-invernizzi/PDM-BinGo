@@ -9,6 +9,7 @@ import androidx.appcompat.widget.SearchView;
 
 import com.application.bingo.R;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,22 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.model.Result;
 import com.application.bingo.model.relation.ProductWithPackagings;
-import com.application.bingo.ui.SearchableListFragment;
 import com.application.bingo.ui.adapter.ProductAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class FavoriteFragment extends SearchableListFragment<ProductWithPackagings> {
+public class FavoriteFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
     private ProductViewModel productViewModel;
     private CircularProgressIndicator circularProgressIndicator;
     private SearchView searchView;
+    private List<ProductWithPackagings> filteredFavoritesProducts;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class FavoriteFragment extends SearchableListFragment<ProductWithPackagin
         productViewModel = new ViewModelProvider(
                 requireActivity(),
                 new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
+
+        filteredFavoritesProducts = new ArrayList<>();
     }
 
     @Override
@@ -55,7 +59,7 @@ public class FavoriteFragment extends SearchableListFragment<ProductWithPackagin
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         // use filtered list by query
-        productAdapter = new ProductAdapter(this.filteredList, new ProductAdapter.OnItemClickListenerCallback() {
+        productAdapter = new ProductAdapter(filteredFavoritesProducts, new ProductAdapter.OnItemClickListenerCallback() {
             @Override
             public void onItemClick(ProductWithPackagings product) {
                 productViewModel.updateBarcode(product.getProduct().getBarcode());
@@ -69,19 +73,19 @@ public class FavoriteFragment extends SearchableListFragment<ProductWithPackagin
                 productViewModel.updateProduct(product.getProduct());
             }
         });
-
         recyclerView.setAdapter(productAdapter);
-        setupSearchView(searchView);
 
-        productViewModel.getFavoriteProductsLiveData().observe(getViewLifecycleOwner(),
+        this.setupSearchView(searchView, productViewModel.getSearchQuery());
+
+        productViewModel.getFilteredFavorites().observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<ProductWithPackagings> favoritesFullList = ((Result.Success<List<ProductWithPackagings>>) result).getData();
+                        List<ProductWithPackagings> newFilteredFavorites = ((Result.Success<List<ProductWithPackagings>>) result).getData();
 
-                        this.fullList.clear();
-                        this.fullList.addAll(favoritesFullList);
+                        this.filteredFavoritesProducts.clear();
+                        this.filteredFavoritesProducts.addAll(newFilteredFavorites);
 
-                        filterByQuery(searchView.getQuery().toString());
+                        productAdapter.notifyDataSetChanged();
 
                         recyclerView.setVisibility(View.VISIBLE);
 
@@ -95,18 +99,19 @@ public class FavoriteFragment extends SearchableListFragment<ProductWithPackagin
         return view;
     }
 
-    @Override
-    protected boolean filterItemCondition(ProductWithPackagings item, String query) {
-        return item.getProduct().getName().toLowerCase().contains(query) ||
-                item.getProduct().getBrand().toLowerCase().contains(query) ||
-                item.getProduct().getBarcode().toLowerCase().contains(query)
-        ;
-    }
+    private void setupSearchView(SearchView searchView, String initialQuery) {
+        searchView.setQuery(initialQuery, false);
 
-    @Override
-    protected void notifyDataSetChanged() {
-        if (productAdapter != null) {
-            productAdapter.notifyDataSetChanged();
-        }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) { return false; }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                productViewModel.setSearchQuery(newText);
+
+                return true;
+            }
+        });
     }
 }
