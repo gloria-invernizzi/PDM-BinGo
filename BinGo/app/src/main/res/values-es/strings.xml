@@ -249,5 +249,6 @@
     <string name="error_generic">Error: </string>
     <string name="error_unknown">Error desconocido</string>
     <string name="empty_favorite_list">Ningún elemento entre los favoritos</string>
+    <string name="no_material_translation">No hay descripción para el material.</string>
 
 </resources>

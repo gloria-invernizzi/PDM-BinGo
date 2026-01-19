@@ -1,0 +1,20 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_small"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
+
+    <TextView
+        android:id="@+id/empty_message"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginVertical="10dp"
+        android:padding="@dimen/margin_small"
+        android:text="@string/no_packaging_details" />
+</com.google.android.material.card.MaterialCardView>
+
+

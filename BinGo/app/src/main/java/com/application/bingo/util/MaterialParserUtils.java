@@ -16,7 +16,6 @@ public class MaterialParserUtils {
     private JSONObject rawPackagingMaterials;
     public MaterialParserUtils(Context context) {
         try {
-            // TODO: move json loading on object creation, constructor, instead of reading all every time
             InputStream input = context.getAssets().open("open_food_facts_packaging_materials.json");
 
             int size = input.available();
@@ -64,9 +63,9 @@ public class MaterialParserUtils {
                     hasName = true;
                 }
 
-                material.setEmpty(!(hasDescription || hasName));
-
-                packaging.addTranslation(material);
+                if (hasDescription || hasName) {
+                    packaging.addTranslation(material);
+                }
             }
 
             return packaging;

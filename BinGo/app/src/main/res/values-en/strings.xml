@@ -214,5 +214,6 @@
     <string name="error_firebase_auth">Autenticazione fallita</string>
 
     <string name="empty_favorite_list">Empty favorites list</string>
+    <string name="no_material_translation">No description available for the material.</string>
 
 </resources>
