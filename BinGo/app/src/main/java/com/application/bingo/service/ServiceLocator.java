@@ -57,7 +57,6 @@ public class ServiceLocator {
     public ProductRepository getProductRepository(Application application, boolean debugMode) {
         BaseProductRemoteDataSource productRemoteDataSource;
         BaseProductLocalDataSource productLocalDataSource;
-        PrefsManager prefsManager = new PrefsManager(application);
 
         // TODO: debug mode
         /*if (debugMode) {
@@ -70,7 +69,7 @@ public class ServiceLocator {
         }*/
 
         productRemoteDataSource = new ProductApiDataSource();
-        productLocalDataSource = new ProductLocalDataSource(getAppDatabase(application), prefsManager);
+        productLocalDataSource = new ProductLocalDataSource(getAppDatabase(application));
 
         // Repository ha sorgente dati sia remota che locale
         return new ProductRepository(application, productRemoteDataSource, productLocalDataSource);

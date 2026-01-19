@@ -13,15 +13,9 @@ import java.util.List;
 
 public class ProductLocalDataSource extends BaseProductLocalDataSource {
     private final ProductDao productDAO;
-    private final PackagingDao packagingDAO;
-    private final PrefsManager prefsManager;
 
-    public ProductLocalDataSource(AppDatabase appDatabase,
-                                  PrefsManager prefsManager) {
+    public ProductLocalDataSource(AppDatabase appDatabase) {
         this.productDAO = appDatabase.productDao();
-        this.packagingDAO = appDatabase.packagingDao();
-
-        this.prefsManager = prefsManager;
     }
 
     @Override
@@ -51,7 +45,7 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
                 productDAO.updateProductWithPackagingsWithTranslations(product);
             }
 
-            productCallback.onProductStatusChanged(product, productDAO.findFavorites());
+            productCallback.onProductStatusChanged(productDAO.findFavorites());
         });
     }
 
@@ -60,7 +54,7 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             productDAO.updateProductWithPackagingsWithTranslations(product);
 
-            productCallback.onProductStatusChanged(product, productDAO.findFavorites());
+            productCallback.onProductStatusChanged(productDAO.findFavorites());
         });
     }
 
@@ -69,13 +63,7 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             productDAO.updateProduct(product);
 
-            ProductWithPackagingWithTranslation productWithPackagingWithTranslation = productDAO.findProduct(product.getBarcode());
-
-            productCallback.onProductStatusChanged(productWithPackagingWithTranslation, productDAO.findFavorites());
+            productCallback.onProductStatusChanged(productDAO.findFavorites());
         });
-    }
-
-    @Override
-    public void updateProduct(ProductWithPackagingWithTranslation product) {
     }
 }

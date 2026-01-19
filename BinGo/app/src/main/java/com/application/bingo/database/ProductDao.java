@@ -25,6 +25,7 @@ public abstract class ProductDao {
     @Query("SELECT * FROM product WHERE is_favorite = 1")
     public abstract List<ProductWithPackagings> findFavorites();
 
+    // Select
     @Transaction
     @Query("SELECT * FROM product WHERE barcode = :barcode")
     public abstract ProductWithPackagings findProductWithPackagingsByBarcode(String barcode);
@@ -46,6 +47,7 @@ public abstract class ProductDao {
         return productWithPackagingWithTranslation;
     }
 
+    // Insert
     @Insert
     public abstract void insert(Product product);
     @Insert
@@ -63,15 +65,13 @@ public abstract class ProductDao {
         }
     }
 
+    // Update
     @Update
     public abstract void updateProduct(Product product);
-
     @Update
     public abstract void updatePackaging(Packaging packagings);
-
     @Update
     public abstract void updateTranslations(List<Material> translations);
-
     public void updateProductWithPackagingsWithTranslations(@NonNull ProductWithPackagingWithTranslation productWithPackagingWithTranslation) {
         updateProduct(productWithPackagingWithTranslation.getProduct());
 

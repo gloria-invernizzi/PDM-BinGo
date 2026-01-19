@@ -15,8 +15,6 @@ import com.application.bingo.util.NetworkUtil;
 import java.util.List;
 
 public class ProductRepository implements ProductResponseCallback {
-    private static final String TAG = ProductRepository.class.getSimpleName();
-
     private final MutableLiveData<Result> productMutableLiveData;
     private final MutableLiveData<Result> favoritesProductsMutableLiveData;
 
@@ -66,10 +64,6 @@ public class ProductRepository implements ProductResponseCallback {
         productLocalDataSource.updateProduct(product);
     }
 
-    public void updateProduct(ProductWithPackagingWithTranslation product) {
-        productLocalDataSource.updateProduct(product);
-    }
-
 
     @Override
     public void onSuccessFromRemote(ProductWithPackagingWithTranslation product, long lastUpdate) {
@@ -107,9 +101,7 @@ public class ProductRepository implements ProductResponseCallback {
     }
 
     @Override
-    public void onProductStatusChanged(ProductWithPackagingWithTranslation product, List<ProductWithPackagings> favorites) {
-        // productMutableLiveData.postValue(new Result.Success<>(product)); CREA DELLE SITAZIONI RIDONDANTI, SI VERIFICANO ERRORI
-
+    public void onProductStatusChanged(List<ProductWithPackagings> favorites) {
         favoritesProductsMutableLiveData.postValue(new Result.Success<>(favorites));
     }
 }

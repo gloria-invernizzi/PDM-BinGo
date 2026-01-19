@@ -17,18 +17,18 @@ import java.util.List;
 
 //modella l'articolo e si interfaccia con la ui
 public class ProductViewModel extends ViewModel {
-    private static final String TAG = ProductViewModel.class.getSimpleName();
 
     private final ProductRepository productRepository;
     private MutableLiveData<Result> productLiveData;
     private MutableLiveData<Result> favoriteProductsLiveData;
-    private MutableLiveData<String> barcodeLiveData;
+    private MutableLiveData<String> barcodeLiveData = new MutableLiveData<>("");
     private final MutableLiveData<String> searchQuery = new MutableLiveData<>("");
+
+    // Osserva e combina i cambiamenti di più live data
     private final MediatorLiveData<Result> filteredFavorites = new MediatorLiveData<>();
 
     public ProductViewModel(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.barcodeLiveData = new MutableLiveData<>("");
 
         MutableLiveData<Result> favoritesSource = getFavoriteProductsLiveData();
 
@@ -83,10 +83,6 @@ public class ProductViewModel extends ViewModel {
         }
     }
 
-    public void fetchFavoritesProducts() {
-        getFavoriteProducts();
-    }
-
     public void addToFavorites(ProductWithPackagingWithTranslation product) {
         productRepository.addToFavorites(product);
     }
@@ -96,10 +92,6 @@ public class ProductViewModel extends ViewModel {
     }
 
     public void updateProduct(Product product) {
-        productRepository.updateProduct(product);
-    }
-
-    public void updateProduct(ProductWithPackagingWithTranslation product) {
         productRepository.updateProduct(product);
     }
 

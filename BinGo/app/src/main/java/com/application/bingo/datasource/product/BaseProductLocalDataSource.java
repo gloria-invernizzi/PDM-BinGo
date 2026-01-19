@@ -19,7 +19,4 @@ public abstract class BaseProductLocalDataSource {
 
     public abstract void removeFromFavorites(ProductWithPackagingWithTranslation productDto);
     public abstract void updateProduct(Product product);
-    public abstract void updateProduct(ProductWithPackagingWithTranslation product);
-
-    // public abstract void insertProduct(ProductWithPackagings product);
 }

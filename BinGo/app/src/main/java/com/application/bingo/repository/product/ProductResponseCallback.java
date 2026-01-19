@@ -5,7 +5,6 @@ import com.application.bingo.model.relation.ProductWithPackagings;
 
 import java.util.List;
 
-// interfaccia implementabile dai fragment
 public interface ProductResponseCallback {
     // Remote
     void onSuccessFromRemote(ProductWithPackagingWithTranslation product, long lastUpdate);
@@ -15,11 +14,5 @@ public interface ProductResponseCallback {
     void onSuccessFromLocal(ProductWithPackagingWithTranslation product);
     void onFailureFromLocal(Exception exception);
     void onProductsFavoritesSuccessFromLocale(List<ProductWithPackagings> favorites);
-    void onProductStatusChanged(ProductWithPackagingWithTranslation product, List<ProductWithPackagings> favorites);
-
-    /*
-    void onFavoriteStatusChanged(Article news, List<Article> favorite);
-    void onFavoriteStatusChanged(List<Article> news);
-    void onDeleteFavoriteSuccess(List<Article> favorite);
-    */
+    void onProductStatusChanged(List<ProductWithPackagings> favorites);
 }
