@@ -10,16 +10,16 @@
     <item
         android:id="@+id/calendarFragment"
         android:title="@string/calendar"
-        android:icon="@drawable/ic_calendar" />
+        android:icon="@drawable/selector_calendar" />
 
     <item
         android:id="@+id/favoriteFragment"
         android:title="@string/favorite"
-        android:icon="@drawable/ic_favorite_border" />
+        android:icon="@drawable/selector_favorite" />
 
     <item
         android:id="@+id/profileFragment"
         android:title="@string/profile_title"
-        android:icon="@drawable/ic_person" />
+        android:icon="@drawable/selector_profile" />
 
 </menu>
