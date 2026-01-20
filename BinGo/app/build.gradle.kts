@@ -30,6 +30,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    testOptions {
+        unitTests { isIncludeAndroidResources = true }
+    }
 }
 
 dependencies {
@@ -39,7 +43,6 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation("androidx.test.espresso:espresso-core:3.7.0")
     debugImplementation("androidx.fragment:fragment-testing:1.8.9")
-    implementation("androidx.test.ext:junit:1.3.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -89,5 +92,9 @@ dependencies {
     // Supporto per testare i Fragment
     debugImplementation("androidx.fragment:fragment-testing:1.6.1")
 
+    // --- Unit test (JUnit 4) ---
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
 
 }

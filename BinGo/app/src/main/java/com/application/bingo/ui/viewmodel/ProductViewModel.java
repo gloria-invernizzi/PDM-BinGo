@@ -15,7 +15,6 @@ import com.application.bingo.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-//modella l'articolo e si interfaccia con la ui
 public class ProductViewModel extends ViewModel {
 
     private final ProductRepository productRepository;
@@ -30,10 +29,9 @@ public class ProductViewModel extends ViewModel {
     public ProductViewModel(ProductRepository productRepository) {
         this.productRepository = productRepository;
 
-        MutableLiveData<Result> favoritesSource = getFavoriteProductsLiveData();
-
-        filteredFavorites.addSource(favoritesSource, result -> performFilter());
-        filteredFavorites.addSource(searchQuery, query -> performFilter());
+        favoriteProductsLiveData = productRepository.getFavoriteProducts();
+        filteredFavorites.addSource(searchQuery, q -> performFilter());
+        filteredFavorites.addSource(favoriteProductsLiveData, r -> performFilter());
     }
 
     public MutableLiveData<Result> getProductLiveData(String barcode) {

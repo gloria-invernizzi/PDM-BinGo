@@ -13,6 +13,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * ViewModel per LoginFragment
+ */
 public class LoginViewModel extends AndroidViewModel {
     private final UserRepository repository;
     private final MutableLiveData<LoginState> _loginState = new MutableLiveData<>();

@@ -16,6 +16,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * ViewModel per CalendarFragment
+ */
 public class NotificationViewModel extends ViewModel {
     private final NotificationRepository repository;
     private final MutableLiveData<Long> selectedDate = new MutableLiveData<>();

@@ -42,20 +42,7 @@ public class WasteRepository {
                 if (catObj.has("cosa_mettere")) {
                     JSONArray rifiuti = catObj.getJSONArray("cosa_mettere");
                     for (int i = 0; i < rifiuti.length(); i++) {
-                        items.add(new WasteItem(capitalizeFirstLetter(rifiuti.getString(i)), categoryKey));
-                    }
-                }
-
-                if (catObj.has("rifiuti")) {
-                    JSONObject rifiuti = catObj.getJSONObject("rifiuti");
-                    Iterator<String> keys = rifiuti.keys();
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        items.add(new WasteItem(key, categoryKey));
-                        JSONArray synonyms = rifiuti.getJSONArray(key);
-                        for (int i = 0; i < synonyms.length(); i++) {
-                            items.add(new WasteItem(capitalizeFirstLetter(synonyms.getString(i)), categoryKey));
-                        }
+                        items.add(new WasteItem(rifiuti.getString(i), categoryKey));
                     }
                 }
             }
@@ -91,13 +78,6 @@ public class WasteRepository {
         }
 
         return cats;
-    }
-
-    private static String capitalizeFirstLetter(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
 }

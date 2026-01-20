@@ -10,6 +10,9 @@ import com.application.bingo.repository.UserRepository;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * ViewModel per FamilyFragment
+ */
 public class FamilyViewModel extends ViewModel {
 
     private final UserRepository userRepository;
