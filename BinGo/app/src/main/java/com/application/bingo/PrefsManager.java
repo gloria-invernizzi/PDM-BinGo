@@ -3,6 +3,9 @@ package com.application.bingo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * Manages the application's Shared Preferences for user session and profile data.
+ */
 public class PrefsManager {
     private static final String PREFS_NAME = "bingo_prefs";
     private static final String KEY_NAME = "user_name";
@@ -19,6 +22,12 @@ public class PrefsManager {
         prefs = ctx.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
+    /**
+     * Saves user login credentials and sets the remember me flag.
+     *
+     * @param email The user's email.
+     * @param pass  The user's password.
+     */
     public void saveUser(String email, String pass) {
         prefs.edit()
                 .putString(KEY_EMAIL, email)
@@ -27,6 +36,9 @@ public class PrefsManager {
                 .apply();
     }
 
+    /**
+     * Saves full user profile information and sets the remember me flag.
+     */
     public void saveUser(String name, String surname, String address, String email, String pass) {
         prefs.edit()
                 .putString(KEY_NAME, name)
@@ -38,11 +50,18 @@ public class PrefsManager {
                 .apply();
     }
 
-    // Salva SOLO l'email per la sessione corrente (senza password)
+    /**
+     * Saves ONLY the email for the current session (without password).
+     *
+     * @param email The user's email.
+     */
     public void saveSessionEmail(String email) {
         prefs.edit().putString(KEY_EMAIL, email).apply();
     }
 
+    /**
+     * Clears all saved user information from preferences.
+     */
     public void clearSavedUser() {
         prefs.edit()
                 .remove(KEY_NAME)
@@ -74,6 +93,9 @@ public class PrefsManager {
         return prefs.getString(KEY_EMAIL, "");
     }
 
+    /**
+     * Saves the URI of the user's profile photo.
+     */
     public void savePhotoUri(String email, String uri) {
         prefs.edit()
                 .putString(KEY_PHOTO_URI, uri)
@@ -92,6 +114,9 @@ public class PrefsManager {
         return prefs.getBoolean(KEY_REMEMBER, false);
     }
 
+    /**
+     * Clears only login-related information (password and remember flag).
+     */
     public void clearLoginOnly() {
         prefs.edit()
                 .remove(KEY_PASS)
@@ -99,10 +124,16 @@ public class PrefsManager {
                 .apply();
     }
 
+    /**
+     * Updates only the saved email address.
+     */
     public void updateEmailOnly(String newEmail) {
         prefs.edit().putString(KEY_EMAIL, newEmail).apply();
     }
 
+    /**
+     * Clears all preferences in this manager.
+     */
     public void clearAll() {
         prefs.edit().clear().apply();
     }

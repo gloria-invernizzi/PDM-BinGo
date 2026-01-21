@@ -45,7 +45,7 @@ public class UserRepository {
     }
 
     /**
-     * Interface for user loading.
+     * Interface for user loading results.
      */
     public interface UserCallback {
         void onUserLoaded(User user);
@@ -53,7 +53,7 @@ public class UserRepository {
     }
 
     /**
-     * Functional interface for Google auth check.
+     * Callback for Google authentication verification.
      */
     @FunctionalInterface
     public interface GoogleCheckCallback {
@@ -61,7 +61,7 @@ public class UserRepository {
     }
 
     /**
-     * Functional interface for family members loading.
+     * Callback for family members list retrieval.
      */
     @FunctionalInterface
     public interface FamilyMembersCallback {
@@ -69,7 +69,7 @@ public class UserRepository {
     }
 
     /**
-     * Functional interface for logout requirement signaling.
+     * Callback for signaling that a logout is required (e.g., after email change).
      */
     @FunctionalInterface
     public interface LogoutCallback {
@@ -77,7 +77,7 @@ public class UserRepository {
     }
 
     /**
-     * Generic functional interface for repository operations.
+     * Generic callback for repository operations.
      */
     @FunctionalInterface
     public interface RepositoryCallback<T> {
@@ -94,14 +94,22 @@ public class UserRepository {
     }
 
     /**
-     * Checks if internet connection is available.
+     * Returns the email of the currently logged-in user or null if not authenticated.
+     */
+    public String getCurrentUserEmail() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        return (user != null) ? user.getEmail() : null;
+    }
+
+    /**
+     * Checks if internet connectivity is available.
      */
     public boolean isInternetAvailable() {
         return NetworkUtil.isInternetAvailable(context);
     }
 
     /**
-     * Compatibility method for ViewModels.
+     * Utility method for ViewModels to check internet connectivity.
      */
     public boolean isConnectedToInternet() {
         return isInternetAvailable();
@@ -109,7 +117,9 @@ public class UserRepository {
 
     /**
      * Checks if the current user is authenticated via Google.
-     * The email parameter is kept for API compatibility but the check is performed on current session.
+     * 
+     * @param email    The email to check (maintained for API compatibility).
+     * @param callback Result callback.
      */
     public void isGoogleUser(String email, GoogleCheckCallback callback) {
         FirebaseUser user = mAuth.getCurrentUser();
@@ -126,7 +136,7 @@ public class UserRepository {
     }
 
     /**
-     * Changes user password both remotely and locally.
+     * Updates the user's password both in Firebase and locally.
      */
     public void changePassword(String email, String oldPwd, String newPwd, String confirmPwd, Callback callback) {
         if (!newPwd.equals(confirmPwd)) {
@@ -148,7 +158,8 @@ public class UserRepository {
     }
 
     /**
-     * Changes user email both remotely and locally, and triggers logout if required.
+     * Updates the user's email address in Firebase and locally.
+     * Triggers a logout if the remote update is successful.
      */
     public void changeEmail(String oldEmail, String oldPassword, String newEmail, Callback callback, LogoutCallback logoutCallback) {
         remoteSource.updateEmail(newEmail, oldPassword, new Callback() {
@@ -177,7 +188,7 @@ public class UserRepository {
     }
 
     /**
-     * Finds a user in local database by email and password.
+     * Searches for a user in the local database by email and password.
      */
     public void findLocalUser(String email, String password, RepositoryCallback<User> callback) {
         executor.execute(() -> {
@@ -187,7 +198,7 @@ public class UserRepository {
     }
 
     /**
-     * Saves a user to local database if it doesn't exist.
+     * Saves a user to the local database if they do not already exist.
      */
     public void saveLocalUser(User user, Runnable onComplete) {
         executor.execute(() -> {
@@ -200,7 +211,7 @@ public class UserRepository {
     }
 
     /**
-     * Retrieves user information from local source.
+     * Retrieves user details from the local data source.
      */
     public void getUser(String email, UserCallback callback) {
         localSource.getUser(email, new UserCallback() {
@@ -217,77 +228,75 @@ public class UserRepository {
     }
 
     /**
-     * Updates user information in local source.
+     * Updates user details in the local data source.
      */
     public void updateUser(User user) {
         localSource.updateUser(user);
     }
 
     /**
-     * Updates photo URI in local source.
+     * Updates the user's profile photo URI in the local source.
      */
     public void updatePhotoUri(String email, String uri) {
         localSource.updatePhotoUri(email, uri);
     }
 
     /**
-     * Saves user to preferences.
+     * Saves user data to SharedPreferences via the local source.
      */
     public void saveToPrefs(User user) {
         localSource.saveToPrefs(user);
     }
 
     /**
-     * Updates family ID for a user.
+     * Updates the family ID for a given user locally.
      */
     public void updateFamilyId(String email, String familyId, Callback callback) {
         localSource.updateFamilyId(email, familyId, callback);
     }
 
     /**
-     * Retrieves family members by family ID.
+     * Retrieves all users belonging to a specific family ID.
      */
     public void getUsersByFamilyId(String familyId, FamilyMembersCallback callback) {
         localSource.getUsersByFamilyId(familyId, callback);
     }
 
     /**
-     * Signs in with Firebase using email and password.
+     * Authenticates a user using Firebase with email and password.
      */
     public Task<AuthResult> firebaseSignIn(String email, String password) {
         return mAuth.signInWithEmailAndPassword(email, password);
     }
 
     /**
-     * Signs in with Firebase using credentials (e.g., Google).
+     * Authenticates a user using Firebase with provided credentials (e.g., Google).
      */
     public Task<AuthResult> firebaseSignInWithCredential(AuthCredential credential) {
         return mAuth.signInWithCredential(credential);
     }
 
     /**
-     *Delete account
+     * Deletes the user's account from both Firebase and the local database.
      */
     public void deleteAccount(Callback callback) {
         if (!isInternetAvailable()) {
-            callback.onFailure(String.valueOf(R.string.delete_account_offline_error));
+            callback.onFailure(context.getString(R.string.delete_account_offline_error));
             return;
         }
 
         remoteSource.deleteAccount(new Callback() {
             @Override
             public void onSuccess(String msg) {
-                // elimina anche locale
+                // Remove user data locally upon remote success
                 localSource.deleteLocalUser(remoteSource.getFirebaseUser().getEmail());
-                callback.onSuccess(String.valueOf(R.string.delete_account_confirmation_message));
+                callback.onSuccess(context.getString(R.string.delete_account_confirmation_message));
             }
 
             @Override
             public void onFailure(String error) {
-                callback.onFailure(error); //  altri errori Firebase
+                callback.onFailure(error);
             }
         });
     }
-
-
 }

@@ -16,26 +16,36 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * NotificationRepository:
+ * Manages the persistence and scheduling of waste collection notifications.
+ */
 public class NotificationRepository {
 
     private final Context context;
     private final NotificationDao dao;
+
     public NotificationRepository(Context ctx) {
         this.context = ctx;
         AppDatabase db = AppDatabase.getInstance(ctx);
         dao = db.notificationDao();
     }
 
-    // --- SALVATAGGIO ---
+    /**
+     * Saves a notification and schedules repeating occurrences until the end of the year.
+     *
+     * @param notification The initial notification data.
+     */
     public void saveNotification(Notification notification) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(notification.getNotificationTime());
             long repeatWeeks = notification.getRepeatWeeks();
 
+            // Create occurrences until the end of the current year
             while (cal.getTimeInMillis() <= getEndOfYear()) {
                 Notification n = new Notification(cal.getTimeInMillis(), notification.getWasteType(), notification.getRepeatWeeks());
-                n.setFamilyId(notification.getFamilyId()); // Copia familyId
+                n.setFamilyId(notification.getFamilyId()); // Copy familyId
                 dao.insert(n);
                 scheduleNotification(n);
                 cal.add(Calendar.WEEK_OF_YEAR, (int) repeatWeeks);
@@ -43,7 +53,9 @@ public class NotificationRepository {
         });
     }
 
-    // --- WORKMANAGER ---
+    /**
+     * Schedules a background task using WorkManager to trigger the notification.
+     */
     private void scheduleNotification(Notification notification) {
         long delay = notification.getNotificationTime() - System.currentTimeMillis();
 
@@ -61,14 +73,18 @@ public class NotificationRepository {
         }
     }
 
-    // --- ELIMINAZIONE DI UNA NOTIFICA ---
+    /**
+     * Deletes a single notification entry from the database.
+     */
     public void deleteNotification(Notification notification) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             dao.delete(notification);
         });
     }
 
-    // --- ELIMINAZIONE ANCHE DELLE SUCCESSIVE ---
+    /**
+     * Deletes a notification and all its future repeating occurrences.
+     */
     public void deleteRepeatingNotification(Notification notification) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             dao.deleteNotifications(
@@ -79,13 +95,18 @@ public class NotificationRepository {
         });
     }
 
-    // --- CARICAMENTO ---
+    /**
+     * Retrieves all notifications for a specific day and family.
+     */
     public LiveData<List<Notification>> getNotificationsForDay(long selectedDateMillis, String familyId) {
         long startOfDay = getStartOfDay(selectedDateMillis);
         long endOfDay = getEndOfDay(selectedDateMillis);
         return dao.getNotificationsForDay(startOfDay, endOfDay, familyId);
     }
 
+    /**
+     * Helper to get the start of the day in milliseconds.
+     */
     private long getStartOfDay(long millis) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(millis);
@@ -96,6 +117,9 @@ public class NotificationRepository {
         return c.getTimeInMillis();
     }
 
+    /**
+     * Helper to get the end of the day in milliseconds.
+     */
     private long getEndOfDay(long millis) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(millis);
@@ -106,6 +130,9 @@ public class NotificationRepository {
         return c.getTimeInMillis();
     }
 
+    /**
+     * Helper to get the end of the current year in milliseconds.
+     */
     private long getEndOfYear(){
         Calendar endOfYear = Calendar.getInstance();
         endOfYear.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -116,5 +143,4 @@ public class NotificationRepository {
         endOfYear.set(Calendar.MILLISECOND, 999);
         return endOfYear.getTimeInMillis();
     }
-
 }

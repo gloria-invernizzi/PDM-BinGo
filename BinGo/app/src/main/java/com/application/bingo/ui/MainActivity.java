@@ -31,26 +31,28 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.Locale;
 
+/**
+ * MainActivity:
+ * The main activity hosting the navigation graph, toolbar, and bottom navigation.
+ * Handles global settings like theme, language, and Firestore persistence.
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //imposta lingua
+        // Set the saved language before creating the UI
         applySavedLanguage();
-        // Tema dinamico (dark/light)
+
+        // Handle dynamic theme (dark/light mode)
         SettingsRepository settingsRepo = new SettingsRepository(this);
 
         if (settingsRepo.isDarkTheme()) {
-            AppCompatDelegate.setDefaultNightMode(
-                    AppCompatDelegate.MODE_NIGHT_YES
-            );
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
-            AppCompatDelegate.setDefaultNightMode(
-                    AppCompatDelegate.MODE_NIGHT_NO
-            );
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-        // Abilita persistenza Firestore per accesso dati offline
+        // Enable Firestore persistence for offline data access
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build();
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // Apply window insets for edge-to-edge support
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top,
@@ -67,26 +70,27 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Toolbar
+        // Setup Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // NavController
+        // Setup NavController
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
 
+        if (navHostFragment == null) return;
         NavController navController = navHostFragment.getNavController();
 
-        // Bottom Navigation
+        // Setup Bottom Navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int id = destination.getId();
 
-            // Nascondi Toolbar
+            // Hide Toolbar for all destinations in this setup
             toolbar.setVisibility(View.GONE);
 
-            //Elenco fragment che non devono avere Bottom Navigation
+            // List of fragments where Bottom Navigation should be hidden
             if (id == R.id.welcomeFragment ||
                     id == R.id.loginFragment ||
                     id == R.id.registerFragment ||
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Schermate principali (no back button)
+        // Top-level destinations (no back button in action bar)
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(
                         R.id.homeFragment,
@@ -109,22 +113,20 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        // -------------------- GESTIONE PERMESSO NOTIFICHE --------------------
-        settingsRepo = new SettingsRepository(this);
-
+        // -------------------- NOTIFICATION PERMISSION MANAGEMENT --------------------
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
             } else {
-                // Permesso già concesso: aggiorno subito le impostazioni
+                // Permission already granted: update settings
                 settingsRepo.setNotificationsEnabled(true);
             }
         }
     }
 
-    // -------------------- OVERRIDE PER RICEVERE RISULTATO PERMESSO --------------------
+    // -------------------- PERMISSION RESULT CALLBACK --------------------
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -144,23 +146,27 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentContainerView);
-        NavController navController = navHostFragment.getNavController();
-        return navController.navigateUp() || super.onSupportNavigateUp();
+        if (navHostFragment != null) {
+            NavController navController = navHostFragment.getNavController();
+            return navController.navigateUp() || super.onSupportNavigateUp();
+        }
+        return super.onSupportNavigateUp();
     }
-//applicare la lingua salvata prima che l'UI venga creata
-    private void applySavedLanguage() {
 
+    /**
+     * Applies the saved language preference to the activity configuration.
+     */
+    private void applySavedLanguage() {
         SettingsRepository settingsRepo = new SettingsRepository(this);
-        String lang = settingsRepo.getLanguage(); //recupero la lingua
+        String lang = settingsRepo.getLanguage();
 
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
 
-        Resources res = getResources(); //ottengo le resource dell'activity
+        Resources res = getResources();
         Configuration config = new Configuration(res.getConfiguration());
-        config.setLocale(locale); //sostituisco la lingua
+        config.setLocale(locale);
 
         res.updateConfiguration(config, res.getDisplayMetrics());
     }
-
 }

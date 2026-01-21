@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * ViewModel per FamilyFragment
+ * ViewModel for FamilyFragment.
+ * Manages family group operations such as creating, joining, and leaving a family.
  */
 public class FamilyViewModel extends ViewModel {
 
@@ -41,28 +42,38 @@ public class FamilyViewModel extends ViewModel {
         return successMessage;
     }
 
-    // Crea un nuovo gruppo famiglia
+    /**
+     * Creates a new family group and generates a unique code.
+     * 
+     * @param email The email of the user creating the family.
+     */
     public void createFamily(String email) {
-        String newFamilyId = UUID.randomUUID().toString().substring(0, 8).toUpperCase(); // Codice breve
+        // Generate a short 8-character unique code
+        String newFamilyId = UUID.randomUUID().toString().substring(0, 8).toUpperCase(); 
         userRepository.updateFamilyId(email, newFamilyId, new UserRepository.Callback() {
             @Override
             public void onSuccess(String msg) {
                 familyId.postValue(newFamilyId);
                 loadFamilyMembers(newFamilyId);
-                successMessage.postValue("Famiglia creata: " + newFamilyId);
+                successMessage.postValue("Family created: " + newFamilyId);
             }
 
             @Override
             public void onFailure(String msg) {
-                error.postValue("Errore creazione famiglia: " + msg);
+                error.postValue("Error creating family: " + msg);
             }
         });
     }
 
-    // Unisciti a un gruppo famiglia esistente
+    /**
+     * Joins an existing family group using a family code.
+     * 
+     * @param email          The email of the user joining the family.
+     * @param familyIdToJoin The code of the family to join.
+     */
     public void joinFamily(String email, String familyIdToJoin) {
         if (familyIdToJoin == null || familyIdToJoin.isEmpty()) {
-            error.postValue("Codice famiglia non valido");
+            error.postValue("Invalid family code");
             return;
         }
         
@@ -73,47 +84,55 @@ public class FamilyViewModel extends ViewModel {
                     public void onSuccess(String msg) {
                         familyId.postValue(familyIdToJoin);
                         loadFamilyMembers(familyIdToJoin);
-                        successMessage.postValue("Unito alla famiglia con successo");
+                        successMessage.postValue("Successfully joined the family");
                     }
 
                     @Override
                     public void onFailure(String msg) {
-                        error.postValue("Errore unione famiglia: " + msg);
+                        error.postValue("Error joining family: " + msg);
                     }
                 });
             } else {
-                 error.postValue("Famiglia non trovata con questo codice");
+                 error.postValue("No family found with this code");
             }
         });
     }
     
-    // Lascia la famiglia
+    /**
+     * Removes the user from their current family group.
+     * 
+     * @param email The email of the user leaving the family.
+     */
     public void leaveFamily(String email) {
         userRepository.updateFamilyId(email, null, new UserRepository.Callback() {
             @Override
             public void onSuccess(String msg) {
                 familyId.postValue(null);
                 familyMembers.postValue(null);
-                successMessage.postValue("Hai lasciato la famiglia");
+                successMessage.postValue("You have left the family");
             }
 
             @Override
             public void onFailure(String msg) {
-                error.postValue("Errore uscita famiglia: " + msg);
+                error.postValue("Error leaving family: " + msg);
             }
         });
     }
 
+    /**
+     * Loads the list of members for a specific family.
+     */
     public void loadFamilyMembers(String familyId) {
         if (familyId == null) {
             familyMembers.postValue(null);
             return;
         }
-        userRepository.getUsersByFamilyId(familyId, members -> {
-            familyMembers.postValue(members);
-        });
+        userRepository.getUsersByFamilyId(familyId, familyMembers::postValue);
     }
     
+    /**
+     * Checks if the user is already part of a family and loads its details.
+     */
     public void checkUserFamily(String email) {
         userRepository.getUser(email, new UserRepository.UserCallback() {
             @Override

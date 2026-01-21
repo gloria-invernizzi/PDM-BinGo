@@ -7,12 +7,12 @@ import androidx.lifecycle.ViewModel;
 import com.application.bingo.repository.UserRepository;
 
 /**
- * ViewModel per il cambio password.
- * Gestisce:
- * - Validazioni minime lato ViewModel
- * - Controllo connessione internet
- * - Blocco utenti Google
- * - Notifiche alla UI tramite LiveData
+ * ViewModel for password change.
+ * Handles:
+ * - Minimum validations on ViewModel side
+ * - Internet connection check
+ * - Blocking Google users
+ * - UI notifications via LiveData
  */
 public class ChangePasswordViewModel extends ViewModel {
 
@@ -28,10 +28,17 @@ public class ChangePasswordViewModel extends ViewModel {
     }
 
     /**
-     * Cambia la password di un utente.
-     * - Controlla se l'utente è Google (non consentito)
-     * - Controlla connessione internet
-     * - Invia richiesta al repository
+     * Returns the current user's email through the repository.
+     */
+    public String getCurrentUserEmail() {
+        return userRepository.getCurrentUserEmail();
+    }
+
+    /**
+     * Changes a user's password.
+     * - Checks if the user is a Google user (not allowed)
+     * - Checks internet connection
+     * - Sends request to repository
      */
     public void changePassword(String email, String oldPassword, String newPassword, String confirmPassword) {
         if (email == null || email.isEmpty()) {
@@ -51,9 +58,7 @@ public class ChangePasswordViewModel extends ViewModel {
             return;
         }
 
-        // -------------------------------
-        // Controllo se utente Google
-        // -------------------------------
+        // Check if Google user
         userRepository.isGoogleUser(email, new UserRepository.GoogleCheckCallback() {
             @Override
             public void onResult(boolean isGoogleUser) {
@@ -62,17 +67,13 @@ public class ChangePasswordViewModel extends ViewModel {
                     return;
                 }
 
-                // -------------------------------
-                // Controllo connessione internet
-                // -------------------------------
+                // Check internet connection (Password change requires online)
                 if (!userRepository.isConnectedToInternet()) {
                     messageLiveData.postValue("cannot_change_offline");
                     return;
                 }
 
-                // -------------------------------
-                // Tutto ok → invia richiesta al repository
-                // -------------------------------
+                // Everything ok -> send request to repository
                 userRepository.changePassword(email, oldPassword, newPassword, confirmPassword, new UserRepository.Callback() {
                     @Override
                     public void onSuccess(String msg) {
@@ -84,10 +85,6 @@ public class ChangePasswordViewModel extends ViewModel {
                         messageLiveData.postValue(msg);
                     }
                 });
-            }
-
-            public void onFailure(String msg) {
-                messageLiveData.postValue(msg);
             }
         });
     }

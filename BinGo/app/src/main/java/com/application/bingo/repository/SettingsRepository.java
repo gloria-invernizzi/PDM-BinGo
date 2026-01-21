@@ -5,11 +5,10 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
 /**
- * Repository per tutte le impostazioni dell'app.
- * Gestisce la persistenza tramite SharedPreferences e
- * fornisce valori di default corretti alla prima apertura.
- * Il context dell'app viene usato per leggere impostazioni
- * di sistema (tema, lingua) senza rischi di memory leak.
+ * SettingsRepository:
+ * Manages all application-level settings.
+ * Handles persistence via SharedPreferences and provides default values.
+ * Uses the application context to prevent memory leaks while accessing system settings.
  */
 public class SettingsRepository {
 
@@ -25,21 +24,24 @@ public class SettingsRepository {
     private final Context context;
 
     public SettingsRepository(Context context) {
-        // uso context dell'app per evitare memory leak
+        // Use application context to avoid memory leaks
         this.context = context.getApplicationContext();
         prefs = this.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    // ---------------- Tema ----------------
+    // ---------------- Theme ----------------
+
     /**
-     * Restituisce il tema corrente.
-     * Se non è mai stato scelto dall'utente, usa il tema di default del telefono.
+     * Returns the current theme setting.
+     * If no setting exists, it defaults to the system's current theme.
+     *
+     * @return "dark" or "light".
      */
     public String getTheme() {
         String saved = prefs.getString(KEY_THEME, null);
 
         if (saved == null) {
-            // prima apertura: uso tema di default del telefono
+            // First run: detect system theme
             int nightModeFlags = context.getResources().getConfiguration().uiMode
                     & Configuration.UI_MODE_NIGHT_MASK;
 
@@ -58,17 +60,16 @@ public class SettingsRepository {
     }
 
     public boolean isDarkTheme() {
-        if ("dark".equals(getTheme())) {
-            return true;
-        } else {
-            return false;
-        }
+        return "dark".equals(getTheme());
     }
 
-    // ---------------- Lingua ----------------
+    // ---------------- Language ----------------
+
     /**
-     * Restituisce la lingua corrente.
-     * Se non è mai stata scelta dall'utente, usa la lingua di default del telefono.
+     * Returns the current language setting.
+     * If no setting exists, it defaults to the system's default language.
+     *
+     * @return ISO language code (e.g., "en", "it").
      */
     public String getLanguage() {
         String defaultPhoneLang = context.getResources()
@@ -78,21 +79,18 @@ public class SettingsRepository {
                 .getLanguage();
 
         String saved = prefs.getString(KEY_LANGUAGE, null);
-        if (saved == null) {
-            return defaultPhoneLang;
-        } else {
-            return saved;
-        }
+        return (saved == null) ? defaultPhoneLang : saved;
     }
 
     public void setLanguage(String language) {
         prefs.edit().putString(KEY_LANGUAGE, language).apply();
     }
 
-    // ---------------- Notifiche ----------------
+    // ---------------- Notifications ----------------
+
     public boolean isNotificationsEnabled() {
         if (!prefs.contains(KEY_NOTIFICATIONS)) {
-            return false; // default alla prima apertura
+            return false; // Default to false on first open
         } else {
             return prefs.getBoolean(KEY_NOTIFICATIONS, false);
         }
@@ -102,10 +100,11 @@ public class SettingsRepository {
         prefs.edit().putBoolean(KEY_NOTIFICATIONS, enabled).apply();
     }
 
-    // ---------------- Suono ----------------
+    // ---------------- Sound ----------------
+
     public boolean isSoundEnabled() {
         if (!prefs.contains(KEY_SOUND)) {
-            return true; // default attivo
+            return true; // Default enabled
         } else {
             return prefs.getBoolean(KEY_SOUND, true);
         }
@@ -115,10 +114,11 @@ public class SettingsRepository {
         prefs.edit().putBoolean(KEY_SOUND, enabled).apply();
     }
 
-    // ---------------- Vibrazione ----------------
+    // ---------------- Vibration ----------------
+
     public boolean isVibrationEnabled() {
         if (!prefs.contains(KEY_VIBRATION)) {
-            return true; // default attivo
+            return true; // Default enabled
         } else {
             return prefs.getBoolean(KEY_VIBRATION, true);
         }
@@ -128,9 +128,3 @@ public class SettingsRepository {
         prefs.edit().putBoolean(KEY_VIBRATION, enabled).apply();
     }
 }
-
-/*apply()  salva i dati in background, asincrono, senza bloccare il thread principale
-non torna nulla, void
- commit() slava i dai sincrono, blocca il thread fino a quando la scrittura è completata
- ritorna boolean true/false se è andata/non andata a buon fine il salvataggio
- */

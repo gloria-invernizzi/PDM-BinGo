@@ -19,6 +19,10 @@ import com.application.bingo.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * RecoverPasswordFragment:
+ * Handles the UI for requesting a password reset email via Firebase Authentication.
+ */
 public class RecoverPasswordFragment extends Fragment {
 
     private TextInputEditText etEmail;
@@ -29,14 +33,14 @@ public class RecoverPasswordFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Inizializza Firebase Auth
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Collega il layout al fragment
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recover_password, container, false);
     }
 
@@ -44,24 +48,27 @@ public class RecoverPasswordFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Associa le viste dal layout
+        // Bind views from layout
         etEmail = view.findViewById(R.id.textInputEmail_recover);
         btnSendRecovery = view.findViewById(R.id.send_recovery_button);
         tvBackToLogin = view.findViewById(R.id.back_to_login_button);
 
-        // Imposta i listener per i click
+        // Set click listeners
         btnSendRecovery.setOnClickListener(v -> sendPasswordResetEmail());
 
         tvBackToLogin.setOnClickListener(v -> {
-            // Torna al fragment di login
+            // Return to the login fragment
             Navigation.findNavController(v).popBackStack();
         });
     }
 
+    /**
+     * Validates input and triggers Firebase to send a password reset email.
+     */
     private void sendPasswordResetEmail() {
         String email = etEmail.getText().toString().trim();
 
-        // Validazione dell'email in input
+        // Validate email input
         if (TextUtils.isEmpty(email)) {
             etEmail.setError(getString(R.string.error_email_required));
             etEmail.requestFocus();
@@ -74,21 +81,18 @@ public class RecoverPasswordFragment extends Fragment {
             return;
         }
 
-        // Mostrare un feedback all'utente (es. ProgressBar)??
-
-        // Chiama il metodo di Firebase per inviare l'email
+        // Call Firebase method to send reset email
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
-                    // Nascondi il feedback nel caso ci fosse (DA RIVEDERE)
                     if (task.isSuccessful()) {
-                        // Email inviata con successo
+                        // Email sent successfully
                         Toast.makeText(getContext(), getString(R.string.recovery_email_sent), Toast.LENGTH_LONG).show();
-                        // Torna automaticamente alla schermata di login:
+                        // Automatically return to the login screen
                         if(getView() != null) {
                             Navigation.findNavController(getView()).popBackStack();
                         }
                     } else {
-                        // Errore durante l'invio
+                        // Handle failure
                         String errorMessage = task.getException() != null ? task.getException().getMessage() : getString(R.string.error_unknown);
                         Toast.makeText(getContext(), getString(R.string.error_generic) + errorMessage, Toast.LENGTH_LONG).show();
                     }
