@@ -27,17 +27,4 @@ public interface PackagingDao {
     @Transaction
     @Query("SELECT * FROM packaging WHERE material = :material")
     PackagingWithTranslations findByMaterial(String material);
-
-    /*
-
-    @Transaction
-    suspend fun addNewShoppingListWithItems(shoppingList: ShoppingList, items: List<Item>) {
-
-        val listId = addNewShoppingList(shoppingList)
-
-        items.forEach { it.parentListId = listId }
-        addNewItems(items)
-    }
-
-     */
 }
