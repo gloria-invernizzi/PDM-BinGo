@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 
-// 5449000214911
 public class MaterialParserUtils {
     private JSONObject rawPackagingMaterials;
     public MaterialParserUtils(Context context) {

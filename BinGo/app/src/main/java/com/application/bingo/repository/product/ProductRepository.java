@@ -20,10 +20,8 @@ public class ProductRepository implements ProductResponseCallback {
 
     private final BaseProductRemoteDataSource productRemoteDataSource;
     private final BaseProductLocalDataSource productLocalDataSource;
-    private final Application application;
 
-    public ProductRepository(Application application,
-                             BaseProductRemoteDataSource productRemoteDataSource,
+    public ProductRepository(BaseProductRemoteDataSource productRemoteDataSource,
                              BaseProductLocalDataSource productLocalDataSource) {
 
         productMutableLiveData = new MutableLiveData<>();
@@ -31,13 +29,12 @@ public class ProductRepository implements ProductResponseCallback {
 
         this.productRemoteDataSource = productRemoteDataSource;
         this.productLocalDataSource = productLocalDataSource;
-        this.productRemoteDataSource.setProductCallback(this, application);
+        this.productRemoteDataSource.setProductCallback(this);
         this.productLocalDataSource.setProductCallback(this);
-        this.application = application;
     }
 
-    public MutableLiveData<Result> getProduct(String barcode, String productType) {
-        if (!NetworkUtil.isInternetAvailable(application)) {
+    public MutableLiveData<Result> getProduct(String barcode, String productType, boolean isInternetAvailable) {
+        if (!isInternetAvailable) {
             productLocalDataSource.getProduct(barcode);
         } else {
             productRemoteDataSource.getProduct(barcode, productType);
@@ -64,12 +61,19 @@ public class ProductRepository implements ProductResponseCallback {
         productLocalDataSource.updateProduct(product);
     }
 
-
     @Override
     public void onSuccessFromRemote(ProductWithPackagingWithTranslation product, long lastUpdate) {
-        Result.Success<ProductWithPackagingWithTranslation> result = new Result.Success<>(product);
+        productLocalDataSource.isProductFavorite(
+                product.getProduct().getBarcode(),
+                isFavorite -> {
 
-        productMutableLiveData.postValue(result);
+                    if (Boolean.TRUE.equals(isFavorite)) {
+                        product.getProduct().setFavorite(true);
+                    }
+
+                    productMutableLiveData.postValue(new Result.Success<>(product));
+                }
+        );
     }
 
     @Override

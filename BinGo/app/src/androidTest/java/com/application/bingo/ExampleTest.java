@@ -1,49 +1,44 @@
 package com.application.bingo;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-/* esempio di test su login con Espresso
-Verificare che i campi email e password siano visibili.
 
-Verificare che il pulsante login sia cliccabile.
-
-Simulare l’inserimento di email e password e il click sul pulsante login.
-
-Controllare che venga mostrata una Toast di errore se i campi sono vuoti.*/
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import com.application.bingo.R;
 import com.application.bingo.ui.LoginFragment;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+/**
+ * Example Login tests using Espresso.
+ * 
+ * - Verifies that email and password fields are visible.
+ * - Verifies that the login button is clickable.
+ * - Simulates entering email and password and clicking the login button.
+ * - Checks that an error Toast is shown if fields are empty.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ExampleTest {
 
     @Test
     public void loginFieldsAreVisible() {
-        // Avvia il fragment in isolamento
+        // Launch the fragment in isolation
         FragmentScenario<LoginFragment> scenario =
                 FragmentScenario.launchInContainer(LoginFragment.class);
 
-        // Verifica che i campi email e password siano visibili
+        // Verify that email and password fields are visible
         onView(withId(R.id.textInputEmail)).check(matches(isDisplayed()));
         onView(withId(R.id.textInputPassword)).check(matches(isDisplayed()));
 
-        // Verifica che il pulsante login sia visibile e cliccabile
+        // Verify that the login button is visible and clickable
         onView(withId(R.id.login_button)).check(matches(isDisplayed()));
     }
 
@@ -52,13 +47,13 @@ public class ExampleTest {
         FragmentScenario<LoginFragment> scenario =
                 FragmentScenario.launchInContainer(LoginFragment.class);
 
-        // Assicurati che i campi siano vuoti (di default lo sono)
-        // Clicca sul pulsante login
+        // Ensure fields are empty (default state)
+        // Click the login button
         onView(withId(R.id.login_button)).perform(click());
 
-        // Non possiamo catturare il Toast direttamente con Espresso "base",
-        // ma se vuoi lo possiamo verificare con Espresso-Intents o con una libreria come ToastMatcher.
-        // Qui ci limitiamo a mostrare l’azione cliccando.
+        // Note: Capturing Toasts directly with base Espresso is not straightforward.
+        // It can be verified with Espresso-Intents or a library like ToastMatcher.
+        // Here we just simulate the click action.
     }
 
     @Test
@@ -66,11 +61,11 @@ public class ExampleTest {
         FragmentScenario<LoginFragment> scenario =
                 FragmentScenario.launchInContainer(LoginFragment.class);
 
-        // Inserisci email e password
+        // Enter email and password
         onView(withId(R.id.textInputEmail)).perform(typeText("test@example.com"));
         onView(withId(R.id.textInputPassword)).perform(typeText("password123"));
 
-        // Clicca sul pulsante login
+        // Click the login button
         onView(withId(R.id.login_button)).perform(click());
     }
 }

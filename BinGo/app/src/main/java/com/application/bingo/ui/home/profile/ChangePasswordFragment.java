@@ -15,14 +15,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
-import com.application.bingo.repository.UserRepository;
 import com.application.bingo.ui.viewmodel.ChangePasswordViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Fragment per cambiare la password utente.
@@ -60,70 +57,69 @@ public class ChangePasswordFragment extends Fragment {
         confermaPasswordEditText = (TextInputEditText) ((TextInputLayout)view.findViewById(R.id.conferma_password)).getEditText();
         btnChangePassword = view.findViewById(R.id.btn_change_password);
 
-        // -------------------------------
-        // Recupero email utente loggato da Firebase
-        // -------------------------------
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null || currentUser.getEmail() == null) {
+        // Creazione ViewModel tramite Factory
+        ViewModelFactory factory = new ViewModelFactory(requireActivity().getApplication());
+        changePasswordViewModel = new ViewModelProvider(this, factory).get(ChangePasswordViewModel.class);
+
+        //  Recupero Email tramite ViewModel
+        userEmail = changePasswordViewModel.getCurrentUserEmail();
+        if (userEmail == null) {
             Toast.makeText(requireContext(), getString(R.string.user_not_logged_in), Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).popBackStack();
             return;
         }
-        userEmail = currentUser.getEmail();
-        Log.d(TAG, "Email utente: " + userEmail);
 
-        // -------------------------------
-        // Verifica connessione internet
-        // -------------------------------
-        UserRepository repo = new UserRepository(requireContext());
-        if (!repo.isConnectedToInternet()) {
-            Toast.makeText(requireContext(), getString(R.string.must_be_online), Toast.LENGTH_SHORT).show();
-            NavHostFragment.findNavController(this).popBackStack();
-            return;
-        }
+        //  Osserva LiveData messaggi
+        setupObservers();
 
-        // -------------------------------
-        // Creazione ViewModel
-        // -------------------------------
-        ViewModelFactory factory = new ViewModelFactory(requireActivity().getApplication());
-        changePasswordViewModel = new ViewModelProvider(this, factory).get(ChangePasswordViewModel.class);
+        //  Pulsante cambia password
+        btnChangePassword.setOnClickListener(v -> attemptChangePassword());
+    }
 
-        // -------------------------------
-        // Osserva LiveData messaggi
-        // -------------------------------
-        changePasswordViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), message -> {
-            Log.d(TAG, "Messaggio LiveData: " + message);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-
-            if (getString(R.string.password_updated_success).equals(message)) {
-                if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
-                if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
-                if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
-                NavHostFragment.findNavController(ChangePasswordFragment.this).popBackStack();
+    private void setupObservers() {
+        changePasswordViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), messageKey -> {
+            Log.d(TAG, "Messaggio Ricevuto: " + messageKey);
+            
+            // Traduzione della chiave messaggio in stringa utente (gestione centralizzata errori)
+            String displayMessage;
+            switch (messageKey) {
+                case "password_updated_success":
+                    displayMessage = getString(R.string.password_updated_success);
+                    clearFields();
+                    NavHostFragment.findNavController(this).popBackStack();
+                    break;
+                case "cannot_change_offline":
+                    displayMessage = getString(R.string.must_be_online);
+                    break;
+                case "google_users_cannot_change_password":
+                    displayMessage = getString(R.string.google_users_cannot_change_password);
+                    break;
+                case "passwords_do_not_match":
+                    displayMessage = getString(R.string.passwords_do_not_match);
+                    break;
+                case "fill_all_fields":
+                    displayMessage = getString(R.string.error_missing_fields);
+                    break;
+                default:
+                    displayMessage = messageKey; // Messaggio d'errore diretto dal repository
+                    break;
             }
+            Toast.makeText(requireContext(), displayMessage, Toast.LENGTH_SHORT).show();
         });
+    }
 
-        // -------------------------------
-        // Pulsante cambia password
-        // -------------------------------
-        btnChangePassword.setOnClickListener(v -> {
-            String oldPass = vecchiaPasswordEditText != null ? vecchiaPasswordEditText.getText().toString().trim() : "";
-            String newPass = nuovaPasswordEditText != null ? nuovaPasswordEditText.getText().toString().trim() : "";
-            String confirmPass = confermaPasswordEditText != null ? confermaPasswordEditText.getText().toString().trim() : "";
+    private void attemptChangePassword() {
+        String oldPass = vecchiaPasswordEditText != null ? vecchiaPasswordEditText.getText().toString().trim() : "";
+        String newPass = nuovaPasswordEditText != null ? nuovaPasswordEditText.getText().toString().trim() : "";
+        String confirmPass = confermaPasswordEditText != null ? confermaPasswordEditText.getText().toString().trim() : "";
 
-            // Validazioni minime
-            if (TextUtils.isEmpty(oldPass) || TextUtils.isEmpty(newPass) || TextUtils.isEmpty(confirmPass)) {
-                Toast.makeText(requireContext(), getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
-                return;
-            }
+        // Il ViewModel gestirà le validazioni e il controllo connessione
+        changePasswordViewModel.changePassword(userEmail, oldPass, newPass, confirmPass);
+    }
 
-            if (!newPass.equals(confirmPass)) {
-                Toast.makeText(requireContext(), getString(R.string.passwords_do_not_match), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Invia richiesta al ViewModel
-            changePasswordViewModel.changePassword(userEmail, oldPass, newPass, confirmPass);
-        });
+    private void clearFields() {
+        if (vecchiaPasswordEditText != null) vecchiaPasswordEditText.setText("");
+        if (nuovaPasswordEditText != null) nuovaPasswordEditText.setText("");
+        if (confermaPasswordEditText != null) confermaPasswordEditText.setText("");
     }
 }

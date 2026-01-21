@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.bingo.R;
 import com.application.bingo.ui.adapter.FamilyMemberAdapter;
 import com.application.bingo.ui.viewmodel.FamilyViewModel;
-import com.application.bingo.ui.viewmodel.ProfileViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -29,12 +28,10 @@ import java.util.ArrayList;
 public class FamilyFragment extends Fragment {
 
     private FamilyViewModel familyViewModel;
-    private ProfileViewModel profileViewModel;
 
     private LinearLayout layoutNoFamily;
     private LinearLayout layoutHasFamily;
     private TextView textFamilyCode;
-    private RecyclerView recyclerMembers;
     private FamilyMemberAdapter adapter;
     private TextInputEditText inputFamilyCode;
 
@@ -49,12 +46,11 @@ public class FamilyFragment extends Fragment {
 
         ViewModelFactory factory = new ViewModelFactory(requireActivity().getApplication());
         familyViewModel = new ViewModelProvider(this, factory).get(FamilyViewModel.class);
-        profileViewModel = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
 
         layoutNoFamily = view.findViewById(R.id.layout_no_family);
         layoutHasFamily = view.findViewById(R.id.layout_has_family);
         textFamilyCode = view.findViewById(R.id.text_family_code);
-        recyclerMembers = view.findViewById(R.id.recycler_family_members);
+        RecyclerView recyclerMembers = view.findViewById(R.id.recycler_family_members);
         inputFamilyCode = view.findViewById(R.id.input_family_code);
         Button btnCreate = view.findViewById(R.id.btn_create_family);
         Button btnJoin = view.findViewById(R.id.btn_join_family);
@@ -82,24 +78,21 @@ public class FamilyFragment extends Fragment {
             }
         });
 
-        familyViewModel.getError().observe(getViewLifecycleOwner(), error -> {
-            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-        });
-        
-        familyViewModel.getSuccessMessage().observe(getViewLifecycleOwner(), msg -> {
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-        });
+        familyViewModel.getError().observe(getViewLifecycleOwner(),
+                error -> Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show());
+
+        familyViewModel.getSuccessMessage().observe(getViewLifecycleOwner(),
+                msg -> Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show());
 
         // Listeners
         btnCreate.setOnClickListener(v -> {
-                familyViewModel.createFamily();
+            familyViewModel.createFamily();
         });
 
         btnJoin.setOnClickListener(v -> {
-            String code = inputFamilyCode.getText().toString().trim();
+            String code = inputFamilyCode.getText() != null ? inputFamilyCode.getText().toString().trim() : "";
             if (TextUtils.isEmpty(code)) {
                 inputFamilyCode.setError(getString(R.string.error_enter_code));
-
                 return;
             }
             familyViewModel.joinFamily(code);

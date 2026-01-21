@@ -2,7 +2,6 @@ package com.application.bingo.ui.home;
 
 import android.os.Bundle;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -16,33 +15,45 @@ import android.view.ViewGroup;
 import com.application.bingo.R;
 import com.application.bingo.ui.home.scan.ManualEntryFragment;
 
+/**
+ * HomeFragment:
+ * Main landing page of the application, providing access to scanning, 
+ * waste location lookup, and family management.
+ */
 public class HomeFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate il layout del fragment
+        // Inflate the fragment layout
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
+
     @Override
-    //metodo chiamato dopo che la view del Fragment esiste
-    //contiene dati salvati se il fragment viene ricreato dopo un cambio di configurazione (ad esempio rotazione dello schermo)
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        /**
+         * Method called after the Fragment view has been created.
+         * savedInstanceState contains saved data if the fragment is recreated 
+         * after a configuration change (e.g., screen rotation).
+         */
         super.onViewCreated(view, savedInstanceState);
 
+        // Setup click listeners for main navigation cards
         CardView scanCard = view.findViewById(R.id.card_scan);
         scanCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_scanFragment));
+
         CardView whereToThrow = view.findViewById(R.id.where_to_throw);
         whereToThrow.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_whereToThrowFragment));
+
         CardView familyCard = view.findViewById(R.id.card_family);
         familyCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_familyFragment));
 
+        // Handle manual entry fragment events
         ManualEntryFragment manualFragment = (ManualEntryFragment) getChildFragmentManager()
                 .findFragmentById(R.id.manual_fragment_container);
 

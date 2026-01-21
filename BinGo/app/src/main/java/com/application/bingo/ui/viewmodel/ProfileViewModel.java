@@ -16,19 +16,19 @@ import com.google.firebase.auth.FirebaseUser;
 
 /**
  * ProfileViewModel:
- * - Mantiene lo stato dell'utente (nome, foto, email...)
- * - Chiama il repository per qualsiasi operazione sui dati
- * - Non conosce database, né Firebase
- * - Espone LiveData al Fragment
+ * - Maintains user state (name, photo, email, etc.)
+ * - Communicates with the repository for all data operations
+ * - Decoupled from specific data sources (DB, Firebase)
+ * - Exposes LiveData to the UI (Fragment)
  */
 public class ProfileViewModel extends ViewModel {
 
     private final UserRepository userRepo;
 
-    // LiveData osservata dal Fragment
+    // LiveData observed by the Fragment
     private final MutableLiveData<User> user = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
-
+    private final MutableLiveData<String> deleteAccountResult = new MutableLiveData<>();
 
     public ProfileViewModel(UserRepository userRepo) {
         this.userRepo = userRepo;
@@ -42,23 +42,29 @@ public class ProfileViewModel extends ViewModel {
         return error;
     }
 
-    private final MutableLiveData<String> deleteAccountResult = new MutableLiveData<>();
-    // ---------------------------------------------------------------------------------------------
-    // CARICA UTENTE DAL REPOSITORY
-    // ---------------------------------------------------------------------------------------------
+    public LiveData<String> getDeleteAccountResult() {
+        return deleteAccountResult;
+    }
+
+    /**
+     * Loads user data from the repository using the provided email.
+     *
+     * @param email The user's email address.
+     */
     public void loadUser(String email) {
-        Log.d("ProfileViewModel", "loadUser chiamato con email = " + email);
+        Log.d("ProfileViewModel", "loadUser called with email = " + email);
         userRepo.getUser(email, new UserRepository.UserCallback() {
             @Override
             public void onUserLoaded(User u) {
                 if (u != null) {
-                    Log.d("ProfileViewModel", "User ricevuto da UserLocalSource: " + user);
+                    Log.d("ProfileViewModel", "User received from UserLocalSource: " + u);
                     user.postValue(u);
                 } else {
-                    error.postValue("Utente non trovato");
+                    error.postValue("User not found");
                 }
             }
 
+            @Override
             public void onFailure(String msg) {
                 error.postValue(msg);
             }
@@ -74,10 +80,16 @@ public class ProfileViewModel extends ViewModel {
         loadUser(email);
     }
 
-
     // ---------------------------------------------------------------------------------------------
     // SALVA MODIFICHE NOME/INDIRIZZO
     // ---------------------------------------------------------------------------------------------
+    /**
+     * Updates profile information (name and address) in both remote and local
+     * storage.
+     *
+     * @param name    The new user name.
+     * @param address The new user address.
+     */
     public void updateProfile(String name, String address) {
         User u = user.getValue();
         if (u == null) {
@@ -86,14 +98,17 @@ public class ProfileViewModel extends ViewModel {
         }
         u.setName(name);
         u.setAddress(address);
-        userRepo.updateUser(u);   // Room / remoto
-        userRepo.saveToPrefs(u);  // aggiorna anche PrefsManager
+        userRepo.updateUser(u); // Update Room/Remote
+        userRepo.saveToPrefs(u); // Update PrefsManager
         user.postValue(u);
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // SALVA FOTO PROFILO
-    // ---------------------------------------------------------------------------------------------
+    /**
+     * Updates and saves the user's profile photo URI.
+     *
+     * @param email The user's email.
+     * @param uri   The URI of the new profile photo.
+     */
     public void savePhotoUri(String email, String uri) {
         User u = user.getValue();
         if (u == null) {
@@ -102,18 +117,14 @@ public class ProfileViewModel extends ViewModel {
         }
         u.setPhotoUri(uri);
         userRepo.updatePhotoUri(email, uri);
-        userRepo.saveToPrefs(u);  // aggiorna PrefsManager
+        userRepo.saveToPrefs(u); // Update PrefsManager
         user.postValue(u);
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // ELIMINA PROFILO
-    // ---------------------------------------------------------------------------------------------
-    public LiveData<String> getDeleteAccountResult() {
-        return deleteAccountResult;
-    }
-
-    // Metodo per eliminare account
+    /**
+     * Deletes the user account.
+     * Checks for internet availability and handles re-authentication requirements.
+     */
     public void deleteAccount() {
         User u = user.getValue();
         if (u == null) {
@@ -133,9 +144,9 @@ public class ProfileViewModel extends ViewModel {
 
             @Override
             public void onFailure(String error) {
-                deleteAccountResult.postValue(error); // qui può essere "reauth_required" o altri errori Firebase
+                // Can be "reauth_required" or other Firebase specific errors
+                deleteAccountResult.postValue(error);
             }
         });
     }
-
 }

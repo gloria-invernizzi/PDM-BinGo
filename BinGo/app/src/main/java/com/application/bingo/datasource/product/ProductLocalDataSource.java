@@ -7,9 +7,11 @@ import com.application.bingo.database.ProductDao;
 import com.application.bingo.model.Product;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.model.relation.ProductWithPackagings;
+import com.application.bingo.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ProductLocalDataSource extends BaseProductLocalDataSource {
     private final ProductDao productDAO;
@@ -64,6 +66,16 @@ public class ProductLocalDataSource extends BaseProductLocalDataSource {
             productDAO.updateProduct(product);
 
             productCallback.onProductStatusChanged(productDAO.findFavorites());
+        });
+    }
+
+    @Override
+    public void isProductFavorite(String barcode,
+                                  Consumer<Boolean> callback) {
+
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Boolean isFavorite = productDAO.isProductFavorite(barcode);
+            callback.accept(isFavorite);
         });
     }
 }

@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.test.espresso:espresso-core:3.7.0")
+    implementation("androidx.test.ext:junit:1.3.0")
     debugImplementation("androidx.fragment:fragment-testing:1.8.9")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

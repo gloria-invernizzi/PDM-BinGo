@@ -8,22 +8,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.bingo.R;
 import com.application.bingo.model.Notification;
 import com.application.bingo.ui.viewmodel.NotificationViewModel;
-import com.application.bingo.ui.viewmodel.ProfileViewModel;
-import com.application.bingo.ui.viewmodel.ViewModelFactory;
 
 import java.util.List;
 
+/**
+ * Adapter for displaying waste collection notifications in a RecyclerView.
+ */
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private List<Notification> notifications;
-
-    private NotificationViewModel viewModel;
+    private final NotificationViewModel viewModel;
     private OnItemDeleteListener deleteListener;
 
     public NotificationAdapter(List<Notification> notifications, NotificationViewModel viewModel) {
@@ -69,7 +68,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tvRepeat = itemView.findViewById(R.id.tvRepeat);
             btnDelete = itemView.findViewById(R.id.btnDelete);
 
-            // Click sul bottone delete
+            // Handle delete button clicks
             btnDelete.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
@@ -92,10 +91,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             .show();
                 }
             });
-
         }
     }
 
+    /**
+     * Interface for handling notification deletion events.
+     */
     public interface OnItemDeleteListener {
         void onItemDelete(Notification notification);
         void onItemDeleteRepeating(Notification notification);

@@ -3,6 +3,7 @@ package com.application.bingo.util.normalizer;
 import android.content.Context;
 import android.util.Log;
 
+import com.application.bingo.constants.Language;
 import com.application.bingo.model.Packaging;
 import com.application.bingo.model.Product;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
@@ -25,9 +26,10 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
 {
     private static final String PACKAGING_MISSING_MATERIAL = "packaging_data_missing";
 
-    private Context appContext;
+    private MaterialParserUtils materialParserUtils;
+
     public ProductDeserializer(Context appContext) {
-        this.appContext = appContext;
+        this.materialParserUtils = new MaterialParserUtils(appContext);
     }
 
     @Override
@@ -55,13 +57,12 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
 
             List<PackagingWithTranslations> packagingWithTranslationsList = new ArrayList<>();
 
-            MaterialParserUtils materialParser = new MaterialParserUtils(appContext);
             for (Packaging packaging:
                  packagingList) {
                 PackagingWithTranslations packagingWithTranslations = new PackagingWithTranslations();
                 packagingWithTranslations.setPackaging(packaging);
 
-                materialParser.parseMaterial(packagingWithTranslations);
+                this.materialParserUtils.parseMaterial(packagingWithTranslations);
 
                 packagingWithTranslationsList.add(packagingWithTranslations);
             }
@@ -71,10 +72,12 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
             productWithPackagingWithTranslation.setPackagings(packagingWithTranslationsList);
         }
 
-        if (jsonProduct.has("product_name_it")) {
-            product.setName(jsonProduct.get("product_name_it").getAsString());
-        } else {
-            product.setName(jsonProduct.get("product_name").getAsString());
+        product.setName(jsonProduct.get("product_name").getAsString());
+        for (Language language:
+             Language.cases()) {
+            if (jsonProduct.has("product_name_" + language.languageAsString())) {
+                product.setNameByLanguage(language, jsonProduct.get("product_name_" + language.languageAsString()).getAsString());
+            }
         }
 
         if (jsonProduct.has("image_front_url")) {
@@ -83,12 +86,6 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
 
         product.setBarcode(obj.get("code").getAsString());
         product.setBrand(jsonProduct.get("brands").getAsString());
-
-        ProductWithPackagingWithTranslation localProduct = ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findProduct(product.getBarcode());
-
-        if (null != localProduct && localProduct.getProduct().isFavorite()) {
-            product.setFavorite(localProduct.getProduct().isFavorite());
-        }
 
         return productWithPackagingWithTranslation;
     }

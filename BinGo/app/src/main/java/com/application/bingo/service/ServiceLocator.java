@@ -3,12 +3,12 @@ package com.application.bingo.service;
 import android.app.Application;
 import android.content.Context;
 
-import com.application.bingo.PrefsManager;
 import com.application.bingo.database.AppDatabase;
 import com.application.bingo.datasource.product.BaseProductLocalDataSource;
 import com.application.bingo.datasource.product.BaseProductRemoteDataSource;
 import com.application.bingo.datasource.product.ProductApiDataSource;
 import com.application.bingo.datasource.product.ProductLocalDataSource;
+import com.application.bingo.datasource.product.ProductMockDataSource;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.repository.product.ProductRepository;
 import com.application.bingo.util.normalizer.ProductDeserializer;
@@ -37,9 +37,9 @@ public class ServiceLocator {
         return INSTANCE;
     }
 
-    public ProductAPIService getProductAPIService(Context context) {
+    public ProductAPIService getProductAPIService(ProductDeserializer deserializer) {
         Gson gson = new GsonBuilder()
-            .registerTypeAdapter(ProductWithPackagingWithTranslation.class, new ProductDeserializer(context))
+            .registerTypeAdapter(ProductWithPackagingWithTranslation.class, deserializer)
             .create()
         ;
 
@@ -58,20 +58,16 @@ public class ServiceLocator {
         BaseProductRemoteDataSource productRemoteDataSource;
         BaseProductLocalDataSource productLocalDataSource;
 
-        // TODO: debug mode
-        /*if (debugMode) {
-            Json jsonParserUtil = new JSONParserUtils(application);
-            productRemoteDataSource =
-                    new ArticleMockDataSource(jsonParserUtil);
+        ProductDeserializer deserializer = new ProductDeserializer(application);
+        if (debugMode) {
+            productRemoteDataSource = new ProductMockDataSource(application);
         } else {
-            productRemoteDataSource =
-                    new ArticleNewsAPIDataSource(application.getString(R.string.product_api_key));
-        }*/
+            productRemoteDataSource = new ProductApiDataSource(deserializer);
+        }
 
-        productRemoteDataSource = new ProductApiDataSource();
         productLocalDataSource = new ProductLocalDataSource(getAppDatabase(application));
 
         // Repository ha sorgente dati sia remota che locale
-        return new ProductRepository(application, productRemoteDataSource, productLocalDataSource);
+        return new ProductRepository(productRemoteDataSource, productLocalDataSource);
     }
 }

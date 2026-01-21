@@ -14,7 +14,8 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * ViewModel per LoginFragment
+ * ViewModel for LoginFragment.
+ * Handles user authentication with an offline-first approach.
  */
 public class LoginViewModel extends AndroidViewModel {
     private final UserRepository repository;
@@ -22,47 +23,60 @@ public class LoginViewModel extends AndroidViewModel {
     public final LiveData<LoginState> loginState = _loginState;
 
     public LoginViewModel(@NonNull Application application) {
-        super(application);
-        repository = new UserRepository(application);
+        this(application, new UserRepository(application));
     }
 
     /**
-     * Strategia OFFLINE FIRST:
-     * 1. Controlla il database locale (Room). Se l'utente esiste, entra subito.
-     * 2. In parallelo (o se non trovato locale), prova la validazione su Firebase.
+     * Constructor for testing purposes to allow repository injection.
+     */
+    public LoginViewModel(@NonNull Application application, UserRepository repository) {
+        super(application);
+        this.repository = repository;
+    }
+
+    /**
+     * OFFLINE FIRST Strategy:
+     * 1. Check local database (Room). If user exists, log in immediately.
+     * 2. In parallel (or if not found locally), attempt validation via Firebase.
+     *
+     * @param email    User email
+     * @param password User password
      */
     public void login(String email, String password) {
         _loginState.setValue(new LoginState.Loading());
 
-        // 1. CERCA PRIMA IN LOCALE (Offline First)
+        // 1. SEARCH LOCALLY FIRST (Offline First)
         repository.findLocalUser(email, password, localUser -> {
             if (localUser != null) {
-                // TROVATO! Entriamo subito
+                // FOUND! Login successful immediately
                 _loginState.postValue(new LoginState.Success(
                         localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
                 
-                // Se c'è rete, facciamo un sign-in silente su Firebase per aggiornare il token
+                // If network is available, perform a silent sign-in on Firebase to refresh tokens
                 if (repository.isInternetAvailable()) {
                     repository.firebaseSignIn(email, password);
                 }
             } else {
-                // 2. NON TROVATO LOCALE -> PROVA FIREBASE
+                // 2. NOT FOUND LOCALLY -> ATTEMPT FIREBASE LOGIN
                 if (repository.isInternetAvailable()) {
                     performFirebaseLogin(email, password);
                 } else {
-                    _loginState.postValue(new LoginState.Error("Utente non trovato localmente e connessione assente."));
+                    _loginState.postValue(new LoginState.Error("User not found locally and no internet connection."));
                 }
             }
         });
     }
 
+    /**
+     * Attempts to sign in using Firebase and saves user data locally upon success.
+     */
     private void performFirebaseLogin(String email, String password) {
         repository.firebaseSignIn(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser fbUser = task.getResult().getUser();
                 String name = (fbUser != null && fbUser.getDisplayName() != null) ? fbUser.getDisplayName() : "";
 
-                // Successo online: salviamo localmente per la prossima volta che saremo offline
+                // Online success: save locally for future offline access
                 User newUser = new User(name, "", "", email, password);
                 repository.saveLocalUser(newUser, () -> 
                     _loginState.postValue(new LoginState.Success(name, "", "", email, password))
@@ -73,38 +87,44 @@ public class LoginViewModel extends AndroidViewModel {
         });
     }
 
+    /**
+     * Handles specific Firebase authentication errors.
+     */
     private void handleFirebaseError(Exception e, String email, String password) {
         if (e instanceof FirebaseAuthException) {
             String code = ((FirebaseAuthException) e).getErrorCode();
             
-            // ERRORI DI CREDENZIALI → NON usare login locale
+            // CREDENTIAL ERRORS -> Do NOT allow local login fallback
             if (code.equals("ERROR_INVALID_CREDENTIAL") || 
                 code.equals("ERROR_USER_NOT_FOUND") || 
                 code.equals("ERROR_WRONG_PASSWORD") || 
                 code.equals("ERROR_USER_DISABLED") || 
                 code.equals("ERROR_INVALID_EMAIL")) {
-                _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                _loginState.postValue(new LoginState.Error("Invalid credentials"));
                 return;
             }
             
-            // ERRORE DI RETE → prova login locale
+            // NETWORK ERROR -> Attempt local login fallback
             if (code.equals("ERROR_NETWORK_REQUEST_FAILED")) {
                 repository.findLocalUser(email, password, localUser -> {
                     if (localUser != null) {
                         _loginState.postValue(new LoginState.Success(
                             localUser.getName(), localUser.getSurname(), localUser.getAddress(), email, password));
                     } else {
-                        _loginState.postValue(new LoginState.Error("Credenziali errate"));
+                        _loginState.postValue(new LoginState.Error("Invalid credentials"));
                     }
                 });
                 return;
             }
         }
         
-        // FALLBACK: Gestisce tutti gli altri errori imprevisti
-        _loginState.postValue(new LoginState.Error("Errore di autenticazione"));
+        // FALLBACK: Handle any other unexpected errors
+        _loginState.postValue(new LoginState.Error("Authentication error"));
     }
 
+    /**
+     * Handles sign-in using external credentials (e.g., Google).
+     */
     public void loginWithGoogle(AuthCredential credential) {
         _loginState.setValue(new LoginState.Loading());
         repository.firebaseSignInWithCredential(credential).addOnCompleteListener(task -> {
@@ -113,6 +133,7 @@ public class LoginViewModel extends AndroidViewModel {
                 String name = fbUser != null && fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "";
                 String email = fbUser != null ? fbUser.getEmail() : "";
 
+                // Save Google user details locally
                 repository.saveLocalUser(new User(name, "", "", email, ""), () ->
                     _loginState.postValue(new LoginState.Success(name, "", "", email, ""))
                 );
@@ -122,14 +143,23 @@ public class LoginViewModel extends AndroidViewModel {
         });
     }
 
+    /**
+     * Represents the various states of the Login process.
+     */
     public static abstract class LoginState {
         public static class Loading extends LoginState {}
+        
         public static class Success extends LoginState {
             public final String name, surname, address, email, password;
             public Success(String name, String surname, String address, String email, String password) {
-                this.name = name; this.surname = surname; this.address = address; this.email = email; this.password = password;
+                this.name = name; 
+                this.surname = surname; 
+                this.address = address; 
+                this.email = email; 
+                this.password = password;
             }
         }
+
         public static class Error extends LoginState {
             public final String message;
             public Error(String message) { this.message = message; }

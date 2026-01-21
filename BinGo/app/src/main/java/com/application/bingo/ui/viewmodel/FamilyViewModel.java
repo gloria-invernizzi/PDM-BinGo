@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * ViewModel per FamilyFragment
+ * ViewModel for FamilyFragment.
+ * Manages family group operations such as creating, joining, and leaving a
+ * family.
  */
 public class FamilyViewModel extends ViewModel {
 
@@ -36,7 +38,7 @@ public class FamilyViewModel extends ViewModel {
     public LiveData<String> getError() {
         return error;
     }
-    
+
     public LiveData<String> getSuccessMessage() {
         return successMessage;
     }
@@ -50,12 +52,12 @@ public class FamilyViewModel extends ViewModel {
             public void onSuccess(String msg) {
                 familyId.postValue(newFamilyId);
                 loadFamilyMembers(newFamilyId);
-                successMessage.postValue("Famiglia creata: " + newFamilyId);
+                successMessage.postValue("Family created: " + newFamilyId);
             }
 
             @Override
             public void onFailure(String msg) {
-                error.postValue("Errore creazione famiglia: " + msg);
+                error.postValue("Error creating family: " + msg);
             }
         });
     }
@@ -65,31 +67,31 @@ public class FamilyViewModel extends ViewModel {
         String email = userRepository.getCurrentUserEmail();
 
         if (familyIdToJoin == null || familyIdToJoin.isEmpty()) {
-            error.postValue("Codice famiglia non valido");
+            error.postValue("Invalid family code");
             return;
         }
-        
+
         userRepository.getUsersByFamilyId(familyIdToJoin, members -> {
             if (members != null && !members.isEmpty()) {
-                 userRepository.updateFamilyId(email, familyIdToJoin, new UserRepository.Callback() {
+                userRepository.updateFamilyId(email, familyIdToJoin, new UserRepository.Callback() {
                     @Override
                     public void onSuccess(String msg) {
                         familyId.postValue(familyIdToJoin);
                         loadFamilyMembers(familyIdToJoin);
-                        successMessage.postValue("Unito alla famiglia con successo");
+                        successMessage.postValue("Successfully joined the family");
                     }
 
                     @Override
                     public void onFailure(String msg) {
-                        error.postValue("Errore unione famiglia: " + msg);
+                        error.postValue("Error joining family: " + msg);
                     }
                 });
             } else {
-                 error.postValue("Famiglia non trovata con questo codice");
+                error.postValue("No family found with this code");
             }
         });
     }
-    
+
     // Lascia la famiglia
     public void leaveFamily() {
         String email = userRepository.getCurrentUserEmail();
@@ -99,16 +101,19 @@ public class FamilyViewModel extends ViewModel {
             public void onSuccess(String msg) {
                 familyId.postValue(null);
                 familyMembers.postValue(null);
-                successMessage.postValue("Hai lasciato la famiglia");
+                successMessage.postValue("You have left the family");
             }
 
             @Override
             public void onFailure(String msg) {
-                error.postValue("Errore uscita famiglia: " + msg);
+                error.postValue("Error leaving family: " + msg);
             }
         });
     }
 
+    /**
+     * Loads the list of members for a specific family.
+     */
     public void loadFamilyMembers(String familyId) {
         if (familyId == null) {
             familyMembers.postValue(null);
@@ -118,7 +123,7 @@ public class FamilyViewModel extends ViewModel {
             familyMembers.postValue(members);
         });
     }
-    
+
     public void checkUserFamily() {
         String email = userRepository.getCurrentUserEmail();
         userRepository.getUser(email, new UserRepository.UserCallback() {
