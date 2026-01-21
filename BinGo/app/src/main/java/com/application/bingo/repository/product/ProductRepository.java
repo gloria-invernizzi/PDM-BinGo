@@ -1,6 +1,5 @@
 package com.application.bingo.repository.product;
 
-import android.app.Application;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,7 +9,6 @@ import com.application.bingo.model.Product;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
 import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.model.Result;
-import com.application.bingo.util.NetworkUtil;
 
 import java.util.List;
 
