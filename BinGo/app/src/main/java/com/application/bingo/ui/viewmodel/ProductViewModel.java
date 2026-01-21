@@ -53,9 +53,9 @@ public class ProductViewModel extends ViewModel {
      * @param barcode The barcode of the product to fetch.
      * @return A MutableLiveData object containing the result of the product lookup.
      */
-    public MutableLiveData<Result> getProductLiveData(String barcode) {
+    public MutableLiveData<Result> getProductLiveData(String barcode, boolean isNetworkAvailable) {
         if (null == productLiveData) {
-            fetchProduct(barcode);
+            fetchProduct(barcode, isNetworkAvailable);
         }
         return productLiveData;
     }
@@ -113,8 +113,8 @@ public class ProductViewModel extends ViewModel {
      *
      * @param barcode The barcode of the product to fetch.
      */
-    private void fetchProduct(String barcode) {
-        productLiveData = productRepository.getProduct(barcode, "all");
+    private void fetchProduct(String barcode, boolean isNetworkAvailable) {
+        productLiveData = productRepository.getProduct(barcode, "all", isNetworkAvailable);
     }
 
     /**
@@ -129,10 +129,10 @@ public class ProductViewModel extends ViewModel {
      *
      * @param barcode The new barcode string.
      */
-    public void updateBarcode(@NonNull String barcode) {
+    public void updateBarcode(@NonNull String barcode, boolean isNetworkAvailable) {
         if (!barcode.equals(barcodeLiveData.getValue())) {
             barcodeLiveData.postValue(barcode);
-            fetchProduct(barcode);
+            fetchProduct(barcode, isNetworkAvailable);
         }
     }
 

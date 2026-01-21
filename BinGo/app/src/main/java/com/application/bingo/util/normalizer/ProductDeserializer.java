@@ -25,9 +25,10 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
 {
     private static final String PACKAGING_MISSING_MATERIAL = "packaging_data_missing";
 
-    private Context appContext;
+    private MaterialParserUtils materialParserUtils;
+
     public ProductDeserializer(Context appContext) {
-        this.appContext = appContext;
+        this.materialParserUtils = new MaterialParserUtils(appContext);
     }
 
     @Override
@@ -55,13 +56,12 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
 
             List<PackagingWithTranslations> packagingWithTranslationsList = new ArrayList<>();
 
-            MaterialParserUtils materialParser = new MaterialParserUtils(appContext);
             for (Packaging packaging:
                  packagingList) {
                 PackagingWithTranslations packagingWithTranslations = new PackagingWithTranslations();
                 packagingWithTranslations.setPackaging(packaging);
 
-                materialParser.parseMaterial(packagingWithTranslations);
+                this.materialParserUtils.parseMaterial(packagingWithTranslations);
 
                 packagingWithTranslationsList.add(packagingWithTranslations);
             }
@@ -83,12 +83,6 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
 
         product.setBarcode(obj.get("code").getAsString());
         product.setBrand(jsonProduct.get("brands").getAsString());
-
-        ProductWithPackagingWithTranslation localProduct = ServiceLocator.getInstance().getAppDatabase(appContext).productDao().findProduct(product.getBarcode());
-
-        if (null != localProduct && localProduct.getProduct().isFavorite()) {
-            product.setFavorite(localProduct.getProduct().isFavorite());
-        }
 
         return productWithPackagingWithTranslation;
     }

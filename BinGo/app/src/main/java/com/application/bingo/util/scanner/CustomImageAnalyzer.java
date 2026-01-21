@@ -10,6 +10,7 @@ import androidx.camera.core.ImageProxy;
 import androidx.navigation.Navigation;
 
 import com.application.bingo.R;
+import com.application.bingo.util.NetworkUtil;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
@@ -39,7 +40,7 @@ public class CustomImageAnalyzer implements ImageAnalysis.Analyzer {
                             if (value != null && !value.equalsIgnoreCase(scanFragment.getLastScanned())) {
                                 scanFragment.setLastScanned(value);
 
-                                scanFragment.getProductViewModel().updateBarcode(value);
+                                scanFragment.getProductViewModel().updateBarcode(value, NetworkUtil.isInternetAvailable(scanFragment.requireContext()));
 
                                 Navigation.findNavController(scanFragment.requireView()).navigate(R.id.action_scanFragment_to_resultFragment);
 

@@ -20,6 +20,7 @@ import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.ui.adapter.ProductAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
+import com.application.bingo.util.NetworkUtil;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -62,7 +63,7 @@ public class FavoriteFragment extends Fragment {
         productAdapter = new ProductAdapter(filteredFavoritesProducts, new ProductAdapter.OnItemClickListenerCallback() {
             @Override
             public void onItemClick(ProductWithPackagings product) {
-                productViewModel.updateBarcode(product.getProduct().getBarcode());
+                productViewModel.updateBarcode(product.getProduct().getBarcode(), NetworkUtil.isInternetAvailable(requireContext()));
 
                 Navigation.findNavController(view).navigate(R.id.action_favoriteFragment_to_resultFragment);
             }

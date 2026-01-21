@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.application.bingo.R;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
+import com.application.bingo.util.NetworkUtil;
 
 public class ManualEntryFragment extends Fragment {
     public interface OnManualEntryListener {
@@ -76,7 +77,7 @@ public class ManualEntryFragment extends Fragment {
                 String barcode = barcodeInput.getText().toString().trim();
 
                 if (!TextUtils.isEmpty(barcode)) {
-                    productViewModel.updateBarcode(barcode);
+                    productViewModel.updateBarcode(barcode, NetworkUtil.isInternetAvailable(requireContext()));
 
                     Bundle bundle = new Bundle();
                     listener.onGoToResult(bundle);

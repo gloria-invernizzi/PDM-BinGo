@@ -25,6 +25,7 @@ import com.application.bingo.ui.adapter.PackagingRecyclerAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
 import com.application.bingo.ui.viewmodel.SettingsViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
+import com.application.bingo.util.NetworkUtil;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class ResultFragment extends Fragment {
         loadingSpinner = view.findViewById(R.id.loading_spinner);
         loadingSpinner.setVisibility(View.VISIBLE);
 
-        productViewModel.getProductLiveData(barcode).observe(getViewLifecycleOwner(),
+        productViewModel.getProductLiveData(barcode, NetworkUtil.isInternetAvailable(requireContext())).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         this.productWithPackagingWithTranslations = ((Result.Success<ProductWithPackagingWithTranslation>) result).getData();

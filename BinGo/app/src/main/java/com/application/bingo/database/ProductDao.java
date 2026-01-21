@@ -68,6 +68,9 @@ public abstract class ProductDao {
         return productWithPackagingWithTranslation;
     }
 
+    @Query("SELECT is_favorite FROM product WHERE barcode = :barcode LIMIT 1")
+    public abstract Boolean isProductFavorite(String barcode);
+
     // --- Insert Methods ---
 
     @Insert
