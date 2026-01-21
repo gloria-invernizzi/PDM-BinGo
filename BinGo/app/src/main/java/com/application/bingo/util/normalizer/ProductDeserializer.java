@@ -3,6 +3,7 @@ package com.application.bingo.util.normalizer;
 import android.content.Context;
 import android.util.Log;
 
+import com.application.bingo.constants.Language;
 import com.application.bingo.model.Packaging;
 import com.application.bingo.model.Product;
 import com.application.bingo.model.dto.ProductWithPackagingWithTranslation;
@@ -71,10 +72,12 @@ public class ProductDeserializer implements JsonDeserializer<ProductWithPackagin
             productWithPackagingWithTranslation.setPackagings(packagingWithTranslationsList);
         }
 
-        if (jsonProduct.has("product_name_it")) {
-            product.setName(jsonProduct.get("product_name_it").getAsString());
-        } else {
-            product.setName(jsonProduct.get("product_name").getAsString());
+        product.setName(jsonProduct.get("product_name").getAsString());
+        for (Language language:
+             Language.cases()) {
+            if (jsonProduct.has("product_name_" + language.languageAsString())) {
+                product.setNameByLanguage(language, jsonProduct.get("product_name_" + language.languageAsString()).getAsString());
+            }
         }
 
         if (jsonProduct.has("image_front_url")) {

@@ -79,7 +79,7 @@ public class ResultFragment extends Fragment {
                     if (result.isSuccess()) {
                         this.productWithPackagingWithTranslations = ((Result.Success<ProductWithPackagingWithTranslation>) result).getData();
 
-                        this.productName.setText(productWithPackagingWithTranslations.getProduct().getName());
+                        this.productName.setText(productWithPackagingWithTranslations.getProduct().getNameFromLanguage(settingsViewModel.getLanguage()));
                         this.productBrand.setText(getString(R.string.brand, productWithPackagingWithTranslations.getProduct().getBrand()));
                         this.favoriteCheckbox.setChecked(productWithPackagingWithTranslations.getProduct().isFavorite());
 

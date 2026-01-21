@@ -31,6 +31,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<ProductWithPackagings> products;
     private Context context;
     private OnItemClickListenerCallback onItemClickListenerCallback;
+    private String language;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView textViewName;
@@ -76,9 +77,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }
     }
 
-    public ProductAdapter(List<ProductWithPackagings> products, OnItemClickListenerCallback onItemClickListenerCallback) {
+    public ProductAdapter(List<ProductWithPackagings> products, String language, OnItemClickListenerCallback onItemClickListenerCallback) {
         this.products = products;
         this.onItemClickListenerCallback = onItemClickListenerCallback;
+        this.language = language;
     }
 
     @NonNull
@@ -101,7 +103,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         Product product = this.products.get(position).getProduct();
 
-        viewHolder.getTextViewName().setText(product.getName());
+        viewHolder.getTextViewName().setText(product.getNameFromLanguage(language));
         viewHolder.getTextViewBrand().setText(product.getBrand());
         viewHolder.getFavoriteCheckbox().setChecked(product.isFavorite());
 

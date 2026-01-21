@@ -19,6 +19,7 @@ import com.application.bingo.model.Result;
 import com.application.bingo.model.relation.ProductWithPackagings;
 import com.application.bingo.ui.adapter.ProductAdapter;
 import com.application.bingo.ui.viewmodel.ProductViewModel;
+import com.application.bingo.ui.viewmodel.SettingsViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.application.bingo.util.NetworkUtil;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -35,14 +36,17 @@ public class FavoriteFragment extends Fragment {
     private CircularProgressIndicator circularProgressIndicator;
     private SearchView searchView;
     private List<ProductWithPackagings> filteredFavoritesProducts;
+    private SettingsViewModel settingsViewModel;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        productViewModel = new ViewModelProvider(
-                requireActivity(),
-                new ViewModelFactory(requireActivity().getApplication())).get(ProductViewModel.class);
+        ViewModelFactory viewModelFactory = new ViewModelFactory(requireActivity().getApplication());
+
+        productViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(ProductViewModel.class);
+        settingsViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(SettingsViewModel.class);
 
         filteredFavoritesProducts = new ArrayList<>();
     }
@@ -60,7 +64,7 @@ public class FavoriteFragment extends Fragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         // use filtered list by query
-        productAdapter = new ProductAdapter(filteredFavoritesProducts, new ProductAdapter.OnItemClickListenerCallback() {
+        productAdapter = new ProductAdapter(filteredFavoritesProducts, settingsViewModel.getLanguage(), new ProductAdapter.OnItemClickListenerCallback() {
             @Override
             public void onItemClick(ProductWithPackagings product) {
                 productViewModel.updateBarcode(product.getProduct().getBarcode(), NetworkUtil.isInternetAvailable(requireContext()));
