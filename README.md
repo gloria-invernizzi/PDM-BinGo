@@ -75,11 +75,11 @@ Il progetto è stato sviluppato seguendo standard di qualità elevati:
 ---
 
 ## Note per il Testing (Google Sign-In)
-Per testare correttamente la funzionalità di **Google Sign-In** durante la revisione del codice:
-- È necessario fornire la propria impronta digitale **SHA-1** del certificato di debug affinché 
+Per testare correttamente la funzionalità di **Google Sign-In** durante la revisione del codice è 
+necessario fornire la propria impronta digitale **SHA-1** del certificato di debug affinché 
 venga registrata sulla console Firebase del progetto.
-- In alternativa, è consigliabile utilizzare la versione **release** dell'applicazione (APK), dove 
-l'autenticazione è già configurata e non richiede modifiche lato server.
+- In alternativa si potrebbe utilizzare una versione **release** dell'applicazione (APK), dove 
+l'autenticazione è già configurata, infatti, questo non richiederebbe modifiche lato server.
 
  ---
 
