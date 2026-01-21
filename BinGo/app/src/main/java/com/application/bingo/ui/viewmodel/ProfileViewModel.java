@@ -1,13 +1,18 @@
 package com.application.bingo.ui.viewmodel;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.application.bingo.R;
 import com.application.bingo.model.User;
 import com.application.bingo.repository.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * ProfileViewModel:
@@ -55,11 +60,20 @@ public class ProfileViewModel extends ViewModel {
             }
 
             public void onFailure(String msg) {
-                // Questo è il metodo che mancava e causava l'errore!
                 error.postValue(msg);
             }
         });
     }
+
+    public void loadLoggedUser() {
+        String email = userRepo.getCurrentUserEmail();
+        if (email == null) {
+            error.postValue("user_not_loaded");
+            return;
+        }
+        loadUser(email);
+    }
+
 
     // ---------------------------------------------------------------------------------------------
     // SALVA MODIFICHE NOME/INDIRIZZO
@@ -111,8 +125,7 @@ public class ProfileViewModel extends ViewModel {
             deleteAccountResult.postValue("offline_error");
             return;
         }
-
-        userRepo.deleteAccount(new UserRepository.Callback() {
+        userRepo.deleteAccount(user.getValue(), new UserRepository.Callback() {
             @Override
             public void onSuccess(String message) {
                 deleteAccountResult.postValue("account_deleted_success");
@@ -126,5 +139,3 @@ public class ProfileViewModel extends ViewModel {
     }
 
 }
-
-

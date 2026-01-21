@@ -38,6 +38,8 @@ public class SettingsFragment extends Fragment {
 
     private SettingsViewModel settingsVM;
     private ProfileViewModel profileVM;
+    private PrefsManager prefs;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,26 +57,16 @@ public class SettingsFragment extends Fragment {
 
         settingsVM = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
         profileVM = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
-        // --- carica utente  ---
-        // Carico l’utente per il ViewModel
-        String emailToLoad = null;
 
-        PrefsManager prefs = new PrefsManager(requireContext());
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (prefs.getSavedEmail() != null && !prefs.getSavedEmail().isEmpty()) {
-            emailToLoad = prefs.getSavedEmail();
-        } else if (firebaseUser != null && firebaseUser.getEmail() != null) {
-            emailToLoad = firebaseUser.getEmail();
-        }
-
-        if (emailToLoad != null) {
-            profileVM.loadUser(emailToLoad); // tutto passa attraverso il VM
+        prefs = new PrefsManager(requireContext());
+        String savedEmail = prefs.getSavedEmail();
+        if (savedEmail != null) {
+            profileVM.loadUser(savedEmail);
         } else {
             NavHostFragment.findNavController(this).navigate(R.id.loginFragment);
         }
 
-        // Find the view
+        // Trova la view
         layoutTema = view.findViewById(R.id.layout_theme);
         layoutLingua = view.findViewById(R.id.layout_language);
         layoutCambiaPassword = view.findViewById(R.id.btn_change_password);
@@ -89,16 +81,14 @@ public class SettingsFragment extends Fragment {
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.changePasswordFragment));
 
-
-        //Cambio email
+        // Cambio email
         layoutCambiaEmail.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.changeEmailFragment));
 
-        //Elimina Profilo
+        // Elimina Profilo
         layoutEliminaAccount = view.findViewById(R.id.btn_delete_account);
 
-        // ---------------- Elimina Profilo----------------
         LinearLayout btnDelete = view.findViewById(R.id.btn_delete_account);
         btnDelete.setOnClickListener(v -> {
             new MaterialAlertDialogBuilder(requireContext())
@@ -113,7 +103,7 @@ public class SettingsFragment extends Fragment {
         });
 
 
-// osserva il risultato
+        // Osserva il risultato
         profileVM.getDeleteAccountResult().observe(getViewLifecycleOwner(), result -> {
             if ("offline_error".equals(result)) {
                 Toast.makeText(getContext(),
@@ -133,12 +123,6 @@ public class SettingsFragment extends Fragment {
             // eventuali altri errori
             Toast.makeText(getContext(), R.string.error_generic + result, Toast.LENGTH_SHORT).show();
         });
-
-
-
-
-
-
 
         // ---------------- Notifiche ----------------
         settingsVM.loadNotificationsState();

@@ -42,7 +42,8 @@ public class FamilyViewModel extends ViewModel {
     }
 
     // Crea un nuovo gruppo famiglia
-    public void createFamily(String email) {
+    public void createFamily() {
+        String email = userRepository.getCurrentUserEmail();
         String newFamilyId = UUID.randomUUID().toString().substring(0, 8).toUpperCase(); // Codice breve
         userRepository.updateFamilyId(email, newFamilyId, new UserRepository.Callback() {
             @Override
@@ -60,7 +61,9 @@ public class FamilyViewModel extends ViewModel {
     }
 
     // Unisciti a un gruppo famiglia esistente
-    public void joinFamily(String email, String familyIdToJoin) {
+    public void joinFamily(String familyIdToJoin) {
+        String email = userRepository.getCurrentUserEmail();
+
         if (familyIdToJoin == null || familyIdToJoin.isEmpty()) {
             error.postValue("Codice famiglia non valido");
             return;
@@ -88,7 +91,9 @@ public class FamilyViewModel extends ViewModel {
     }
     
     // Lascia la famiglia
-    public void leaveFamily(String email) {
+    public void leaveFamily() {
+        String email = userRepository.getCurrentUserEmail();
+
         userRepository.updateFamilyId(email, null, new UserRepository.Callback() {
             @Override
             public void onSuccess(String msg) {
@@ -114,7 +119,8 @@ public class FamilyViewModel extends ViewModel {
         });
     }
     
-    public void checkUserFamily(String email) {
+    public void checkUserFamily() {
+        String email = userRepository.getCurrentUserEmail();
         userRepository.getUser(email, new UserRepository.UserCallback() {
             @Override
             public void onUserLoaded(User user) {

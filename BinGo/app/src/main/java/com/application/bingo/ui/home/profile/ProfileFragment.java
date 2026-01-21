@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
 import com.application.bingo.PrefsManager;
@@ -40,17 +41,13 @@ public class ProfileFragment extends Fragment {
     private TextInputEditText inputName, inputEmail, inputAddress;
     private MaterialButton btnEditSave, btnLogout;
     private ImageButton btnSettings;
-    private ProfileViewModel vm;
+    private ProfileViewModel profileVM;
     private PrefsManager prefs;
     private PhotoHandler photoHandler;
-
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<String> cameraPermissionLauncher;
-
     private boolean isEditing = false;
-
-    public ProfileFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +93,7 @@ public class ProfileFragment extends Fragment {
         // -----------------------------------------------------------------------------------------
         photoHandler = new PhotoHandler(requireContext(), galleryLauncher, cameraLauncher, uri -> {
             String email = inputEmail.getText().toString().trim();
-            vm.savePhotoUri(email, uri.toString());
+            profileVM.savePhotoUri(email, uri.toString());
             profileImage.setImageURI(uri);
         });
     }
@@ -122,7 +119,7 @@ public class ProfileFragment extends Fragment {
     // ---------------------------------------------------------------------------------------------
     private void setupViewModel() {
         ViewModelFactory factory = new ViewModelFactory(requireActivity().getApplication());
-        vm = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
+        profileVM = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -131,7 +128,7 @@ public class ProfileFragment extends Fragment {
     private void setupObservers() {
 
         // Observer dei dati dell'utente
-        vm.getUser().observe(getViewLifecycleOwner(), user -> {
+        profileVM.getUser().observe(getViewLifecycleOwner(), user -> {
             Log.d("ProfileFragment", "Observer ProfileViewModel: user=" + user);
             if (user != null) {
                 Log.d("ProfileFragment", "Imposto UI: "
@@ -153,7 +150,7 @@ public class ProfileFragment extends Fragment {
         });
 
         // Observer dei messaggi di errore (chiavi logiche dal ViewModel)
-        vm.getError().observe(getViewLifecycleOwner(), msgKey -> {
+        profileVM.getError().observe(getViewLifecycleOwner(), msgKey -> {
             if (msgKey != null) {
                 String message;
                 switch (msgKey) {
@@ -167,6 +164,7 @@ public class ProfileFragment extends Fragment {
                         message = msgKey; // fallback per eventuali messaggi dinamici dal repo
                 }
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(this).navigate(R.id.welcomeFragment);
             }
         });
     }
@@ -176,49 +174,8 @@ public class ProfileFragment extends Fragment {
     // CARICA UTENTE DAI PREFS
     // ---------------------------------------------------------------------------------------------
     private void loadUserFromPrefs() {
-        String savedEmail = prefs.getSavedEmail();
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("ProfileFragment", "loadUserFromPrefs chiamato");
-        Log.d("ProfileFragment", "prefs savedEmail = " + savedEmail);
-        Log.d("ProfileFragment", "firebaseUser = " + (firebaseUser != null ? firebaseUser.getEmail() : "null"));
-
-        String emailToLoad = null;
-
-        if (savedEmail != null && !savedEmail.isEmpty()) {
-            emailToLoad = savedEmail;
-            // Popolamento rapido per migliorare la UX
-            Log.d("ProfileFragment", "Carico da prefs: name=" + prefs.getSavedName()
-                    + ", address=" + prefs.getSavedAddress());
-            inputName.setText(prefs.getSavedName());
-            inputAddress.setText(prefs.getSavedAddress());
-            Log.d("ProfileFragment", "Setto email temporanea: " + savedEmail);
-            inputEmail.setText(savedEmail);
-        } else if (firebaseUser != null && firebaseUser.getEmail() != null) {
-            emailToLoad = firebaseUser.getEmail();
-        }
-
-        if (emailToLoad != null) {
-            // Usiamo la tua VM per caricare i dati reali dal DB/Network
-            Log.d("ProfileFragment", "Chiamo vm.loadUser con email = " + emailToLoad);
-            vm.loadUser(emailToLoad);
-        } else {
-            // Solo se non c'è NESSUNA traccia dell'utente torniamo alla Welcome
-            Log.d("ProfileFragment", "Utente non identificato, ritorno a Welcome");
-            try {
-                NavController navController = Navigation.findNavController(requireView());
-                navController.navigate(R.id.welcomeFragment);
-            } catch (Exception e) {
-                // Se non trovi il NavController o la destinazione, usa il back
-                if (isAdded()) requireActivity().onBackPressed();
-            }
-        }
-        Log.d("ProfileFragment", "savedEmail = " + savedEmail);
-        Log.d("ProfileFragment", "firebaseEmail = " +
-                (firebaseUser != null ? firebaseUser.getEmail() : "null"));
-
-        // L'aggiornamento della UI avverrà tramite l'osservatore già definito in setupObservers().
+        profileVM.loadLoggedUser();
     }
-
 
     // ---------------------------------------------------------------------------------------------
     // BOTTONI
@@ -249,7 +206,7 @@ public class ProfileFragment extends Fragment {
         inputName.setEnabled(false);
         inputAddress.setEnabled(false);
         // Passa tutto al ViewModel
-        vm.updateProfile(
+        profileVM.updateProfile(
                 inputName.getText().toString().trim(),
                 inputAddress.getText().toString().trim()
         );

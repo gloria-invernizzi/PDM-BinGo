@@ -38,8 +38,6 @@ public class FamilyFragment extends Fragment {
     private FamilyMemberAdapter adapter;
     private TextInputEditText inputFamilyCode;
 
-    private String currentUserEmail;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_family, container, false);
@@ -67,13 +65,7 @@ public class FamilyFragment extends Fragment {
         recyclerMembers.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerMembers.setAdapter(adapter);
 
-        // Get current email from FirebaseAuth
-        if (com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null) {
-            currentUserEmail = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            if (currentUserEmail != null) {
-                familyViewModel.checkUserFamily(currentUserEmail);
-            }
-        }
+        familyViewModel.checkUserFamily();
 
         // Observe ViewModel
         familyViewModel.getFamilyId().observe(getViewLifecycleOwner(), familyId -> {
@@ -100,9 +92,7 @@ public class FamilyFragment extends Fragment {
 
         // Listeners
         btnCreate.setOnClickListener(v -> {
-            if (currentUserEmail != null) {
-                familyViewModel.createFamily(currentUserEmail);
-            }
+                familyViewModel.createFamily();
         });
 
         btnJoin.setOnClickListener(v -> {
@@ -112,15 +102,11 @@ public class FamilyFragment extends Fragment {
 
                 return;
             }
-            if (currentUserEmail != null) {
-                familyViewModel.joinFamily(currentUserEmail, code);
-            }
+            familyViewModel.joinFamily(code);
         });
 
         btnLeave.setOnClickListener(v -> {
-            if (currentUserEmail != null) {
-                familyViewModel.leaveFamily(currentUserEmail);
-            }
+            familyViewModel.leaveFamily();
         });
     }
 

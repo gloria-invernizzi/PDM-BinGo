@@ -1,6 +1,11 @@
 package com.application.bingo.repository;
 
 import android.content.Context;
+import android.telecom.Call;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.application.bingo.R;
 import com.application.bingo.database.AppDatabase;
@@ -210,11 +215,18 @@ public class UserRepository {
             }
 
             @Override
-            public void onFailure(String error) {
-                callback.onFailure(error);
-            }
+            public void onFailure(String error) {callback.onFailure(error);}
         });
     }
+
+    public String getCurrentUserEmail() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null)
+            return user.getEmail();
+        else
+            return null;
+    }
+
 
     /**
      * Updates user information in local source.
@@ -265,10 +277,33 @@ public class UserRepository {
         return mAuth.signInWithCredential(credential);
     }
 
+    public void refreshFirebaseUser(Callback callback) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user == null) {
+            callback.onFailure(context.getString(R.string.user_reload_error));
+            return;
+        }
+
+        user.reload().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                boolean verified = user.isEmailVerified();
+                if (verified) {
+                    callback.onSuccess(context.getString(R.string.email_verified));
+                } else {
+                    callback.onSuccess(context.getString(R.string.email_not_verified));
+                }
+            } else {
+                callback.onFailure(context.getString(R.string.user_not_logged_in));
+            }
+        });
+    }
+
     /**
      *Delete account
      */
-    public void deleteAccount(Callback callback) {
+    public void deleteAccount(User user, Callback callback) {
+        if (user == null) return;
         if (!isInternetAvailable()) {
             callback.onFailure(String.valueOf(R.string.delete_account_offline_error));
             return;
@@ -278,7 +313,7 @@ public class UserRepository {
             @Override
             public void onSuccess(String msg) {
                 // elimina anche locale
-                localSource.deleteLocalUser(remoteSource.getFirebaseUser().getEmail());
+                localSource.deleteLocalUser(user.getEmail());
                 callback.onSuccess(String.valueOf(R.string.delete_account_confirmation_message));
             }
 

@@ -27,8 +27,7 @@ public class ChangeEmailFragment extends Fragment {
     private TextInputEditText nuovaEmailEditText;
     private TextInputEditText confermaEmailEditText;
     private MaterialButton btnChangeEmail;
-
-    private ChangeEmailViewModel viewModel;
+    private ChangeEmailViewModel changeEmailVM;
 
     @Override
     public View onCreateView(
@@ -55,13 +54,13 @@ public class ChangeEmailFragment extends Fragment {
         confermaEmailEditText = (TextInputEditText) confermaEmailLayout.getEditText();
 
         // ViewModel
-        viewModel = new ViewModelProvider(
+        changeEmailVM = new ViewModelProvider(
                 this,
                 new ViewModelFactory(requireActivity().getApplication())
         ).get(ChangeEmailViewModel.class);
 
         // Messaggi
-        viewModel.getMessageLiveData().observe(getViewLifecycleOwner(), msg -> {
+        changeEmailVM.getMessageLiveData().observe(getViewLifecycleOwner(), msg -> {
             btnChangeEmail.setEnabled(true);
             if (msg != null) {
                 String message;
@@ -83,7 +82,7 @@ public class ChangeEmailFragment extends Fragment {
         });
 
         // Logout forzato
-        viewModel.getLogoutLiveData().observe(getViewLifecycleOwner(), logout -> {
+        changeEmailVM.getLogoutLiveData().observe(getViewLifecycleOwner(), logout -> {
             if (Boolean.TRUE.equals(logout)) {
                 FirebaseAuth.getInstance().signOut();
                 NavHostFragment.findNavController(this).navigate(R.id.welcomeFragment);
@@ -92,26 +91,16 @@ public class ChangeEmailFragment extends Fragment {
 
         // Bottone
         btnChangeEmail.setOnClickListener(v -> {
-
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-            if (firebaseUser == null) {
-                Toast.makeText(requireContext(), getString(R.string.session_expired), Toast.LENGTH_LONG).show();
-            }
-
-            String oldEmail = firebaseUser.getEmail();
             String newEmail = nuovaEmailEditText.getText().toString().trim();
             String confirmEmail = confermaEmailEditText.getText().toString().trim();
 
             if (newEmail.isEmpty() || confirmEmail.isEmpty()) {
                 Toast.makeText(requireContext(), getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
-
                 return;
             }
 
             if (!newEmail.equals(confirmEmail)) {
                 Toast.makeText(requireContext(), getString(R.string.emails_do_not_match), Toast.LENGTH_SHORT).show();
-
                 return;
             }
 
@@ -125,11 +114,7 @@ public class ChangeEmailFragment extends Fragment {
 
                         btnChangeEmail.setEnabled(false);
 
-                        viewModel.changeEmail(
-                                oldEmail,
-                                password,
-                                newEmail
-                        );
+                        changeEmailVM.changeEmail(password, newEmail);
                     });
 
             dialog.show(getParentFragmentManager(), "ConfirmPasswordDialog");
@@ -139,6 +124,6 @@ public class ChangeEmailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        viewModel.refreshFirebaseUser();
+        changeEmailVM.refreshFirebaseUser();
     }
 }
