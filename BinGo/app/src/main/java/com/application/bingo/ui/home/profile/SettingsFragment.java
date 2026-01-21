@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.application.bingo.PrefsManager;
+import com.application.bingo.ui.viewmodel.ProfileViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import android.widget.Toast;
 
@@ -20,6 +23,8 @@ import com.application.bingo.ui.viewmodel.SettingsViewModel;
 import com.application.bingo.ui.viewmodel.ViewModelFactory;
 import com.application.bingo.util.calendar.NotificationProcessor;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Fragment per gestire le impostazioni dell'app:
@@ -27,11 +32,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
  */
 public class SettingsFragment extends Fragment {
 
-    private LinearLayout layoutTema, layoutLingua, layoutCambiaPassword, layoutCambiaEmail;
+    private LinearLayout layoutTema, layoutLingua, layoutCambiaPassword, layoutCambiaEmail,layoutEliminaAccount ;
 
     private SwitchMaterial switchNotifiche, switchSuono, switchVibrazione;
 
     private SettingsViewModel settingsVM;
+    private ProfileViewModel profileVM;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -48,6 +54,25 @@ public class SettingsFragment extends Fragment {
                 new ViewModelFactory(requireActivity().getApplication());
 
         settingsVM = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
+        profileVM = new ViewModelProvider(this, factory).get(ProfileViewModel.class);
+        // --- carica utente  ---
+        // Carico l’utente per il ViewModel
+        String emailToLoad = null;
+
+        PrefsManager prefs = new PrefsManager(requireContext());
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (prefs.getSavedEmail() != null && !prefs.getSavedEmail().isEmpty()) {
+            emailToLoad = prefs.getSavedEmail();
+        } else if (firebaseUser != null && firebaseUser.getEmail() != null) {
+            emailToLoad = firebaseUser.getEmail();
+        }
+
+        if (emailToLoad != null) {
+            profileVM.loadUser(emailToLoad); // tutto passa attraverso il VM
+        } else {
+            NavHostFragment.findNavController(this).navigate(R.id.loginFragment);
+        }
 
         // Find the view
         layoutTema = view.findViewById(R.id.layout_theme);
@@ -69,6 +94,51 @@ public class SettingsFragment extends Fragment {
         layoutCambiaEmail.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.changeEmailFragment));
+
+        //Elimina Profilo
+        layoutEliminaAccount = view.findViewById(R.id.btn_delete_account);
+
+        // ---------------- Elimina Profilo----------------
+        LinearLayout btnDelete = view.findViewById(R.id.btn_delete_account);
+        btnDelete.setOnClickListener(v -> {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.delete_account_confirmation_title)
+                    .setMessage(R.string.delete_account_confirmation_message)
+                    .setNegativeButton(R.string.delete_account_cancel_button, (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton(R.string.delete_account_confirm_button, (dialog, which) -> {
+                        dialog.dismiss();
+                        profileVM.deleteAccount();
+                    })
+                    .show();
+        });
+
+
+// osserva il risultato
+        profileVM.getDeleteAccountResult().observe(getViewLifecycleOwner(), result -> {
+            if ("offline_error".equals(result)) {
+                Toast.makeText(getContext(),
+                        "Non puoi eliminare il profilo offline",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
+            if ("account_deleted_success".equals(result)) {
+                Toast.makeText(getContext(), "Profilo eliminato con successo", Toast.LENGTH_SHORT).show();
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.action_settingsFragment_to_WelcomeFragment); // crea l'azione nel nav graph
+                return;
+            }
+
+            // eventuali altri errori
+            Toast.makeText(getContext(), R.string.error_generic + result, Toast.LENGTH_SHORT).show();
+        });
+
+
+
+
+
+
 
         // ---------------- Notifiche ----------------
         settingsVM.loadNotificationsState();
@@ -230,5 +300,6 @@ public class SettingsFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
         }
     }
+
 
 }

@@ -42,4 +42,9 @@ public interface UserDao {
     // Aggiorna il family_id di un utente
     @Query("UPDATE users SET family_id = :familyId WHERE email = :email")
     void updateFamilyId(String email, String familyId);
+
+    @Query("DELETE FROM users WHERE email = :email")
+    void deleteByEmail(String email);
+
 }
+

@@ -264,4 +264,30 @@ public class UserRepository {
     public Task<AuthResult> firebaseSignInWithCredential(AuthCredential credential) {
         return mAuth.signInWithCredential(credential);
     }
+
+    /**
+     *Delete account
+     */
+    public void deleteAccount(Callback callback) {
+        if (!isInternetAvailable()) {
+            callback.onFailure(String.valueOf(R.string.delete_account_offline_error));
+            return;
+        }
+
+        remoteSource.deleteAccount(new Callback() {
+            @Override
+            public void onSuccess(String msg) {
+                // elimina anche locale
+                localSource.deleteLocalUser(remoteSource.getFirebaseUser().getEmail());
+                callback.onSuccess(String.valueOf(R.string.delete_account_confirmation_message));
+            }
+
+            @Override
+            public void onFailure(String error) {
+                callback.onFailure(error); //  altri errori Firebase
+            }
+        });
+    }
+
+
 }

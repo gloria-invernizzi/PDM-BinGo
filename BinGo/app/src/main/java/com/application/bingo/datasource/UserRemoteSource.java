@@ -79,4 +79,30 @@ public class UserRemoteSource {
                     if (callback != null) callback.onFailure(context.getString(R.string.reauth_failed, e.getMessage()));
                 });
     }
+    /**
+     * Elimina account
+     */
+    public void deleteAccount(UserRepository.Callback callback) {
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user == null) {
+            callback.onFailure(context.getString(R.string.user_not_authenticated));
+            return;
+        }
+
+        user.delete()
+                .addOnSuccessListener(unused -> {
+                    Log.d(TAG, "Account Firebase eliminato");
+                    callback.onSuccess(context.getString(R.string.account_deleted));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Errore eliminazione account", e);
+                    callback.onFailure(
+                            context.getString(R.string.generic_error, e.getMessage())
+                    );
+                });
+    }
+
+
+
 }

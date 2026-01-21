@@ -102,4 +102,9 @@ public class PrefsManager {
     public void updateEmailOnly(String newEmail) {
         prefs.edit().putString(KEY_EMAIL, newEmail).apply();
     }
+
+    public void clearAll() {
+        prefs.edit().clear().apply();
+    }
+
 }

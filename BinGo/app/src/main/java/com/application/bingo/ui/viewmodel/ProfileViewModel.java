@@ -24,6 +24,7 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<User> user = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
 
+
     public ProfileViewModel(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -36,9 +37,7 @@ public class ProfileViewModel extends ViewModel {
         return error;
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // CARICA UTENTE DAL REPOSITORY
-    // ---------------------------------------------------------------------------------------------
+    private final MutableLiveData<String> deleteAccountResult = new MutableLiveData<>();
     // ---------------------------------------------------------------------------------------------
     // CARICA UTENTE DAL REPOSITORY
     // ---------------------------------------------------------------------------------------------
@@ -92,6 +91,40 @@ public class ProfileViewModel extends ViewModel {
         userRepo.saveToPrefs(u);  // aggiorna PrefsManager
         user.postValue(u);
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // ELIMINA PROFILO
+    // ---------------------------------------------------------------------------------------------
+    public LiveData<String> getDeleteAccountResult() {
+        return deleteAccountResult;
+    }
+
+    // Metodo per eliminare account
+    public void deleteAccount() {
+        User u = user.getValue();
+        if (u == null) {
+            deleteAccountResult.postValue("user_not_loaded");
+            return;
+        }
+
+        if (!userRepo.isInternetAvailable()) {
+            deleteAccountResult.postValue("offline_error");
+            return;
+        }
+
+        userRepo.deleteAccount(new UserRepository.Callback() {
+            @Override
+            public void onSuccess(String message) {
+                deleteAccountResult.postValue("account_deleted_success");
+            }
+
+            @Override
+            public void onFailure(String error) {
+                deleteAccountResult.postValue(error); // qui può essere "reauth_required" o altri errori Firebase
+            }
+        });
+    }
+
 }
 
 

@@ -156,4 +156,14 @@ public class UserLocalSource {
             }
         });
     }
+    public void deleteLocalUser(String email) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                userDao.deleteByEmail(email);
+            } catch (Exception ignored) {}
+
+            prefs.clearAll();// pulizia totale prefs
+        });
+    }
+
 }

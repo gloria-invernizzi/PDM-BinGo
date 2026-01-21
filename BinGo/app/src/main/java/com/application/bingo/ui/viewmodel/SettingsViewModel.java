@@ -18,6 +18,7 @@ public class SettingsViewModel extends ViewModel {
     private final MutableLiveData<String> languageLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> notificationsLiveData = new MutableLiveData<>();
 
+    private final MutableLiveData<String> deleteAccountResult = new MutableLiveData<>();
     public SettingsViewModel(SettingsRepository settingsRepo) {
         this.settingsRepo = settingsRepo;
     }

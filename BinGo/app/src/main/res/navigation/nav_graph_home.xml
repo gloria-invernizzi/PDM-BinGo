@@ -81,6 +81,11 @@
         <action
             android:id="@+id/action_settingsFragment_to_changeEmailFragment"
             app:destination="@id/changeEmailFragment" />
+        <action
+        android:id="@+id/action_settingsFragment_to_WelcomeFragment"
+        app:destination="@id/welcomeFragment"
+        app:popUpTo="@id/settingsFragment"
+        app:popUpToInclusive="true" />
     </fragment>
     <!-- ChangeEmail Fragment -->
     <fragment

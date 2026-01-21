@@ -216,4 +216,11 @@
     <string name="empty_favorite_list">Empty favorites list</string>
     <string name="no_material_translation">No description available for the material.</string>
 
+    <string name="security_privacy_section">Security &amp; Privacy</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_confirmation_title">Confirm Deletion</string>
+    <string name="delete_account_confirmation_message">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="delete_account_confirm_button">Delete</string>
+    <string name="delete_account_cancel_button">Cancel</string>
+
 </resources>

@@ -251,4 +251,11 @@
     <string name="empty_favorite_list">Ningún elemento entre los favoritos</string>
     <string name="no_material_translation">No hay descripción para el material.</string>
 
+    <string name="security_privacy_section">Seguridad y privacidad</string>
+    <string name="delete_account">Eliminar perfil</string>
+    <string name="delete_account_confirmation_title">Confirmar eliminación</string>
+    <string name="delete_account_confirmation_message">¿Estás seguro de que deseas eliminar tu perfil? Esta acción es irreversible.</string>
+    <string name="delete_account_confirm_button">Eliminar</string>
+    <string name="delete_account_cancel_button">Cancelar</string>
+
 </resources>

@@ -257,4 +257,13 @@
     <string name="empty_favorite_list">Nessun prodotto selezionato.</string>
     <string name="no_material_translation">Nessuna descrizione per il materiale.</string>
 
+    <string name="security_privacy_section">Sicurezza e privacy</string>
+    <string name="delete_account">Elimina profilo</string>
+    <string name="delete_account_confirmation_title">Conferma eliminazione</string>
+    <string name="delete_account_confirmation_message">Sei sicuro di voler eliminare il tuo profilo? Questa azione è irreversibile.</string>
+    <string name="delete_account_confirm_button">Elimina</string>
+    <string name="delete_account_cancel_button">Annulla</string>
+    <string name="delete_account_offline_error">Non puoi eliminare il profilo offline. Riprova quando sei connesso.</string>
+    <string name="account_deleted">Account Eliminato</string>
+
 </resources>
