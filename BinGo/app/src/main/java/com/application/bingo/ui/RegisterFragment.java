@@ -1,6 +1,7 @@
 package com.application.bingo.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.credentials.CreateCredentialResponse;
+import androidx.credentials.CreatePasswordRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.CreateCredentialException;
 import androidx.fragment.app.Fragment;
 
 import com.application.bingo.PrefsManager;
@@ -24,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 /**
  * RegisterFragment:
  * Handles user registration using Firebase Authentication and local storage.
+ * Integrated with Google Credential Manager to save passwords.
  */
 public class RegisterFragment extends Fragment {
     private TextInputEditText etName, etSurname, etAddress, etEmail, etPassword, etConfirm;
@@ -31,8 +39,17 @@ public class RegisterFragment extends Fragment {
     private PrefsManager prefs;
     private FirebaseAuth mAuth;
     private UserRepository userRepository;
+    private CredentialManager credentialManager;
+
+    private static final String TAG = "RegisterFragment";
 
     public RegisterFragment() {}
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        credentialManager = CredentialManager.create(requireContext());
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -98,15 +115,20 @@ public class RegisterFragment extends Fragment {
                     if (task.isSuccessful()) {
                         // Registration success: Create user object and save locally
                         User user = new User(name, surname, address, email, pass);
-                        user.setPhotoUri(""); // Initial empty photo
+                        user.setPhotoUri(""); 
+                        
                         userRepository.saveLocalUser(user, () -> requireActivity().runOnUiThread(() -> {
                             if (remember) {
                                 prefs.saveUser(name, surname, address, email, pass);
                                 prefs.setRemember(true);
+                                // Salvataggio nel Credential Manager
+                                savePasswordToCredentialManager(email, pass);
                             } else {
                                 prefs.setRemember(false);
                                 prefs.clearSavedUser();
+                                prefs.saveSessionEmail(email);
                             }
+                            
                             Toast.makeText(requireContext(), "Registrazione completata!", Toast.LENGTH_SHORT).show();
                             requireActivity().getOnBackPressedDispatcher().onBackPressed();
                         }));
@@ -124,9 +146,28 @@ public class RegisterFragment extends Fragment {
                 });
     }
 
-    /**
-     * Helper to get trimmed text from an EditText.
-     */
+    private void savePasswordToCredentialManager(String email, String password) {
+        CreatePasswordRequest createPasswordRequest = new CreatePasswordRequest(email, password);
+
+        credentialManager.createCredentialAsync(
+                requireContext(),
+                createPasswordRequest,
+                null,
+                ContextCompat.getMainExecutor(requireContext()),
+                new CredentialManagerCallback<CreateCredentialResponse, CreateCredentialException>() {
+                    @Override
+                    public void onResult(CreateCredentialResponse result) {
+                        Log.d(TAG, "Password salvata correttamente nel Credential Manager");
+                    }
+
+                    @Override
+                    public void onError(CreateCredentialException e) {
+                        Log.e(TAG, "Errore nel salvataggio della password", e);
+                    }
+                }
+        );
+    }
+
     private String getText(TextInputEditText et) {
         return et == null || et.getText() == null ? "" : et.getText().toString().trim();
     }

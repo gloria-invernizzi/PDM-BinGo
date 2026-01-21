@@ -117,7 +117,7 @@ public class UserRepository {
 
     /**
      * Checks if the current user is authenticated via Google.
-     * 
+     *
      * @param email    The email to check (maintained for API compatibility).
      * @param callback Result callback.
      */
@@ -205,7 +205,14 @@ public class UserRepository {
             User existing = userDao.findByEmail(user.getEmail());
             if (existing == null) {
                 userDao.insert(user);
+            } else {
+                // Aggiorna i dati esistenti (password, nome, ecc.)
+                existing.setName(user.getName());
+                existing.setPassword(user.getPassword());
+                userDao.update(existing);
             }
+            // Sincronizza anche con le Prefs per sicurezza
+            localSource.saveToPrefs(user);
             if (onComplete != null) onComplete.run();
         });
     }
@@ -214,17 +221,7 @@ public class UserRepository {
      * Retrieves user details from the local data source.
      */
     public void getUser(String email, UserCallback callback) {
-        localSource.getUser(email, new UserCallback() {
-            @Override
-            public void onUserLoaded(User user) {
-                callback.onUserLoaded(user);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                callback.onFailure(error);
-            }
-        });
+        localSource.getUser(email, callback);
     }
 
     /**

@@ -43,22 +43,27 @@ public class UserLocalSource {
                 return;
             }
             
-            // Fallback to Prefs if not in Room
-            Log.d("UserLocalSource", "Not found in Room, checking prefs");
-            String name = prefs.getSavedName();
-            String surname = prefs.getSavedSurname();
-            String address = prefs.getSavedAddress();
-            String photoUri = prefs.getSavedPhotoUri();
-            Log.d("UserLocalSource", "Prefs read: name=" + name + ", surname=" + surname
-                    + ", address=" + address + ", photoUri=" + photoUri);
-            
-            if (!name.isEmpty() || !address.isEmpty() || !photoUri.isEmpty()) {
-                User prefsUser = new User(name, surname, address, email, prefs.getSavedPassword());
-                prefsUser.setPhotoUri(photoUri);
-                Log.d("UserLocalSource", "Creating user from prefs: " + prefsUser);
+            // Fallback alle Prefs solo se l'email coincide
+            String savedEmail = prefs.getSavedEmail();
+            if (email != null && email.equalsIgnoreCase(savedEmail)) {
+                User prefsUser = new User(
+                        prefs.getSavedName(),
+                        prefs.getSavedSurname(),
+                        prefs.getSavedAddress(),
+                        email,
+                        prefs.getSavedPassword()
+                );
+                prefsUser.setPhotoUri(prefs.getSavedPhotoUri());
+                
+                // Sincronizza in Room per i caricamenti futuri
+                try {
+                    userDao.insert(prefsUser);
+                } catch (Exception e) {
+                    Log.e("UserLocalSource", "Errore inserimento da prefs", e);
+                }
+                
                 callback.onUserLoaded(prefsUser);
             } else {
-                Log.d("UserLocalSource", "Prefs empty, returning null");
                 callback.onUserLoaded(null);
             }
         });
@@ -88,7 +93,7 @@ public class UserLocalSource {
      * Saves user data to SharedPreferences.
      */
     public void saveToPrefs(User u) {
-        prefs.saveUser(u.getName(), u.getSurname(), u.getAddress(), u.getEmail(), prefs.getSavedPassword());
+        prefs.saveUser(u.getName(), u.getSurname(), u.getAddress(), u.getEmail(), u.getPassword());
         if (u.getPhotoUri() != null) prefs.savePhotoUri(u.getEmail(), u.getPhotoUri());
     }
 
@@ -99,15 +104,8 @@ public class UserLocalSource {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
                 User localUser = userDao.findByEmail(email);
-
                 if (localUser == null) {
-                    localUser = new User(
-                            prefs.getSavedName(),
-                            prefs.getSavedSurname(),
-                            prefs.getSavedAddress(),
-                            email,
-                            newPassword
-                    );
+                    localUser = new User(prefs.getSavedName(), prefs.getSavedSurname(), prefs.getSavedAddress(), email, newPassword);
                     userDao.insert(localUser);
                 } else {
                     localUser.setPassword(newPassword);
@@ -117,7 +115,6 @@ public class UserLocalSource {
                 // Save only email and password to prefs for security/simplicity
                 prefs.saveUser(email, newPassword);
                 callback.onSuccess(UserRepository.PASSWORD_OK);
-
             } catch (Exception e) {
                 callback.onFailure(context.getString(R.string.local_error, e.getMessage()));
             }
@@ -132,16 +129,13 @@ public class UserLocalSource {
             try {
                 User localUser = userDao.findByEmail(oldEmail);
                 if (localUser == null) {
-                    localUser = new User(prefs.getSavedName(), prefs.getSavedSurname(), prefs.getSavedAddress(),
-                            oldEmail, prefs.getSavedPassword());
+                    localUser = new User(prefs.getSavedName(), prefs.getSavedSurname(), prefs.getSavedAddress(), oldEmail, prefs.getSavedPassword());
                     userDao.insert(localUser);
                 }
                 localUser.setEmail(newEmail);
                 userDao.update(localUser);
-                prefs.updateEmailOnly(newEmail); // Updates email only, preserves other data
-
+                prefs.updateEmailOnly(newEmail);
                 callback.onSuccess(context.getString(R.string.email_updated));
-
             } catch (Exception e) {
                 callback.onFailure(context.getString(R.string.local_error, e.getMessage()));
             }
@@ -154,9 +148,21 @@ public class UserLocalSource {
     public void updateFamilyId(String email, String familyId, UserRepository.Callback callback) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                userDao.updateFamilyId(email, familyId);
+                User localUser = userDao.findByEmail(email);
+                if (localUser == null) {
+                    // Se manca in Room, proviamo a recuperare dati base per crearlo
+                    String savedEmail = prefs.getSavedEmail();
+                    if (email.equalsIgnoreCase(savedEmail)) {
+                        localUser = new User(prefs.getSavedName(), prefs.getSavedSurname(), prefs.getSavedAddress(), email, prefs.getSavedPassword());
+                    } else {
+                        localUser = new User("", "", "", email, "");
+                    }
+                    localUser.setFamilyId(familyId);
+                    userDao.insert(localUser);
+                } else {
+                    userDao.updateFamilyId(email, familyId);
+                }
                 callback.onSuccess(context.getString(R.string.family_updated_success));
-
             } catch (Exception e) {
                 callback.onFailure(context.getString(R.string.family_update_error, e.getMessage()));
             }

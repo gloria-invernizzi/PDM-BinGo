@@ -127,7 +127,9 @@ public class FamilyViewModel extends ViewModel {
             familyMembers.postValue(null);
             return;
         }
-        userRepository.getUsersByFamilyId(familyId, familyMembers::postValue);
+        userRepository.getUsersByFamilyId(familyId, members -> {
+            familyMembers.postValue(members);
+        });
     }
     
     /**

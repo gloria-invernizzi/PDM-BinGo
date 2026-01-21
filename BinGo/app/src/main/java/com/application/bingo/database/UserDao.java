@@ -28,23 +28,23 @@ public interface UserDao {
     long insert(User user);
 
     /**
-     * Finds a user by their email address.
+     * Finds a user by their email address (case-insensitive).
      *
      * @param email The user's email.
      * @return The User object or null if not found.
      */
-    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    @Query("SELECT * FROM users WHERE LOWER(email) = LOWER(:email) LIMIT 1")
     User findByEmail(String email);
 
     /**
-     * Finds a user by email and password combination.
+     * Finds a user by email and password combination (email case-insensitive).
      * Used for local authentication.
      *
      * @param email    The user's email.
      * @param password The user's password.
      * @return The User object if credentials match, null otherwise.
      */
-    @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
+    @Query("SELECT * FROM users WHERE LOWER(email) = LOWER(:email) AND password = :password LIMIT 1")
     User findByEmailAndPassword(String email, String password);
 
     /**
@@ -62,7 +62,7 @@ public interface UserDao {
     /**
      * Updates only the profile photo URI for a specific user.
      */
-    @Query("UPDATE users SET photo_uri = :uri WHERE email = :email")
+    @Query("UPDATE users SET photo_uri = :uri WHERE LOWER(email) = LOWER(:email)")
     void updatePhotoUri(String email, String uri);
 
     /**
@@ -74,13 +74,13 @@ public interface UserDao {
     /**
      * Updates the family ID for a specific user.
      */
-    @Query("UPDATE users SET family_id = :familyId WHERE email = :email")
+    @Query("UPDATE users SET family_id = :familyId WHERE LOWER(email) = LOWER(:email)")
     void updateFamilyId(String email, String familyId);
 
     /**
      * Deletes a user record by email.
      */
-    @Query("DELETE FROM users WHERE email = :email")
+    @Query("DELETE FROM users WHERE LOWER(email) = LOWER(:email)")
     void deleteByEmail(String email);
 
 }
